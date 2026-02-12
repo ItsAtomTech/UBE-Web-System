@@ -1,12 +1,17 @@
-Flask==2.1.3
-Flask-SQLAlchemy==2.5.0
-flask_login
-flask_mail==0.9.0
-SQLAlchemy==1.3.23
-pyopenssl
+Flask==3.0.2
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Mail==0.9.0
+SQLAlchemy>=2.0.32
+Werkzeug==3.0.1
+pyOpenSSL
 pytz
 python-dotenv
+<<<<<<< HEAD
 pymysql
 cloudscraper
+=======
+PyMySQL
+>>>>>>> ebb1d3d99525ade5963af84206d33776df895e25
 bleach
 tinycss2

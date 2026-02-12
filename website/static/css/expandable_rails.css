@@ -1,0 +1,116 @@
+
+
+/* =========================== */
+/* Activity Rail Sections */
+/* =========================== */
+
+.railed_main_con{
+	position:relative;
+		-webkit-animation-duration: 0.2s !important;
+		animation-duration: 0.2s !important;
+}
+
+.fullscreen_rail{
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:20;
+	height:100vh;
+	margin:0px auto;
+	background:rgba(50,50,50,0.3);
+	overflow-y:auto;
+	transition:0.4s;
+	padding-top:10px;
+}
+
+
+.fullscreen_rail > .railed_con{
+	background:var(--primary_background);
+	height:auto;
+	flex-wrap:wrap;
+	white-space:unset;
+	align-items: flex-start;
+    justify-content: flex-start;
+	flex-direction:row;
+	border-radius:10px;
+	box-shadow:0px 0px 4px -3px rgba(45,45,45,0.5);
+	overflow-y:auto;
+	padding-top:50px;
+	-webkit-animation-name:zoomIn;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-fill-mode: forwards;
+	animation-name:zoomIn;
+	animation-duration: 0.5s;
+	animation-fill-mode: forwards;
+
+}
+
+
+.fullscreen_rail > .railed_con > .course_card {
+	aspect-ratio:2/1;
+}
+
+.action_bar_full{
+	display:none;
+	position:absolute;
+	top:0px;
+	width:100%;
+	left:0px;
+	min-height:45px;
+	padding:10px;
+	z-index:21;
+	background:var(--primary_background);
+	border-radius:0px 0px 10px 10px;
+}
+
+
+.fullscreen_rail > .action_bar_full{
+	display:flex;
+	gap:10px;
+	overflow-x:auto;
+}
+
+
+.filter_option{
+	display:flex;
+	align-items:center;
+	gap:5px;
+	
+}
+
+.close_fullscreen{
+	position:absolute;
+	right:10px;
+	
+}
+
+.open_fullscreen{
+	position:absolute;
+	right:10px;
+	top:10px;
+	
+}
+
+.open_fullscreen > button, .close_fullscreen > button{
+	color:var(--primary_color);
+	
+}
+
+
+.sticky_bottom{
+	position:sticky;
+	bottom:0px;
+	
+	
+}
+.sticky_bottom >span{
+	cursor:pointer;
+	
+	
+}
+
+
+.railed_main_con:has(.open_fullscreen){
+	padding-top:40px;
+}
+

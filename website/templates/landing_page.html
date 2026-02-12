@@ -1,0 +1,32 @@
+{% extends "base_headless.html" %}
+
+{% block title%}  Welcome to Landing Page </> {% endblock %}
+
+{% block extra_css %}
+
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}"> -->
+
+
+{% endblock %}
+
+{% block contents %}
+
+<h1> Hello World</h1>
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+
+<script>
+qBuilder.server_address = "_";
+
+
+</script>
+
+{% endblock %}
+
+
+
