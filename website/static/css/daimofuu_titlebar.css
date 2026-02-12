@@ -1,0 +1,86 @@
+
+* {
+	box-sizing:border-box;
+}
+
+.df_titlebar_main_con{
+	width:100%;
+	min-height:90px;
+	max-height:90px;
+	/* border:solid lime 1px; */
+	position:sticky;
+	top:0px;
+	display:flex;
+	-webkit-transition:0.2s;
+	transition:0.2s;
+}
+
+
+.df_titlebar_main_con.center{
+	align-items:center;
+	justify-content:center;
+	position:sticky;
+	z-index:19;
+}
+
+.df_titlebar_main_con.pinned{
+	min-height:50px;
+	max-height:50px;
+	box-shadow:2px 2px 2px 2px rgba(100,100,100,0.5);
+	z-index:5;
+	position:sticky;
+	margin-bottom:40px;
+}
+
+.df_titlebar_main_con  > .title_container{
+
+	width:100%;
+	max-width:400px;
+	min-height:inherit;
+	/* border:solid yellow 1px; */
+
+}
+
+.df_titlebar_main_con  > .title_container > .text_banner{
+	width:100%;
+	font-family: 'Gotham Rounded Bold';
+	min-height:inherit;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-weight:bold;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	
+}
+
+
+
+.df_titlebar_main_con.pinned  > .title_container > .text_banner{
+	width:100%;
+	font-family: 'Gotham Rounded';
+	font-weight:lighter;
+
+	
+	
+}
+
+
+
+@media screen and (max-width: 400px){
+	.text_banner{
+		
+		font-size:1.2em;
+		
+		
+	}
+	.df_titlebar_main_con{
+		
+		min-height:60px;
+		max-height:60px;
+		
+	}
+
+}
+
+
