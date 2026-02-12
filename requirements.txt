@@ -7,11 +7,6 @@ Werkzeug==3.0.1
 pyOpenSSL
 pytz
 python-dotenv
-<<<<<<< HEAD
-pymysql
-cloudscraper
-=======
 PyMySQL
->>>>>>> ebb1d3d99525ade5963af84206d33776df895e25
 bleach
 tinycss2
