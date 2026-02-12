@@ -7,7 +7,6 @@ pyopenssl
 pytz
 python-dotenv
 pymysql
-pypandoc_binary
 cloudscraper
 bleach
 tinycss2
