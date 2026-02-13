@@ -56,12 +56,16 @@ def soon():
 
 
 # =======================
-# Some Section
+# Forms Section
 # =======================
+@views.route('/status_editor', methods=['GET', 'POST'])
+def user_new_editor():
+    page = 'new_status_editor'
 
+    return render_template("acads_form_editor.html", user=current_user, page=page)
 
 # =======================
-# Some Section End
+# Forms Section End
 # =======================
 
 
