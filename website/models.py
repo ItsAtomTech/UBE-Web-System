@@ -44,6 +44,7 @@ class Academic_Status(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('student_table.student_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     academic_status = db.Column(db.String(50))
+    date = db.Column(db.DateTime(timezone=True), default=manila_time)
 
 
 
