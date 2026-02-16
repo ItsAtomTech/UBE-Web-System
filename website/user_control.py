@@ -203,10 +203,9 @@ def create_account_json():
             email=email,
             username=user_name,
             password=generate_password_hash(password, method='pbkdf2:sha256'),
-            type='student',
+            type='teacher',
             avatar='user',
-            status='pending',
-            department_id = department
+            status='pending'
         )
         db.session.add(add_account)
         db.session.commit()
