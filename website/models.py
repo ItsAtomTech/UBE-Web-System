@@ -14,36 +14,40 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     avatar = db.Column(db.String(50))
-    type = db.Column(db.String(50))   # e.g. instructor, dean, associate_dean
-    status = db.Column(db.String(50))
+    type = db.Column(db.Integer, db.ForeignKey('user_type.type_id'))   # e.g. instructor, dean, associate_dean
     misc = db.Column(db.String(1024))
     date = db.Column(db.DateTime(timezone=True), default=manila_time)
     
     def get_id(self):
         return str(self.user_id)  # Flask-Login will use user_id instead of default
 
+class UserType(db.Model):
+    type_id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50))
+
+
+
 class StudentTable(db.Model):
     student_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    student_number = db.Column(db.String(50))
-    current_section = db.Column(db.String(50))
-    year_level = db.Column(db.String(50))
-    program = db.Column(db.String(50))
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject_code.subject_id'))
+    instructor_id = db.Column(db.Integer, db.ForeignKey('instructor_table.instructor_id'))
+    student_name = db.Column(db.String(50))
+    student_number = db.Column(db.Integer)
+    progress = db.Column(db.String(100))
+    status = db.Column(db.String(50))
+    reason = db.Column(db.String(1000))
     date = db.Column(db.DateTime(timezone=True), default=manila_time)
 
-class StatusRecord(db.Model):
-    record_id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('student_table.student_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    status_id = db.Column(db.Integer, db.ForeignKey('academic_status.status_id'))
-    reason = db.Column(db.String(100))
-    date = db.Column(db.DateTime(timezone=True), default=manila_time)
+class InstructorTable(db.Model):
+    instructor_id = db.Column(db.Integer, primary_key=True)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject_code.subject_id'))
+    instructor_name = db.Column(db.String(100))
 
-class AcademicStatus(db.Model):
-    status_id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('student_table.student_id'))
-    academic_status = db.Column(db.String(50))
-    date = db.Column(db.DateTime(timezone=True), default=manila_time)
+class SubjectCode(db.Model):
+    subject_id = db.Column(db.Integer, primary_key=True)
+    subject_name = db.Column(db.String(100))
+    subject_code = db.Column(db.String(20))
+    units = db.Column(db.Integer)
 
 
 
