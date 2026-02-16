@@ -18,11 +18,17 @@
 	align-items:center;
 	justify-content:center;
 	background:var(--primary_background_darker);
+	background-color:transparent;
 	font-family:Gotham Rounded;
-	
-	
-	
 }
+
+#main_body{
+		background-color:var(--primary_background_darker);
+		background-image:url('../images/bg_1.png');
+		background-size:cover;
+		background-attachment:fixed;
+}
+
 
 .log_in_con{
 	box-sizing:border-box;
