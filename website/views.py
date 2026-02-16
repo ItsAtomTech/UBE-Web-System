@@ -25,13 +25,13 @@ def home():
     page = 'home'
     
     if not current_user.is_authenticated:
-        return render_template("landing_page.html", user=current_user, page=page)
+        return render_template("login.html", user=current_user, page=page)
     
     if current_user.status != 'confirmed':
         flash(category="warning",message="Please Activate your Account Email")
     
     
-    return render_template("home.html", user=current_user, page=page)
+    return render_template("login.html", user=current_user, page=page)
 
 
 

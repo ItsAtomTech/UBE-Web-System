@@ -8,6 +8,7 @@
   --secondary_color: #296799;
   --secondary_color_faded: #29679988;
   --secondary_color_darker: #19237b;
+  --third_color_faded: rgba(0,0,0,0.30);
   
   --secondary_background: #202d9d;
   --accent_color:#D6BC3D;
@@ -67,6 +68,15 @@
 .secondary_background{
 	background-color:var(--secondary_background);
 }
+
+
+.third_background_faded{
+	background-color:var(--third_color_faded);
+	
+	
+}
+
+
 
 .secondary_background_gradient{
 	background-color:var(--secondary_background);

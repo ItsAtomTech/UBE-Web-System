@@ -14,7 +14,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     avatar = db.Column(db.String(50))
-    type = db.Column(db.String(50))   # e.g. student, teacher, admin
+    type = db.Column(db.String(50))   # e.g. instructor, dean, associate_dean
     status = db.Column(db.String(50))
     misc = db.Column(db.String(1024))
     date = db.Column(db.DateTime(timezone=True), default=manila_time)

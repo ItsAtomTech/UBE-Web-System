@@ -1,17 +1,24 @@
 {% extends "base_headless.html" %}
 
-{% block title%}  Welcome to Landing Page </> {% endblock %}
+{% block title%}   </> {% endblock %}
 
 {% block extra_css %}
 
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}"> -->
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}">
 
 {% endblock %}
-
 {% block contents %}
+<div class="df_titlebar_main_con secondary_background">
 
-<h1> Hello World</h1>
+	<div class="logo_title_con">
+		<img src="{{ url_for('static', filename='images/logo_white_outline.webp') }}" class="logo_header_top"  />
+	</div>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+<script src="{{ url_for('static', filename='js/request_builder.js') }}"> </script>
 
 
 {% endblock %}
