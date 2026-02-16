@@ -13,6 +13,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(50))
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
+    status = db.Column(db.String(50))
     avatar = db.Column(db.String(50))
     type = db.Column(db.Integer, db.ForeignKey('user_type.type_id'))   # e.g. instructor, dean, associate_dean
     misc = db.Column(db.String(1024))
