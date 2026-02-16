@@ -15,7 +15,7 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(150))
     status = db.Column(db.String(50))
     avatar = db.Column(db.String(50))
-    type = db.Column(db.Integer, db.ForeignKey('user_type.type_id'))   # e.g. instructor, dean, associate_dean
+    type = db.Column(db.Integer, db.ForeignKey('user_type.type_id'))   
     misc = db.Column(db.String(1024))
     date = db.Column(db.DateTime(timezone=True), default=manila_time)
     
@@ -24,7 +24,7 @@ class Users(db.Model, UserMixin):
 
 class UserType(db.Model):
     type_id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(50))
+    type = db.Column(db.String(50))# e.g. instructor, dean, associate_dean
 
 
 
