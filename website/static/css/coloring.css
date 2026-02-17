@@ -1,6 +1,7 @@
 
 :root {
   --primary_background: #efefef;
+  --primary_background_faded: #efefef35;
   --primary_background_darker: #e3e3e3;
   --primary_color: rgba(40,40,40,1);
   --primary_color_faded: rgba(40,40,40,0.6);

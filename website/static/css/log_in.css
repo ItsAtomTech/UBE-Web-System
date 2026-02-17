@@ -20,6 +20,8 @@
 	background:var(--primary_background_darker);
 	background-color:transparent;
 	font-family:Gotham Rounded;
+	
+	transition:0.1s;
 }
 
 #main_body{
@@ -238,12 +240,21 @@
 
 
 @media screen and (max-width: 430px){
+	
+	.log_in_main_con{
+		
+		align-items:flex-start;
+		min-height:80vh;
+	}
+	
+	
 	.log_in_con{
 		width:100%;
-		min-height:400px;
+		min-height:450px;
 		margin-top:50px;
 		padding-left:10px;
 		border-right:5px solid #a0a0a0a0;
+		padding-top:45px;
 
 	}
 	
