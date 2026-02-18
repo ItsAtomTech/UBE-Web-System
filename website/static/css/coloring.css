@@ -1,14 +1,15 @@
 
 :root {
   --primary_background: #efefef;
+  --primary_background_faded: #efefef35;
   --primary_background_darker: #e3e3e3;
   --primary_color: rgba(40,40,40,1);
   --primary_color_faded: rgba(40,40,40,0.6);
   --primary_color_invert: rgba(254,254,255,1);
-  --secondary_color: #296799;
-  --secondary_color_faded: #29679988;
+  --secondary_color: #86b7fe;
+  --secondary_color_faded: #86b7fe88;
   --secondary_color_darker: #19237b;
-  --third_color_faded: rgba(0,0,0,0.30);
+  --third_color_faded: rgba(24,24,24,0.30);
   
   --secondary_background: #202d9d;
   --accent_color:#D6BC3D;

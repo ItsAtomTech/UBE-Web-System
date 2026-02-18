@@ -16,10 +16,10 @@
 	<div class="title_text_big">
 	
 		<div class="logo_title_con">
-	
+			<img src="{{ url_for('static', filename='images/lnu_logo.webp') }}" class="logo_onside"> 
 		</div>
 		
-		<div class="title_text medium">
+		<div class="title_text bold medium">
 			On Probation Tracking
 		</div>
 	
@@ -27,7 +27,7 @@
 	
 	<div class="nav_buttons_top">
 		
-		<div class="nav_button_entry">
+		<div class="nav_button_entry active">
 			Login
 		</div>
 		
@@ -40,9 +40,6 @@
 		</div>
 		
 				
-		
-		
-		
 	</div>
 	
 	
@@ -50,7 +47,7 @@
 
 
 
-<div class="log_in_main_con">
+<div class="log_in_main_con fadeIn animated">
 	<div class="log_in_con primary_background primary_color">
 		<div class="log_title_con secondary_color medium">
 			<span class="medium">ACCOUNT LOGIN</span>
@@ -68,7 +65,7 @@
 			<div class='input_form'>
 				<span class='label'>PASSWORD</span>
 				<span class='pass_visib primary_color' onclick='toggle_pass(this, "password-")'>show</span>
-				<input class='log3_in primary_color' type='password' id='password-'  name='password' required> </input>
+				<input class='log3_in primary_color' type='password' id='password-'  name='password' required placeholder="Enter password"> </input>
 			</div>
 		
 		</div>
