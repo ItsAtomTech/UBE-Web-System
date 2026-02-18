@@ -54,6 +54,13 @@
 </datalist>
 
 
+<datalist id="subject_list">
+{% for subj in get_subjects() %}
+    <option value="{{ subj.subject_id }}">{{ subj.subject_name }}</option>
+{% endfor %}
+</datalist>
+
+
 
 
 
