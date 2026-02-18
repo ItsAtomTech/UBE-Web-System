@@ -83,3 +83,28 @@ body{
 }
 
 
+/* Add a Fancy On Focus Style on the form and other styles */
+
+.fancy_form_df{
+	-webkit-transition:0.2s;
+	transition:0.2s;	
+}
+
+.form_display:not(.header_input){
+	border-radius:5px !important;
+	min-height:45px !important;
+}
+
+
+.fancy_form_df:focus{
+	border:solid var(--secondary_color) 1px !important;
+	box-shadow:0 0 0 4px var(--secondary_color_faded);
+	background:var(--primary_background);
+	
+}
+
+
+
+
+
+

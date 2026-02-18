@@ -59,9 +59,6 @@ def soon():
 
 
 
-
-
-
 # =======================
 # Forms Section
 # =======================
@@ -70,10 +67,48 @@ def user_new_editor():
     page = 'new_status_editor'
 
     return render_template("acads_form_editor.html", user=current_user, page=page)
+    
+    
+    
+@views.route('/add_student', methods=['GET', 'POST'])
+@login_required
+def add_student_editor():
+    page = 'add_student'
+
+    return render_template("add_student_form.html", user=current_user, page=page)
 
 # =======================
 # Forms Section End
 # =======================
+
+
+
+
+
+
+
+# =======================
+# Student Section Section
+# =======================
+@views.route('/student_table', methods=['GET', 'POST'])
+@login_required
+def user_tables():
+    page = 'users'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("student_table.html", user=current_user, page=page)
+
+
+
+
+
+
+
+# =======================
+# Student Section End
+# =======================
+
 
 
 
