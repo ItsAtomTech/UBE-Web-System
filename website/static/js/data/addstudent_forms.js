@@ -26,7 +26,7 @@ let acadStatsForm = {
       row_span: null,
       col_span: null,
       span_column: false,
-      id: "student_name_1",
+      id: "student_name",
       index: 1,
     },
     {
@@ -41,7 +41,7 @@ let acadStatsForm = {
       row_span: null,
       col_span: null,
       span_column: false,
-      id: "student_id_2",
+      id: "student_id",
       index: 2,
     },
     {
@@ -55,7 +55,8 @@ let acadStatsForm = {
       row_span: null,
       col_span: null,
       span_column: false,
-      id: "select_subject_3",
+      id: "subject_id",
+	  "list": "subject_list",
       index: 3,
     },
     {
@@ -69,7 +70,7 @@ let acadStatsForm = {
       row_span: null,
       col_span: null,
       span_column: false,
-      id: "enlisted_instructor_4",
+      id: "instructor_id",
       index: 4,
     },
   ],

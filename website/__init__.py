@@ -52,7 +52,7 @@ def create_app():
 
 
 
-    from .models import Users
+    from .models import Users, SubjectCode
 
     create_database(app)
     
@@ -73,6 +73,14 @@ def create_app():
             return Users.query.filter_by(id=us).first()
         return dict(get_user=get_user)
        
+       
+    @app.context_processor
+    def get_subj():
+        def get_subjects():
+            subs = SubjectCode.query.order_by(SubjectCode.subject_name.asc()).all()
+            return subs
+        return dict(get_subjects=get_subjects)
+
     
 
     @app.context_processor
