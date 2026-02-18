@@ -33,6 +33,11 @@ def home():
     
     return render_template("under.html", user=current_user, page=page)
 
+@views.route('/about', methods=['GET', 'POST'])
+def about():
+    page = 'about'
+
+    return render_template("about.html", user=current_user, page=page)
 
 
 
@@ -41,6 +46,8 @@ def soon():
     page = 'under'
 
     return render_template("under.html", user=current_user, page=page)
+    
+
 
 
 
