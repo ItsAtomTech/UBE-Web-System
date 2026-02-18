@@ -5,37 +5,37 @@ let tableFormat = [
 	// },
 	{	
 		label: "ID",
-		data_path: "user_id",
+		data_path: "student_id",
 		sort: true,
 		// parser:parseBranch,
 		
 	},	
 	{	
-		label: "Username",
-		data_path: "username",
+		label: "Student Name",
+		data_path: "student_name",
 		sort: true,
 		// parser:parseBranch,
 		
 	},	
 	{	
-		label: "Email",
-		data_path: "email",
+		label: "Subject",
+		data_path: "subject_name",
 		sort: true,
 		// parser:parseBranch,
 		
 	},
 	{	
-		label: "User Type",
-		data_path: "type",
+		label: "Intructor Assigned",
+		data_path: "instructor_name",
 		sort: true,
 		// parser:parseBranch,
 		
 	},
 	{	
-		label: "Account Activation",
+		label: "Current Status",
 		data_path: "status",
 		sort: true,
-		// parser:parseBranch,
+		parser:parseStatus,
 		
 	},
 
@@ -50,7 +50,8 @@ let userList;
 
 function tableLoader(data){
 	let resData = (JSON.parse(data.responseText));
-	let forms = resData.users;
+	let forms = resData.students;
+
 	
 	userList = forms;
 	
@@ -405,7 +406,7 @@ function dateFormater(d){
 
 //Other functions
 loadRecords = loadAllItems;
-monitorChanges("shouldReloadUsers", loadAllItems);
+monitorChanges("shouldReloadStudents", loadAllItems);
 
 
 
@@ -560,9 +561,20 @@ function restoreItemMulti(confirmed = undefined){
 }
 
 
+
 function categoryParse(id){
 	return categoriesList[id];
 }
+
+
+//parsing status data 
+function parseStatus(data){
+	
+	if(status == ""){
+		return "None"
+	};
+}
+
 
 
 

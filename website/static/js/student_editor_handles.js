@@ -1,11 +1,11 @@
 
 
 //For Saving User
-function saveUser(){
+function saveStudent(){
 	let values = formMaker.retriveFormInput(true);
 	let params = [
 		{
-		"name": "user_data",
+		"name": "student_data",
 		"value": JSON.stringify(values),
 		}
 	
@@ -16,24 +16,22 @@ function saveUser(){
 	};
 	
 	//for updating
-	if(pageType == "edit_user"){
+	if(pageType == "edit_student"){
 		let custom_params = {
 		"name": "user_id",
 		"value": userID,
 		}
 		
 		params.push(custom_params);
-		qBuilder.sendQuery(feedBackSaving,"save_user_update", params);
+		qBuilder.sendQuery(feedBackSaving,"save_student_update", params);
 		createDialogue("wait");
 		return;
 	}
+
 	
-	if(_('password').value != _('repassword').value){
-		createDialogue("error", "Password not matched!");
-		return;
-	}
+	console.log(params);
 	
-	qBuilder.sendQuery(feedBackSaving,"save_user", params);
+	qBuilder.sendQuery(feedBackSaving,"save_student", params);
 	createDialogue("wait");
 
 }
@@ -51,9 +49,50 @@ function feedBackSaving(){
 	function close(){
 		postMessageToParent("close");
 	}
-	localStorage.setItem("shouldReloadUsers","true");
+	localStorage.setItem("shouldReloadStudents","true");
 	hasChanges = false;
 }
+
+
+
+//Load the Instructors List
+function loadInstructorsData(){
+
+    let params = [];
+    qBuilder.sendQuery(process, 'get_instructors', params);
+
+    function process(data){
+        loadInstructors(data);
+    };
+}
+
+
+function loadInstructors(data){
+	let setdata = JSON.parse(event.target.responseText);
+	
+	
+	if(setdata.type != "success"){
+		return false;
+	}
+	
+	_("instructor_id").innerHTML = "";
+	
+	_("instructor_id").appendChild(make("option"));
+	
+	for(each of setdata.instructors){
+		let option = make("option");
+			option.value = each.user_id;
+			option.innerText = each.instructor_name;
+		
+		_("instructor_id").appendChild(option);
+	}
+	
+	
+	
+}
+loadInstructorsData();
+
+
 
 
 
