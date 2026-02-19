@@ -9,10 +9,10 @@ window.addEventListener('resize', () => {
 // Teacher Functions
 // ==========================
 
-function showRoomsTable(elm){
+function showOnProbTable(elm){
 	activate(elm);
 
-	let page = open_modal("teacher_rooms", 'modal_on_container,no_close_button,page_containment', _('general_container'));
+	let page = open_modal("student_table", 'modal_on_container,no_close_button,page_containment', _('general_container'));
 	closeAllPages(page);
 	_('dash_contents').classList.add("hide_main_con");
 }

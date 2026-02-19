@@ -61,12 +61,13 @@
 
 		<div class="main_container_side_bar">
 			<div class="sidebar_container_dynamic primary_background" id="df_sidebar">
-				<div class="sidabar_buttons_con secondary_background">
+				<div class="sidabar_buttons_con primary_background">
 
 					<div class="sidebar_box_con logo_contianer">
 
 						<div class="rounded_logo_ "> </div>
-
+						<div class="big onside_title"> On Probation Tracking </div>
+						
 					</div>
 					<!-- <div class="sidebar_box_con">  -->
 						<!-- <div onclick="toggleSidebar();" class="sidebar_button primary_color_invert df_button"> <span class="fa fa-columns"> </span> </div> -->
@@ -75,7 +76,7 @@
 
 
 					<div class="sidebar_box_con">
-						<div class="sidebar_button df_button active primary_color_invert" onclick="closeAllPages();activate(this);" tooltip="Close All pages and go back to Home"> <span class="fa fa-home"> </span> 
+						<div class="sidebar_button df_button active primary_color" onclick="closeAllPages();activate(this);" tooltip="Close All pages and go back to Home"> <span class="fa fa-home"> </span> 
 						
 						<span class="normal nav_text"> Dashboard </span>
 						
@@ -88,49 +89,18 @@
 
 					<!-- For Teachers side bar -->
 
-					{% if current_user.type == "teacher" %}
-
-		  <div class="sidebar_box_con">
-			  <div class="sidebar_button df_button primary_color_invert"
-			  onclick="showRoomsTable(this)" tooltip="Class Room"> <span class="fa fa-users"> </span>   <span class="normal nav_text"> Class Rooms </span>
-			  </div>
-			
-		  </div>
-
-
-					{% elif current_user.type == "admin" %}
-		<div class="sidebar_box_con">
-			  <div class="sidebar_button df_button primary_color_invert"
-			  onclick="showUsersTable(this)" tooltip="User Management"> <span class="fa fa-table"> </span> 
-			  <span class="normal nav_text"> User Management </span>
-			  
-			  </div>
-		</div>
-
-
-					<div class="sidebar_box_con">
-
-						<div class="sidebar_button df_button primary_color_invert"
-							 onclick="showCourseLessonPage(this)" tooltip="Course Lessons"><span
-								class="fa fa-book"> </span>
-								
-								<span class="normal nav_text"> Courses </span>
-						</div>
-					</div>
-					{% elif current_user.type == "student" %}
-
-									<div class="sidebar_box_con" >
-						<div class="sidebar_button df_button primary_color_invert" onclick="showStudentRoom(this);" tooltip="Classrooms"> <img class="image_icon" src="{{url_for('static',  filename='images/classroom.png') }}" alt="classroom"/> 
-						<span class="normal nav_text"> Class Rooms </span>
-						
-						</div>
-					</div>
-
-
-					{% endif %}
+		
 
 		<div class="sidebar_box_con" >
-			<div class="sidebar_button df_button primary_color_invert" onclick="showNotificationPage(this);" id="notification_button"> <span class="fa fa-bell"> </span> <span class="normal nav_text"> Notifications </span> </div>
+			<div class="sidebar_button df_button primary_color" onclick="showOnProbTable(this);" id="notification_button"> <span class="fa fa-exclamation-triangle"> </span> <span class="normal nav_text"> On probation List </span> </div>
+		</div>
+
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="show__(this);" id="notification_button"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Track Student </span> </div>
+		</div>
+
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="show__(this);" id="notification_button"> <span class="fa fa-check-square"> </span> <span class="normal nav_text"> Review Students </span> </div>
 		</div>
 
 {% endif %}

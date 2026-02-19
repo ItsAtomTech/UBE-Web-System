@@ -31,7 +31,7 @@ def home():
         flash(category="warning",message="Please Activate your Account Email")
     
     
-    return render_template("under.html", user=current_user, page=page)
+    return render_template("dashboard.html", user=current_user, page=page)
 
 @views.route('/about', methods=['GET', 'POST'])
 def about():

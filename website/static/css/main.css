@@ -265,6 +265,11 @@ select > option{
 }
 
 
+.glass{
+	backdrop-filter:blur(2px);
+	
+}
+
 
 
 .modal_on_container.no_close_button > .close_modal_rev{
@@ -324,6 +329,16 @@ select > option{
 	transition:height 0.7s !important;
 	transition-timing-function:ease-out !important;
 }
+
+
+.onside_title{
+	padding:8px;
+	text-align:center;
+	max-height:0px;
+	overflow:hidden;
+
+}
+
 
 
 .modal_on_container{
@@ -391,10 +406,14 @@ select > option{
 
 .title_form_top{
 	padding-left:30px;
-	
-	
-	
+
 }
+
+
+
+
+
+
 
 .option_main_container{
 	width:100%;

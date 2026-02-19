@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title%} Home {% endblock %}
+
+{% block extra_css %}
+
+<!-- <link id=' ' rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_buttons.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main_home_dash.css') }}">
+
+<script src="{{ url_for('static', filename='js/charts/chart.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts/chartjs-plugin-datalabels.min.js') }}"></script>
+
+
+{% endblock %}
+
+
+
+{% block contents %}
+	
+<div id="dash_contents" class="primary_color">
+
+
+	{% if current_user.type == '1' %}
+		{% include ('fragments/admin_dash.html') %}
+	{% endif %}
+
+
+	<div style="opacity:0.4;">
+
+	</div>
+
+
+</div>
+
+
+
+<div class="modal_main_backdrop" id="modal_2" inert > 
+	<div class="modal_container_box">
+		<!-- Modal Header -->
+		<div class="top_header">
+			<div class="title_form_top"> In Progress</div>
+			<div class="close_modal_tright" tabindex='1' onclick="closeModalContent('modal_2')"> &times; </div>
+		</div>
+		
+		<!-- Modal Contents Container -->
+		<div class="main_contents_box">
+				<p> This feature is coming soon... </p>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+<script>
+if(inIframe()){
+	postMessageToParent("goToParent:");
+	postMessageToParent("close");
+}
+let current_role = "";
+
+	current_role = "{{ current_user.type }}";
+
+</script>
+<script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+<script defer src="{{ url_for('static', filename='js/request_builder.js') }}"> </script>
+<script defer src="{{ url_for('static', filename='js/chart_helper.js') }}"> </script>
+
+
+
+
+ <!-- <script defer src="{{ url_for('static', filename='js/dashboard_monitor.js') }}"> </script> -->
+
+
+
+
+{% endblock %}
+
