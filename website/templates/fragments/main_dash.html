@@ -1,92 +1,172 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main_home_dash.css') }}">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/main_home_dash.css') }}"
+/>
 
 <div class="dash_contents_con">
 
-	<!-- Greeting Banner -->
-	<div class="dash_greeting_banner primary_background">
-		<div class="dash_greeting_avatar">
-			<img src="{{ url_for('static', filename='images/'+current_user.avatar+'.png') }}" alt="User Avatar" class="greeting_avatar_img" onerror="this.style.background='#4a5a9a';this.src='';this.onerror=null;">
-		</div>
-		<div class="dash_greeting_text">
-			<div class="dash_greeting_name primary_color">Morning, {{ user.name if user.name else user.username }}</div>
-			<div class="dash_greeting_meta secondary_color">
-				<span>Date: <span id="dash_today_date">--/--/----</span></span>
-				<span class="meta_sep">|</span>
-				<span>Semester: <span id="dash_semester">2025-2026</span></span>
-			</div>
-		</div>
-	</div>
+	
+  <!-- Greeting Banner -->
+  <div class="dash_greeting_banner primary_background">
+    <div class="dash_greeting_avatar">
+      <img
+        src="{{ url_for('static', filename='images/'+current_user.avatar+'.png') }}"
+        alt="User Avatar"
+        class="greeting_avatar_img"
+        onerror="
+          this.style.background = '#4a5a9a';
+          this.src = '';
+          this.onerror = null;
+        "
+      />
+    </div>
+    <div class="dash_greeting_text">
+      <div class="dash_greeting_name primary_color">
+        <span id="dash_greeting_time">Hello</span>, {{ user.name if user.name
+        else user.username }}
+      </div>
+      <div class="dash_greeting_meta secondary_color">
+        <span>Date: <span id="dash_today_date">--/--/----</span></span>
+        <span class="meta_sep">|</span>
+        <span>Semester: <span id="dash_semester">----</span></span>
+      </div>
+    </div>
+  </div>
 
-	<!-- Stat Cards -->
-	<div class="dash_cards_grid">
+  <!-- Stat Cards -->
+  <div class="dash_cards_grid">
+    <div class="dash_stat_card primary_background">
+      <div class="dash_stat_label primary_color normal">
+        Currently on Probation
+      </div>
+      <div class="dash_stat_body">
+        <span class="dash_stat_icon secondary_color">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+            />
+          </svg>
+        </span>
+        <span class="dash_stat_number primary_color" id="stat_probation"
+          >—</span
+        >
+      </div>
+    </div>
 
-		<div class="dash_stat_card primary_background">
-			<div class="dash_stat_label primary_color normal">Currently on Probation</div>
-			<div class="dash_stat_body">
-				<span class="dash_stat_icon secondary_color">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-				</span>
-				<span class="dash_stat_number primary_color" id="stat_probation">—</span>
-			</div>
-		</div>
+    <div class="dash_stat_card primary_background">
+      <div class="dash_stat_label primary_color normal">On Tracking</div>
+      <div class="dash_stat_body">
+        <span class="dash_stat_icon secondary_color">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12 3C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm-1 15v-4H7l5-8v4h4l-5 8z"
+            />
+          </svg>
+        </span>
+        <span class="dash_stat_number primary_color" id="stat_tracking">—</span>
+      </div>
+    </div>
 
-		<div class="dash_stat_card primary_background">
-			<div class="dash_stat_label primary_color normal">On Tracking</div>
-			<div class="dash_stat_body">
-				<span class="dash_stat_icon secondary_color ">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
-				</span>
-				<span class="dash_stat_number primary_color" id="stat_tracking">—</span>
-			</div>
-		</div>
+    <div class="dash_stat_card primary_background">
+      <div class="dash_stat_label primary_color normal">Total Failed</div>
+      <div class="dash_stat_body">
+        <span class="dash_stat_icon dash_stat_icon_warn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+          </svg>
+        </span>
+        <span class="dash_stat_number primary_color" id="stat_failed">—</span>
+      </div>
+    </div>
 
-		<div class="dash_stat_card primary_background">
-			<div class="dash_stat_label primary_color normal">Total Failed</div>
-			<div class="dash_stat_body">
-				<span class="dash_stat_icon dash_stat_icon_warn">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-				</span>
-				<span class="dash_stat_number primary_color" id="stat_failed">—</span>
-			</div>
-		</div>
-
-		<div class="dash_stat_card primary_background " >
-			<div class="dash_stat_label primary_color normal">Total Passed</div>
-			<div class="dash_stat_body">
-				<span class="dash_stat_icon dash_stat_icon_success">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-				</span>
-				<span class="dash_stat_number primary_color" id="stat_passed">—</span>
-			</div>
-		</div>
-
-	</div>
-
+    <div class="dash_stat_card primary_background">
+      <div class="dash_stat_label primary_color normal">Total Passed</div>
+      <div class="dash_stat_body">
+        <span class="dash_stat_icon dash_stat_icon_success">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+        </span>
+        <span class="dash_stat_number primary_color" id="stat_passed">—</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-
 <script>
-(function(){
+  (function () {
+    const today = new Date();
+    const formatted =
+      (today.getMonth() + 1).toString().padStart(2, "0") +
+      "/" +
+      today.getDate().toString().padStart(2, "0") +
+      "/" +
+      today.getFullYear();
+    const el = document.getElementById("dash_today_date");
+    if (el) el.textContent = formatted;
 
-	const today = new Date();
-	const formatted = (today.getMonth()+1).toString().padStart(2,'0') + '/' +
-	                   today.getDate().toString().padStart(2,'0') + '/' +
-	                   today.getFullYear();
-	const el = document.getElementById('dash_today_date');
-	if(el) el.textContent = formatted;
+    // Dynamic greeting based on time of day
+    const hours = today.getHours();
+    let greeting = "Hello";
+    if (hours >= 5 && hours < 12) greeting = "Morning";
+    else if (hours >= 12 && hours < 17) greeting = "Afternoon";
+    else if (hours >= 17 && hours < 21) greeting = "Evening";
+    else greeting = "Night";
+    const greetingEl = document.getElementById("dash_greeting_time");
+    if (greetingEl) greetingEl.textContent = greeting;
 
-	fetch('/dashboard_stats')
-		.then(r => r.json())
-		.then(data => {
-			const set = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val ?? '0'; };
-			set('stat_probation', data.probation);
-			set('stat_tracking',  data.tracking);
-			set('stat_failed',    data.failed);
-			set('stat_passed',    data.passed);
-		})
-		.catch(() => {
-			['stat_probation','stat_tracking','stat_failed','stat_passed']
-				.forEach(id => { const e = document.getElementById(id); if(e) e.textContent = '0'; });
-		});
-})();
+    // Dynamic semester calculation (assumes academic year starts in September)
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1; // 1-12
+    let semesterYear;
+    if (currentMonth >= 9) {
+      // September to December: start of academic year
+      semesterYear = currentYear + "-" + (currentYear + 1);
+    } else {
+      // January to August: continuation of previous academic year
+      semesterYear = currentYear - 1 + "-" + currentYear;
+    }
+    const semesterEl = document.getElementById("dash_semester");
+    if (semesterEl) semesterEl.textContent = semesterYear;
+
+    fetch("/dashboard_stats")
+      .then((r) => r.json())
+      .then((data) => {
+        const set = (id, val) => {
+          const e = document.getElementById(id);
+          if (e) e.textContent = val ?? "0";
+        };
+        set("stat_probation", data.probation);
+        set("stat_tracking", data.tracking);
+        set("stat_failed", data.failed);
+        set("stat_passed", data.passed);
+      })
+      .catch(() => {
+        [
+          "stat_probation",
+          "stat_tracking",
+          "stat_failed",
+          "stat_passed",
+        ].forEach((id) => {
+          const e = document.getElementById(id);
+          if (e) e.textContent = "0";
+        });
+      });
+  })();
 </script>
