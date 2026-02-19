@@ -1,5 +1,5 @@
 
-   .about_main_con {
+.about_main_con {
 	box-sizing: border-box;
 	width: 100%;
 	min-height: 100vh;
@@ -100,7 +100,7 @@
 }
 
 .about_card_title {
-	font-size: 0.95em;
+	/* font-size: 0.95em; */
 	font-weight: bold;
 	text-transform: uppercase;
 
@@ -109,7 +109,8 @@
 }
 
 .about_card_body {
-	font-size: 0.82em;
+	/* font-size: 0.82em; */
+	font-family: 'Gotham Rounded';
 	line-height: 1.6;
 	opacity: 0.8;
 }
@@ -145,7 +146,7 @@
 }
 
 .about_info_title {
-	font-size: 1.15em;
+	/* font-size: 1.15em; */
 	font-weight: bold;
 }
 
