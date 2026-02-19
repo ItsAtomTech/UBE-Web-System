@@ -14,6 +14,11 @@
   --secondary_background: #202d9d;
   --accent_color:#D6BC3D;
   --error_color: #e91e63;
+  /* Extra Colors */
+  --secondary_color_faded1: #ffbe4560;
+  --secondary_color_faded2: #61ff5c60;
+  
+
 }
 
 

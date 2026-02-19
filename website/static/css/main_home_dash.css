@@ -1,2 +1,221 @@
 /* Styles for the the Main Dashboard Fragment */
 
+/* =====================================================
+   Main Home Dashboard Styles
+   Matches extra_tablestyles.css conventions
+   ===================================================== */
+
+.dash_contents_con {
+	box-sizing: border-box;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	font-family: Gotham Rounded, sans-serif;
+}
+
+/* ---- Greeting Banner ---- */
+.dash_greeting_banner {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	padding: 18px 24px;
+	border-radius: 15px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+	min-height: 90px;
+}
+
+.dash_greeting_avatar {
+	width: 65px;
+	height: 65px;
+	border-radius: 50%;
+	overflow: hidden;
+	flex-shrink: 0;
+	background: var(--secondary_background, #3f51b5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.greeting_avatar_img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+.dash_greeting_text {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.dash_greeting_name {
+	font-size: 1.55em;
+	font-weight: bold;
+	line-height: 1.2;
+}
+
+.dash_greeting_meta {
+	font-size: 0.85em;
+	opacity: 0.75;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.meta_sep {
+	opacity: 0.4;
+}
+
+/* ---- Stat Cards Grid ---- */
+.dash_cards_grid {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+}
+
+.dash_stat_card {
+	box-sizing: border-box;
+	border-radius: 12px;
+	padding: 18px 20px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	-webkit-transition: transform 0.2s ease, box-shadow 0.2s ease;
+	min-height: 130px;
+}
+
+.dash_stat_card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.dash_stat_label {
+	font-size: small;
+	font-weight: bold;
+    font-family: 'Gotham Rounded';
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	opacity: 0.85;
+}
+
+.dash_stat_body {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex: 1;
+}
+
+.dash_stat_icon {
+	width: 50px;
+	height: auto;
+    padding: 8px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+    background-color: var(--secondary_color_faded);
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+}
+
+.dash_stat_icon svg {
+	width: 100%;
+	height: 100%;
+}
+
+.dash_stat_icon_warn {
+	color: #e0a020;
+	width: 50px;
+	height: auto;
+    padding: 8px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+    background-color: var(--secondary_color_faded1);
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+}
+
+.dash_stat_icon_warn svg {
+	width: 100%;
+	height: 100%;
+}
+
+.dash_stat_icon_success {
+	color: #3aaa5c;
+	width: 50px;
+	height: auto;
+    padding: 8px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+    background-color: var(--secondary_color_faded2);
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+
+}
+
+.dash_stat_icon_success svg {
+	width: 100%;
+	height: 100%;
+}
+
+.dash_stat_number {
+	font-size: 2.4em;
+	font-weight: bold;
+	line-height: 1;
+}
+
+/* =====================
+   Responsive
+   ===================== */
+@media (max-width: 1000px) {
+	.dash_cards_grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 600px) {
+	.dash_contents_con {
+		padding: 12px;
+		gap: 14px;
+	}
+
+	.dash_cards_grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 10px;
+	}
+
+	.dash_stat_card {
+		min-height: 100px;
+		padding: 14px;
+	}
+
+	.dash_stat_number {
+		font-size: 1.8em;
+	}
+
+	.dash_greeting_name {
+		font-size: 1.15em;
+	}
+
+	.dash_greeting_avatar {
+		width: 48px;
+		height: 48px;
+	}
+}
+
+@media (max-width: 400px) {
+	.dash_cards_grid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}

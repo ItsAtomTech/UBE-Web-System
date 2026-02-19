@@ -15,6 +15,10 @@
   --accent_color:#D6BC3D;
   
   --error_color: #e91e63;
+
+  /* Extra Colors */
+  --secondary_color_faded1: #92671660;
+  --secondary_color_faded2: #1f911b60;
 }
 
 *::-moz-selection {
