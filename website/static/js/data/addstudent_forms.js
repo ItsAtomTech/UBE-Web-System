@@ -2,7 +2,7 @@ let acadStatsForm = {
   forms: [
     {
       type: "header",
-      value: "Add Student",
+      value: "Add On Probation Student",
       label: "",
       fancy: false,
       required: false,
