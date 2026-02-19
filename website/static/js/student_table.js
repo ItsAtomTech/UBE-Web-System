@@ -249,7 +249,7 @@ function tableLoader(data){
 
 function loadAllItems(dataOnly=false){
 	// qBuilder.filters.status = _("status_input").value;
-	// qBuilder.filters.type = _("account_type").value;
+	qBuilder.filters.subject_id = _("subject_input").value;
 	qBuilder.search = _("search_input").value;
 	
 

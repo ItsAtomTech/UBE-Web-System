@@ -20,10 +20,16 @@
 
 
 {% block contents %}
+<!-- Top Tool Bar -->
+
+	<div class="df_titlebar_main_con center third_background_faded primary_color_invert glass">
+		<div class="title_container">
+		
+			<div class="text_banner big"> On Probation Lists</div>					
+		</div>
+	</div>
 	
 <div id="dash_contents" class="primary_color">
-
-
 	{% if current_user.type == 1 %}
 		{% include ('fragments/main_dash.html') %}
 	{% endif %}

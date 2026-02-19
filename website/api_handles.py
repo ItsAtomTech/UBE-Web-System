@@ -139,7 +139,21 @@ def list_students():
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
     )
+    
+    
+    # Filters
+    filters_raw = request.form.get("filters")
+    if filters_raw:
+        try:
+            filters = json.loads(filters_raw)
 
+            if 'subject_id' in filters and filters['subject_id']:
+                query = query.filter(StudentTable.subject_id == filters['subject_id'])
+
+
+        except json.JSONDecodeError:
+            pass
+    
     # Search
     search = request.form.get("search")
     if search:

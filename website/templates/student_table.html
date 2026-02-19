@@ -43,24 +43,24 @@
 		<!-- Search, Filter, and Create Account button -->
 		<div class="search-filter-container">
 			<div class="search_and_select primary_color">
-			<div class="input_class_rounded">  
+			<div class="input_class_rounded primary_color_invert">  
 				<label class="small"> <span class="fa fa-search"> </span> Search: </label>
-				<input class="small use_vkb" id="search_input" type="text" placeholder="Name, Email or Id" onblur="delayedQuerry()" onchange="delayedQuerry()" oninput="delayedQuerry()">
+				<input class="small primary_color_invert" id="search_input" type="text" placeholder="Name, Email or Id" onblur="delayedQuerry()" onchange="delayedQuerry()" oninput="delayedQuerry()">
 			 </div>   
 
 			<!-- To-Do: Add the Filter Tabs here -->
 
 
-			 <!-- <div class="input_class_rounded"> -->
-				<!-- <label class="small"> Account Activation: </label> -->
-				<!-- <select class="small primary_color" oninput="delayedQuerry()" id="status_input"> -->
-					<!-- <option value="" disabled selected>Filter by</option> -->
-					<!-- <option value="" >All</option> -->
-					<!-- <option value="pending" >Pending</option> -->
-					<!-- <option value="confirmed" >Confirmed</option> -->
-
-				<!-- </select> -->
-			<!-- </div> -->
+			 <div class="input_class_rounded">
+				<label class="small primary_color_invert"> Subject: </label>
+				<select class="small primary_color_invert" oninput="delayedQuerry()" id="subject_input">
+					<option value="" disabled selected>Filter by</option>
+					<option value="" >All</option>
+				{% for subj in get_subjects() %}
+					<option class="primary_background primary_color" value="{{ subj.subject_id }}">{{ subj.subject_name }}</option>
+				{% endfor %}
+				</select>
+			</div>
 			
 			
 			
