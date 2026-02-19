@@ -5,7 +5,7 @@
 	<!-- Greeting Banner -->
 	<div class="dash_greeting_banner primary_background">
 		<div class="dash_greeting_avatar">
-			<img src="{{ url_for('static', filename='images/default_avatar.png') }}" alt="User Avatar" class="greeting_avatar_img" onerror="this.style.background='#4a5a9a';this.src='';this.onerror=null;">
+			<img src="{{ url_for('static', filename='images/'+current_user.avatar+'.png') }}" alt="User Avatar" class="greeting_avatar_img" onerror="this.style.background='#4a5a9a';this.src='';this.onerror=null;">
 		</div>
 		<div class="dash_greeting_text">
 			<div class="dash_greeting_name primary_color">Morning, {{ user.name if user.name else user.username }}</div>
