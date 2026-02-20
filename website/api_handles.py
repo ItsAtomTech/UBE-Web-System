@@ -223,6 +223,115 @@ def list_students():
         }
     }
 
+
+
+
+@api_handles.route('/tracking_list', methods=['POST', 'GET'])
+@login_required
+def tracking_list():
+    try:
+        current_page = int(request.form.get("page") or 1)
+    except ValueError:
+        current_page = 1
+
+    per_page = 40
+
+    query = db.session.query(
+        StudentTable,
+        SubjectCode.subject_name,
+        Users.username.label("instructor_name")
+    ).join(
+        SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
+    ).join(
+        Users, StudentTable.instructor_id == Users.user_id
+    ).filter(
+        StudentTable.instructor_id == current_user.user_id
+    )
+    
+    
+    # Filters
+    filters_raw = request.form.get("filters")
+    if filters_raw:
+        try:
+            filters = json.loads(filters_raw)
+
+            if 'subject_id' in filters and filters['subject_id']:
+                query = query.filter(StudentTable.subject_id == filters['subject_id'])
+
+
+        except json.JSONDecodeError:
+            pass
+    
+    # Search
+    search = request.form.get("search")
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            db.or_(
+                StudentTable.student_name.ilike(search_term),
+                SubjectCode.subject_name.ilike(search_term),
+                Users.username.ilike(search_term),
+                StudentTable.status.ilike(search_term)
+            )
+        )
+
+    # Sorting
+    sortby = request.form.get("sort")
+    order = request.form.get("order_by", "asc").lower()
+
+    sortable_columns = {
+        "student_name": StudentTable.student_name,
+        "student_number": StudentTable.student_number,
+        "subject_name": SubjectCode.subject_name,
+        "instructor_name": Users.username,
+        "status": StudentTable.status,
+        "date": StudentTable.date
+    }
+
+    if sortby in sortable_columns:
+        sort_column = sortable_columns[sortby]
+        if order == "desc":
+            query = query.order_by(desc(sort_column))
+        else:
+            query = query.order_by(asc(sort_column))
+    else:
+        query = query.order_by(StudentTable.student_id.asc())
+
+    # Pagination
+    pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
+
+    results = pagination.items
+    total_pages = pagination.pages
+    total_results = pagination.total
+
+    student_list = []
+
+    for student, subject_name, instructor_name in results:
+        student_list.append({
+            "student_id": student.student_id,
+            "student_name": student.student_name,
+            "student_number": student.student_number,
+            "subject_id": student.subject_id,
+            "subject_name": subject_name,
+            "instructor_id": student.instructor_id,
+            "instructor_name": instructor_name,
+            "progress": student.progress,
+            "status": student.status,
+            "reason": student.reason,
+            "date": student.date.isoformat() if student.date else None
+        })
+
+    return {
+        "type": "success",
+        "students": student_list,
+        "pagination_data": {
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "total_results": total_results
+        }
+    }
+
+
 # ================================
 # Student Table End
 # ================================
