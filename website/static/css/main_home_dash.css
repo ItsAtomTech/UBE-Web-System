@@ -22,8 +22,56 @@
 	padding: 18px 24px;
 	border-radius: 15px;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+	
+	background-color:rgba(30,30,30,0.2);
+	background-image:url('../images/day_v1.png');
+		background-color:rgba(30,30,30,0.2);
+	background-size:cover;
+	
+	background-position: center center; /* or just center */
+    background-repeat: no-repeat;
+	position:relative;
+	overflow:hidden;
+	-webkit-transition:2s;
+	transition:2s;
 	min-height: 90px;
 }
+
+
+
+.dash_greeting_banner.afternoon {
+		background-image:url('../images/afternoon_v1.png');
+}
+
+
+
+.dash_greeting_banner.evening {
+		background-image:url('../images/night_v1.png');
+}
+
+
+.dash_greeting_banner > .bg_banner{
+	
+	position:absolute;
+	width:100%;
+	left:0px;
+	height:100%;
+	background:rgba(20,20,20, 0.04);
+	z-index:1;
+	
+}
+
+
+
+
+
+
+/* ---- Greeting Banner End ---- */
+
+
+
+
+
 
 .dash_greeting_avatar {
 	width: 65px;
@@ -31,10 +79,11 @@
 	border-radius: 50%;
 	overflow: hidden;
 	flex-shrink: 0;
-	background: var(--secondary_background, #3f51b5);
+	/* background: var(--secondary_background, #3f51b5); */
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	z-index:2;
 }
 
 .greeting_avatar_img {
@@ -48,6 +97,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
+	z-index:2;
 }
 
 .dash_greeting_name {
