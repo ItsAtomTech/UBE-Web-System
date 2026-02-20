@@ -2,7 +2,6 @@
 
 /* =====================================================
    Main Home Dashboard Styles
-   Matches extra_tablestyles.css conventions
    ===================================================== */
 
 .dash_contents_con {
@@ -175,9 +174,16 @@
 	line-height: 1;
 }
 
-/* =====================
-   Responsive
-   ===================== */
+
+
+
+#hide_from_view{
+	display:none;
+}
+
+
+
+
 @media (max-width: 1000px) {
 	.dash_cards_grid {
 		grid-template-columns: repeat(2, 1fr);

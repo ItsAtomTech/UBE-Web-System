@@ -228,6 +228,20 @@ select > option{
   display: none !important;
 }
 
+
+.hide_from_view{
+	  display: none !important;
+}
+
+
+#dash_title_top{
+	/* left:-10px; */
+	z-index:5;
+	
+}
+
+
+
 .close_modal_rev{
 	position:fixed;
 	top:0;
