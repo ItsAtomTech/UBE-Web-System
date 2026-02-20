@@ -169,10 +169,12 @@
 	border-radius:10px;
 	max-height:200px;
 	overflow:auto;
-	overflow-y:scroll;
+	overflow-y:auto;
 	box-shadow:0px 0px 4px 1px rgba(0,0,0,0.1);
 	scrollbar-width:1px;
 }
+
+
 
 .main_table_container > table{
 	width:100%;

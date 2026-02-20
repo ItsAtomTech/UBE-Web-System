@@ -88,12 +88,12 @@ def add_student_editor():
 
 
 # =======================
-# Student Section Section
+# Student Listing Section
 # =======================
 @views.route('/student_table', methods=['GET', 'POST'])
 @login_required
-def user_tables():
-    page = 'users'
+def student_tables():
+    page = 'onprob'
     if current_user.status != 'confirmed':
         return redirect(url_for('user_control.show_profile'))
 
@@ -102,11 +102,23 @@ def user_tables():
 
 
 
+@views.route('/track_student_table', methods=['GET', 'POST'])
+@login_required
+def tracking_student():
+    page = 'tracking'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("student_tracking_table.html", user=current_user, page=page)
+
+
+
+
 
 
 
 # =======================
-# Student Section End
+# Student Listing Section End
 # =======================
 
 
