@@ -76,6 +76,14 @@ def add_student_editor():
     page = 'add_student'
 
     return render_template("add_student_form.html", user=current_user, page=page)
+    
+    
+@views.route('/update_student_editor', methods=['GET', 'POST'])
+@login_required
+def update_student_editor():
+    page = 'edit_student'
+
+    return render_template("add_student_form.html", user=current_user, page=page)
 
 # =======================
 # Forms Section End

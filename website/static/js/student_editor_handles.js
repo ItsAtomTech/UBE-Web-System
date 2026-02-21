@@ -18,8 +18,8 @@ function saveStudent(){
 	//for updating
 	if(pageType == "edit_student"){
 		let custom_params = {
-		"name": "user_id",
-		"value": userID,
+		"name": "student_id",
+		"value": getparam('id'),
 		}
 		
 		params.push(custom_params);
@@ -43,7 +43,7 @@ function saveStudent(){
 function feedBackSaving(){
 	let res_data = (JSON.parse(event.target.responseText));
 	createDialogue("info", res_data.message);
-	if(res_data.type == "success" && pageType != "edit_user"){
+	if(res_data.type == "success" && pageType != "edit_student"){
 		window.setTimeout(close, 1000);
 	}
 	function close(){
@@ -101,11 +101,13 @@ loadInstructorsData();
 function loadForEdit(){
 	let params = [
 		{
-		"name": "user_id",
+		"name": "student_id",
 		"data": getparam('id'),
 		}
 	];
-	qBuilder.sendQuery(loadIntoForms,"get_user_by_id", params);
+	qBuilder.sendQuery(loadIntoForms,"get_student_by_id", params);
+	
+	_("_0").value = "Update On Probation Student";
 	
 }
 
@@ -113,14 +115,16 @@ let userID = undefined;
 function loadIntoForms(){
 	let setdata = JSON.parse(event.target.responseText);
 	
+	console.log(setdata);
+	
 	if(setdata.type != "success"){
 		return;
 	}
 	
-	userID = getparam('id');
+	userID = current_user_id;
 	
 	loadEvents();	
-	let datajs = setdata.user;
+	let datajs = setdata.student;
 	
 	    for (let key in datajs) {
         if (datajs.hasOwnProperty(key)) {
@@ -142,7 +146,7 @@ function loadIntoForms(){
 }
 
 
-if(pageType == "edit_user"){
+if(pageType == "edit_student"){
 	loadForEdit();
 }
 

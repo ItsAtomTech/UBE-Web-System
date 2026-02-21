@@ -41,7 +41,7 @@ let acadStatsForm = {
       row_span: null,
       col_span: null,
       span_column: false,
-      id: "student_id",
+      id: "student_number",
       index: 2,
     },
     {

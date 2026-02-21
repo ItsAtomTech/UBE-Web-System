@@ -141,7 +141,7 @@ function tableLoader(data){
 				
 			//check columns
 		let table_check = make("td");
-			table_check.innerHTML = '<input class="check_input" row_selector  type="checkbox" data_id="'+data.user_id+'" form_id="'+data.form_data_form_id+'" onclick="selectHandle(this)" title="Select This Entry"/>';
+			table_check.innerHTML = '<input class="check_input" row_selector  type="checkbox" data_id="'+data.student_id+'" form_id="'+data.student_id+'" onclick="selectHandle(this)" title="Select This Entry"/>';
 			table_check.className = "sticky_column_left primary_background_darker check_cols";
 			headTr.appendChild(table_check);
 		
@@ -193,27 +193,28 @@ function tableLoader(data){
 							
 				let edit_action = make("div");
 					edit_action.classList.add("fa","fa-edit","flexed","df_button_flat","df_small","medium","modify","buttonize");
-					edit_action.setAttribute("onclick",'loadItemToEdit("'+forms[index].user_id+'")');
+					edit_action.setAttribute("onclick",'loadItemToEdit("'+forms[index].student_id+'")');
 				
 					
-					action_div.appendChild(edit_action);
+					if(forms[index].status == "") action_div.appendChild(edit_action);
 					
 					
 			if(pageType == "trash"){
 				
 				let remove_action = make("div");
 					remove_action.classList.add("fa","fa-refresh","flexed","df_button_flat","df_small","medium","remove", "buttonize");
-					remove_action.setAttribute("onclick","restoreItemHelper('"+forms[index].user_id+"')");
+					remove_action.setAttribute("onclick","restoreItemHelper('"+forms[index].student_id+"')");
 					remove_action.setAttribute("title","Restore to Items Table");
 					
-					action_div.appendChild(remove_action);
+					if(forms[index].status == "") action_div.appendChild(remove_action);
 					
 			}else{
 				
 				let remove_action = make("div");
 					remove_action.classList.add("fa","fa-trash","flexed","df_button_flat","df_small","medium","remove", "buttonize");
-					remove_action.setAttribute("onclick","moveToTrashHelper('"+forms[index].user_id+"')");
-					action_div.appendChild(remove_action);
+					remove_action.setAttribute("onclick","moveToTrashHelper('"+forms[index].student_id+"')");
+					
+					if(forms[index].status == "") action_div.appendChild(remove_action);
 					
 			}
 					
@@ -358,9 +359,9 @@ function clearAll(el){
 
 function loadItemToEdit(id){
 	if(inIframe()){
-		postMessageToParent('openModal:{"link":"update_user_editor?id='+id+'","custom_class":"no_close_button,blurred"}');
+		postMessageToParent('openModal:{"link":"update_student_editor?id='+id+'","custom_class":"no_close_button,blurred"}');
 	}else{
-		open_modal('update_user_editor?id='+id,'no_close_button,blurred');
+		open_modal('update_student_editor?id='+id,'no_close_button,blurred');
 	}
 	
 
@@ -440,15 +441,15 @@ function feedBackRemoving(){
 	createDialogue(res_data.type, res_data.message);
 	
 	if(res_data.type == "success"){
-		localStorage.setItem("shouldReloadUsers","true");
+		localStorage.setItem("shouldReloadStudents","true");
 	}	
 }
 
 function silentlyMovetoRemove(ids){
 	
 	
-	let itemvalue = [{"name":"user_id", "value": ids}];
-	qBuilder.sendQuery(doNothing,"/remove_user",itemvalue);
+	let itemvalue = [{"name":"student_id", "value": ids}];
+	qBuilder.sendQuery(doNothing,"/remove_student_record",itemvalue);
 }
 
 function silentlyDeleteItem(ids){
@@ -468,15 +469,15 @@ function silentlyRestoreItem(ids){
 
 function moveToTrash(confirmed = undefined,silent=false){
 	if(confirmed == undefined){
-		askUser("Are you sure to Remove this user?",moveToTrash,arguments);
+		askUser("Are you sure to Remove this item?",moveToTrash,arguments);
 		return;
 	}
 	destroy_dia();
 	if(confirmed == 'fail'){
 		return;
 	}
-	let itemvalue = [{"name":"user_id", "value": idSelected}];
-	qBuilder.sendQuery(feedBackRemoving,"/remove_user",itemvalue);
+	let itemvalue = [{"name":"student_id", "value": idSelected}];
+	qBuilder.sendQuery(feedBackRemoving,"/remove_student_record",itemvalue);
 }
 
 
@@ -507,7 +508,7 @@ function moveToTrashMulti(confirmed = undefined){
 	
 	let table_data = _("data_generative").getElementsByClassName("check_input");
 	
-	showToast("Removing Selected Users ...");
+	showToast("Removing Selected Items ...");
 	
 	for(each of table_data){
 		if(each.checked){
@@ -579,7 +580,7 @@ function parseStatus(data){
 
 
 function doNothing(){
-	localStorage.setItem("shouldReloadUsers","true");
+	localStorage.setItem("shouldReloadStudents","true");
 }
 
 //Check Functions ===

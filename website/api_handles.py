@@ -83,7 +83,7 @@ def save_student():
         data = json.loads(student_data)
 
         student_name = data.get("student_name")
-        student_number = data.get("student_id")
+        student_number = data.get("student_number")
         subject_id = data.get("subject_id")
         instructor_id = data.get("instructor_id")
 
@@ -111,8 +111,121 @@ def save_student():
 
 
 
+
+@api_handles.route('/get_student_by_id', methods=['POST'])
+@login_required
+def get_student_by_id():
+
+    try:
+        student_id = request.form.get("student_id")
+
+        if not student_id:
+            return {"type": "error", "message": "Missing student_id"}
+
+        student = StudentTable.query.get(int(student_id))
+        if not student:
+            return {"type": "error", "message": "Student not found"}
+
+        student_data = {
+            "student_id": student.student_id,
+            "subject_id": student.subject_id,
+            "user_id": student.user_id,
+            "instructor_id": student.instructor_id,
+            "student_name": student.student_name,
+            "student_number": student.student_number,
+            "progress": student.progress,
+            "status": student.status,
+            "reason": student.reason,
+            "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
+        }
+
+        return {"type": "success", "student": student_data}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route('/save_student_update', methods=['POST'])
+@login_required
+def save_student_update():
+
+    try:
+        student_data = request.form.get("student_data")
+        if not student_data:
+            return {"type": "error", "message": "Missing student data"}
+
+        data = json.loads(student_data)
+
+        student_id = request.form.get("student_id")
+        if not student_id:
+            return {"type": "error", "message": "Missing student_id"}
+
+        student = StudentTable.query.get(int(student_id))
+        if not student:
+            return {"type": "error", "message": "Student not found"}
+
+        # Check ownership
+        if student.user_id != current_user.user_id:
+            return {"type": "error", "message": "You do not have permission to modify this record"}
+
+        # Only allow update if status is 'none'
+        if student.status != "" :
+            return {"type": "error", "message": "This student record can no longer be modified"}
+
+        # Update allowed fields
+        if data.get("student_number") is not None:
+            student.student_number = data["student_number"]
+
+        if data.get("student_name"):
+            student.student_name = data["student_name"]
+
+        if data.get("instructor_id"):
+            student.instructor_id = data["instructor_id"]
+
+        if data.get("subject_id"):
+            student.subject_id = data["subject_id"]
+
+        db.session.commit()
+
+        return {"type": "success", "message": "Student updated successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+@api_handles.route('/remove_student_record', methods=['POST'])
+@login_required
+def remove_student_record():
+
+    try:
+        student_id = request.form.get("student_id")
+        if not student_id:
+            return {"type": "error", "message": "Missing student_id"}
+
+        student = StudentTable.query.get(int(student_id))
+        if not student:
+            return {"type": "error", "message": "Student not found"}
+
+        # Check ownership
+        if student.user_id != current_user.user_id:
+            return {"type": "error", "message": "You do not have permission to remove this record"}
+
+        # Allow removal only if status is empty or None
+        if student.status not in (None, ""):
+            return {"type": "error", "message": "This student record cannot be removed"}
+
+        db.session.delete(student)
+        db.session.commit()
+
+        return {"type": "success", "message": "Student record removed successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
 # ================================
-# User Forms API
+# User Forms API End
 # ================================
 
 
