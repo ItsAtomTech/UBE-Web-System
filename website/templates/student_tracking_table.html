@@ -1,9 +1,10 @@
 {% extends "base_headless.html" %}
 
-{% block title%}  Student Tracking {% endblock %}
+{% block title%} Student Tracking {% endblock %}
 
 {% block extra_css %}
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_formeditor.css') }}">
 
 <link id='' rel="stylesheet" href="{{ url_for('static', filename='css/table_page.css') }}">
 
@@ -16,7 +17,10 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/extra_tablestyles.css') }}">
 
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashstyles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_fancylabel.css') }}">
+
+
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/dashstyles.css') }}"> -->
 
 
 
@@ -162,6 +166,8 @@
 
 
 
+{% include "fragments/update_status_modal.html" %}
+
 
 <script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
 <script src="{{ url_for('static', filename='js/foreignKeys.js') }}"></script>
@@ -196,7 +202,18 @@ if(pageType == "trash"){
 
 <script src="{{ url_for('static', filename='js/tracking_student_table.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+
+
+<script>
+//Dummy
+showModalContent('update_stat_1');
+
+</script>
+
+
 
 {% endblock %}
 

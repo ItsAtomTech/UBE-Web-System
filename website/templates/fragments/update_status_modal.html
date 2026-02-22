@@ -1,0 +1,58 @@
+<div class="modal_main_backdrop" id="update_stat_1" inert > 
+	<div class="modal_container_box">
+		<!-- Modal Header -->
+		<div class="top_header">
+			<div class="title_form_top"> Update Status </div>
+			<div class="close_modal_tright" tabindex='1' onclick="closeModalContent('update_stat_1')"> &times; </div>
+		</div>
+		
+		<!-- Modal Contents Container -->
+
+		<div class="option_main_container">
+			<!-- <div class="medium bold" tag="item_name"> </div> -->
+			<br />
+			
+			<div class="normal info_items"> <span class="fa fa-user"> </span> Student Name: <span class="bold" tag="student_name">  Name here </span></div>
+			<div class="normal info_items"><span class="fa fa-id-card">  </span> ID Number: <span class="bold" tag="student_number"> ###### </span></div>
+						
+			<div class="normal info_items"><span class="fa fa-book">  </span> Subject :  <span class="bold" tag="subject"> SUBJECT Here </span></div>
+			
+			
+			<div class="cols_con_ padded_input"><label class="df_label_con required_style_label placeholder_label" for="status_option">Status</label>
+				<select id="status_option" value="" required="" class="fancy_form_df form_display">
+
+					<option value=""> </option>
+					<option value="1"> Option </option>
+
+
+				</select>
+			</div>	
+
+			
+			<div class="cols_con_ full_width padded_input"><label class="df_label_con required_style_label placeholder_label" for="reason_input">Select Reason</label>
+				<select id="reason_input" value="" required="" class="fancy_form_df form_display">
+
+					<option value=""> </option>
+					<option value="1"> Option </option>
+
+
+				</select>
+			</div>
+
+		
+
+				
+			
+		</div>
+		
+		<div class="option_main_container_buttons">
+			<button class="df_button secondary_background primary_color_invert small" onclick="updateItemStatus()"> <span class="fa fa-check"> </span> Update </button>
+			
+			
+			<button class="df_button_flat primary_background_darker primary_color small" onclick="closeModalContent('update_stat_1')"> <span class="fa fa-close"> </span> Close </button>
+		</div>
+	
+
+
+	</div>
+</div>

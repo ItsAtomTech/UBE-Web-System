@@ -409,14 +409,6 @@ th.sortable::after {
 /* Extra from Profiling Table */
 /* =========================== */
 
-.search_button_r{
-	width:50px;
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	max-height:30px;
-}
-
 
 .padded_colms > td {
 	font-family:Poppins;
@@ -449,28 +441,6 @@ th.sortable::after {
 }
 
 
-
-.details_view_main_con{
-	width:100%;
-	height:auto;
-	background-color:rgba(0,0,0,0.2);
-	border:solid transparent 1px;	
-	position:fixed;
-	display:flex;
-	align-items:flex-start;
-	justify-content:center;
-	z-index:99;
-	top:0px;
-	left:0px;
-	right:0px;
-	opacity:0;
-	pointer-events:none;
-	visibility:hidden;
-	-webkit-transition:0.2s;
-	transition:0.2s;
-}
-
-
 .details_view_main_con.show{
 	opacity:1;
 	pointer-events:initial;
@@ -479,131 +449,17 @@ th.sortable::after {
 }
 
 
-.docu_main{
-	width:100%;
-	max-width:800px;
-	min-height:300px;
-	max-height:100vmin;
-	border-radius:10px;
-	position:relative;
-	padding:10px;
-	background:var(--primary_background);
-	padding-top:20px;
-}
 
 
-.docu_main>.close_button{
-	position:absolute;
-	top:10px;
-	right:10px;
-	line-height:15px;
-	cursor:pointer;
-	z-index:100;
-}
-
-
-.docu_main>.docview{
-	max-height:100vmin;
-	width:100%;
-	/* border:solid red 1px; */
-	min-height:200px;
-	overflow-y:auto;
-	padding-bottom:100px;
-}
-
-.docview > .doc_entry{
-	padding:5px;
-	border-bottom:1px solid rgba(45,45,45,0.2);
-	padding-top:8px;
-	padding-left:10px;
-}
-
-
-.docview > .doc_header{
-	padding:5px;
-	text-align:center;
-	font-weight:bold;
-	padding-bottom:20px;
-	border-bottom:1px solid rgba(45,45,45,0.2);
-	background-color:var(--primary_background);
-	position:sticky;
-	top:0px;
-	box-shadow:0px 2px 2px -2px rgba(56,56,56,0.2);
-}
-
-
-/* Others */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    background:  var(--primary_background);
-    list-style: none;
-    padding: 0;
-    margin: 120px 5px 0 0;
-    border: 1px solid #ccc;
-    z-index: 100;
-}
-
-.dropdown-menu li {
-    /* padding: 0px 12px; */
-}
-
-.dropdown-menu li a {
-    text-decoration: none;
-    color:  var(--primary_color);
-    display: block;
-	padding-top:10px;
-	padding-bottom:10px;
-	padding-left:5px;
-	padding-right:5px;
-}
-
-.dropdown-menu li a:hover {
-    background-color: var(--secondary_background);
-    color: var(--primary_color_invert);
-}
-
-.dropdown-toggle {
-    cursor: pointer;
-}
 
 .show {
     display: block;
 }
 
-.template_container_land {
-    width: 25cm;
-    min-height: 21cm;
-    padding: 1cm 0.5cm 1cm;
-    margin: 0.5cm auto;
-    border: 1px #D3D3D3 solid;
-    border-radius: 5px;
-    background: white;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
-    color: #000000;
-    margin-bottom: 30px;
-    font-size: 11px;
-    line-height: 24px;
-    font-family: "Nunito Sans", Verdana, Helvetica, sans-serif;
-}
-table {
-	width: 100%;
-}
 
 /* Status Colors */
 
-.review_color{
-	color:#FFB800;
-}
 
-.progress_color{
-	color:#008080;
-}
-
-.declined_color{
-	color:#e55757;
-}
 
 .modal_main_backdrop{
 		display:flex;
@@ -641,7 +497,47 @@ table {
 }
 
 
-/* Resposiveness Media Queries */
+
+/* Add a Fancy On Focus Style on the form and other styles */
+
+
+
+
+.fancy_form_df{
+	-webkit-transition:0.2s;
+	transition:0.2s;	
+}
+
+.form_display:not(.header_input){
+	border-radius:10px !important;
+	min-height:45px !important;
+}
+
+
+.fancy_form_df:focus{
+	border:solid var(--secondary_color) 1px !important;
+	box-shadow:0 0 0 4px var(--secondary_color_faded);
+	background:var(--primary_background);
+	
+}
+
+
+.padded_input >label{
+	top:12px !important;
+	
+}
+
+.padded_input {
+	margin-top:10px;
+}
+
+.option_main_container{
+	padding:10px;
+	
+}
+
+
+
 
 @media (max-width:600px){
 	.top_toolbar_con {

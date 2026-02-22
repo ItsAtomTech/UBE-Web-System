@@ -436,6 +436,16 @@ select > option{
 	padding:5px;
 }
 
+
+
+.option_main_container > .info_items{
+	padding:5px;
+	
+	
+}
+
+
+
 .count_input{
 	border:none;
 	outline:none;
