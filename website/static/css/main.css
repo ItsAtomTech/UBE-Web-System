@@ -304,6 +304,13 @@ select > option{
 	
 }
 
+
+.close_modal_rev:hover{
+	cursor:pointer;
+	-webkit-filter:brightness(1.3);
+	filter:brightness(1.3);
+}
+
 #general_container{
 	animation:zoomInWithCircle 0.3s ease-out forwards;
 	-webkit-animation:zoomInWithCircle 0.3s ease-out forwards;

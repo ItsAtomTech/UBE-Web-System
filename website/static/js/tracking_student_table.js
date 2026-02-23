@@ -6,7 +6,7 @@ let tableFormat = [
 	{	
 		label: "ID",
 		data_path: "student_id",
-		sort: true,
+		sort: false,
 		// parser:parseBranch,
 		
 	},	
@@ -49,7 +49,7 @@ let tableFormat = [
 		label: "Date",
 		data_path: "date",
 		sort: true,
-		pareser: dateFormater,
+		parser: utility.formatDate,
 		
 	},
 
@@ -207,7 +207,7 @@ function tableLoader(data){
 							
 				let edit_action = make("div");
 					edit_action.classList.add("fa","fa-edit","flexed","df_button_flat","df_small","medium","modify","buttonize");
-					edit_action.setAttribute("onclick",'loadItemToEdit("'+forms[index].user_id+'")');
+					edit_action.setAttribute("onclick",'loadItemToEdit("'+forms[index].student_id+'")');
 				
 					
 					action_div.appendChild(edit_action);
@@ -368,16 +368,64 @@ function clearAll(el){
 	
 }
 
-//Create User - 
+//Open Edit View/Modal - 
 
 function loadItemToEdit(id){
-	if(inIframe()){
-		postMessageToParent('openModal:{"link":"update_user_editor?id='+id+'","custom_class":"no_close_button,blurred"}');
-	}else{
-		open_modal('update_user_editor?id='+id,'no_close_button,blurred');
-	}
 	
+	let student_id = parseInt(id);	
+	let params = [{"name":"student_id", "value": student_id}];
+	
+	qBuilder.sendQuery(openModal,"/get_student_by_id",params);
+	
+	
+	//To-Do: Load the Data into the edit Modal
+	
+	function openModal(data){
+		
+		let res_data = (JSON.parse(data.responseText));
+			
+		if(res_data.type == "success"){
+			
+			console.log(res_data.student);
+			showModalContent('update_stat_1');
+			
+			res_data = res_data.student;
+			
+			
+			tag('student_name',_('update_stat_1'))[0].innerText = res_data.student_name;
+			
+			tag('student_number',_('update_stat_1'))[0].innerText = res_data.student_number;	
+			
+			
+			let subject_obj = findById(subjects, res_data.subject_id);
+			
+			tag('subject',_('update_stat_1'))[0].innerText = subject_obj.subject;
+			
+			tag('date',_('update_stat_1'))[0].innerText = utility.formatDate(res_data.date);
+			
+			
+			
+			
+			_("progress_option").value = res_data.progress;
+			_("status_input").value = res_data.status;
+			_("reason_input").value = res_data.reason;
+			
+			
+			
+			
+			
+			
+			
+		}else{
+			createDialogue("error", res_data.message);
+		}
+		
+		
 
+		
+		
+		
+	}
 }
 
 

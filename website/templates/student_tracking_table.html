@@ -177,7 +177,7 @@ qBuilder.server_address = "tracking_list";
 current_role = "admin";
 //qBuilder.filters.status = "active";
 let pageType = "{{ page }}";
-
+let subjects = [];
 
 let selectTypes = [];
 
@@ -189,6 +189,23 @@ if(pageType == "trash"){
 	selectTypes = ["trash"];
 }
 
+
+
+
+function findById(arr, id) {
+    return arr.find(item => item.id == id) || null;
+}
+
+
+
+{% for subj in get_subjects() %}
+	subjects.push(
+		{
+			"id":"{{ subj.subject_id }}",
+			"subject": "{{ subj.subject_name }}",
+		}
+	);
+{% endfor %}
 
 
 
@@ -208,8 +225,20 @@ if(pageType == "trash"){
 
 
 <script>
-//Dummy
-showModalContent('update_stat_1');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 

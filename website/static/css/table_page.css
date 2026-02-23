@@ -537,6 +537,11 @@ th.sortable::after {
 }
 
 
+.padded_gap{
+	gap:10px;
+	
+}
+
 
 
 @media (max-width:600px){
