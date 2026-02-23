@@ -466,7 +466,7 @@ def update_student_status():
             return {"type": "error", "message": "Student not found"}
 
         # Ownership check
-        if student.user_id != current_user.user_id:
+        if student.instructor_id != current_user.user_id:
             return {"type": "error", "message": "You do not have permission to update this record"}
 
         # Update fields if provided
