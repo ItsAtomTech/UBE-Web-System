@@ -570,10 +570,14 @@ function categoryParse(id){
 
 //parsing status data 
 function parseStatus(data){
-	
-	if(status == ""){
+
+	if(data == ""){
 		return "None"
 	};
+	
+	
+	
+	return data;
 }
 
 

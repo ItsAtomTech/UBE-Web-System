@@ -378,20 +378,18 @@ function loadItemToEdit(id){
 	qBuilder.sendQuery(openModal,"/get_student_by_id",params);
 	
 	
-	//To-Do: Load the Data into the edit Modal
-	
 	function openModal(data){
 		
 		let res_data = (JSON.parse(data.responseText));
 			
 		if(res_data.type == "success"){
 			
-			console.log(res_data.student);
+			// console.log(res_data.student);
 			showModalContent('update_stat_1');
 			
 			res_data = res_data.student;
 			
-			
+			selectedItemId = student_id;
 			tag('student_name',_('update_stat_1'))[0].innerText = res_data.student_name;
 			
 			tag('student_number',_('update_stat_1'))[0].innerText = res_data.student_number;	
@@ -402,32 +400,53 @@ function loadItemToEdit(id){
 			tag('subject',_('update_stat_1'))[0].innerText = subject_obj.subject;
 			
 			tag('date',_('update_stat_1'))[0].innerText = utility.formatDate(res_data.date);
-			
-			
-			
-			
+					
 			_("progress_option").value = res_data.progress;
 			_("status_input").value = res_data.status;
 			_("reason_input").value = res_data.reason;
+					
+					
 			
-			
-			
-			
-			
+			addFancyPlaceholder();
 			
 			
 		}else{
 			createDialogue("error", res_data.message);
 		}
-		
-		
-
-		
-		
-		
 	}
 }
 
+
+function updateItemStatus(){
+	
+	
+	let params = [{
+		"name": "student_id",
+		"value": selectedItemId,
+	},
+	{
+		"name": "progress",
+		"value": _("progress_option").value,
+	},
+	{
+		"name": "status",
+		"value": _("status_input").value,
+	},
+	{
+		"name": "reason",
+		"value": _("reason_input").value,
+		
+		
+	}];
+	
+	
+	
+	qBuilder.sendQuery(itemNotifyUpdate,"update_student_status",params);
+	localStorage.setItem("shouldReloadStudents","true");
+	
+	
+	
+}
 
 
 function addNewStudent(){
@@ -510,13 +529,13 @@ function silentlyMovetoRemove(ids){
 	
 	
 	let itemvalue = [{"name":"user_id", "value": ids}];
-	qBuilder.sendQuery(doNothing,"/remove_user",itemvalue);
+	// qBuilder.sendQuery(doNothing,"/remove_user",itemvalue);
 }
 
 function silentlyDeleteItem(ids){
 	
 	let itemvalue = [{"name":"item_id", "value": ids}];
-	qBuilder.sendQuery(doNothing,"/remove_user_permanent",itemvalue);
+	// qBuilder.sendQuery(doNothing,"/remove_user_permanent",itemvalue);
 }
 
 function silentlyRestoreItem(ids){
@@ -524,36 +543,12 @@ function silentlyRestoreItem(ids){
 	console.log(ids);
 	
 	let itemvalue = [{"name":"item_id", "value": ids}];
-	qBuilder.sendQuery(doNothing,"/restore_item",itemvalue);
+	// qBuilder.sendQuery(doNothing,"/restore_item",itemvalue);
 }
 
 
-function moveToTrash(confirmed = undefined,silent=false){
-	if(confirmed == undefined){
-		askUser("Are you sure to Remove this user?",moveToTrash,arguments);
-		return;
-	}
-	destroy_dia();
-	if(confirmed == 'fail'){
-		return;
-	}
-	let itemvalue = [{"name":"user_id", "value": idSelected}];
-	qBuilder.sendQuery(feedBackRemoving,"/remove_user",itemvalue);
-}
 
 
-function restoreItem(confirmed = undefined,silent=false){
-	if(confirmed == undefined){
-		askUser("Are you sure to restore this item?",restoreItem,arguments);
-		return;
-	}
-	destroy_dia();
-	if(confirmed == 'fail'){
-		return;
-	}
-	let itemvalue = [{"name":"item_id", "value": idSelected}];
-	qBuilder.sendQuery(feedBackRemoving,"/restore_item",itemvalue);
-}
 
 
 function moveToTrashMulti(confirmed = undefined){
@@ -578,49 +573,6 @@ function moveToTrashMulti(confirmed = undefined){
 	}
 }
 
-function removePermanentItemMulti(confirmed = undefined){
-	if(confirmed == undefined){
-		askUser("Are you sure to delete selected items from Trash?",removePermanentItemMulti,arguments);
-		return;
-	}
-	destroy_dia();
-	if(confirmed == 'fail'){
-		return;
-	}
-	
-	
-	let table_data = _("data_generative").getElementsByClassName("check_input");
-	for(each of table_data){
-		if(each.checked){
-			silentlyDeleteItem(each.getAttribute("data_id"));
-		};
-	}
-	
-	showToast("Deleting Items...");
-}
-
-
-function restoreItemMulti(confirmed = undefined){
-	if(confirmed == undefined){
-		askUser("Are you sure to Restore selected items?",restoreItemMulti,arguments);
-		return;
-	}
-	destroy_dia();
-	if(confirmed == 'fail'){
-		return;
-	}
-	
-	
-	let table_data = _("data_generative").getElementsByClassName("check_input");
-	for(each of table_data){
-		if(each.checked){
-			silentlyRestoreItem(each.getAttribute("data_id"));
-		};
-	}
-	
-	loadAllItemProduct();
-	
-}
 
 
 
@@ -631,10 +583,14 @@ function categoryParse(id){
 
 //parsing status data 
 function parseStatus(data){
-	
-	if(status == ""){
+
+	if(data == ""){
 		return "None"
 	};
+	
+	
+	
+	return data;
 }
 
 
@@ -643,6 +599,7 @@ function parseStatus(data){
 function doNothing(){
 	localStorage.setItem("shouldReloadUsers","true");
 }
+
 
 //Check Functions ===
 function selectAllHandle(){
@@ -683,11 +640,6 @@ function toggleSelectOption(visible=false){
 		}
 		
 	}
-	
-	
-
-	
-	
 }
 
 
@@ -703,36 +655,12 @@ function clickedOnRow(){
 	if(!parent_attrib.getAttribute('code_id')){
 		return;
 	};
-	
 
 	
 }
 
 
 let selectedItemId;
-
-
-
-function updateCountItem(op){
-	
-	let params = [{
-		"name": "item_id",
-		"value": selectedItemId,
-	},
-	{
-		"name": "amount",
-		"value": _("item_count").value,
-	},
-	{
-		"name": "operation",
-		"value": op,
-	}];
-	qBuilder.sendQuery(itemNotifyUpdate,"update_item_quantity",params);
-	localStorage.setItem("shouldReload","true");
-}
-
-
-
 function itemNotifyUpdate(data){
 	
 	if(!data.responseText){
@@ -742,7 +670,7 @@ function itemNotifyUpdate(data){
 	data = JSON.parse(data.responseText);
 	
 	showToast(data.message);
-	closeModalContent("modal_1");
+	// closeModalContent("modal_1");
 	
 }
 
