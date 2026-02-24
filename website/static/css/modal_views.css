@@ -84,6 +84,28 @@
 }
 
 
+/* Extra */
 
+select.form_display[readonly] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+	
+	padding:10px;
 
+    pointer-events: none;   /* prevents dropdown */
+    user-select: text;      /* allows text selection */
+}
+
+textarea.form_display[readonly] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+	min-height:250px !important;
+	padding:5px;
+    pointer-events: none;   /* prevents dropdown */
+    user-select: text;      /* allows text selection */
+}
 

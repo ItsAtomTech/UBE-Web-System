@@ -447,6 +447,15 @@ select > option{
 
 .option_main_container > .info_items{
 	padding:5px;
+	padding-top:0px;
+	
+}
+
+
+
+.option_main_container > .info_items > .fa{
+	padding:5px;
+	min-width:30px;
 	
 	
 }

@@ -122,6 +122,15 @@ def tracking_student():
 
 
 
+@views.route('/review_student_table', methods=['GET', 'POST'])
+@login_required
+def review_student_table():
+    page = 'tracking'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("student_review_table.html", user=current_user, page=page)
+
 
 
 

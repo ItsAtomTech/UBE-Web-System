@@ -146,6 +146,50 @@ def get_student_by_id():
 
 
 
+@api_handles.route('/get_student_info_all', methods=['POST'])
+@login_required
+def get_student_info_all():
+    try:
+        student_id = request.form.get("student_id")
+
+        if not student_id:
+            return {"type": "error", "message": "Missing student_id"}
+
+        result = db.session.query(
+            StudentTable,
+            Users.username.label("instructor_name")
+        ).join(
+            Users, StudentTable.instructor_id == Users.user_id
+        ).filter(
+            StudentTable.student_id == int(student_id)
+        ).first()
+
+        if not result:
+            return {"type": "error", "message": "Student not found"}
+
+        student, instructor_name = result
+
+        student_data = {
+            "student_id": student.student_id,
+            "subject_id": student.subject_id,
+            "user_id": student.user_id,
+            "instructor_id": student.instructor_id,
+            "instructor_name": instructor_name,
+            "student_name": student.student_name,
+            "student_number": student.student_number,
+            "progress": student.progress,
+            "status": student.status,
+            "reason": student.reason,
+            "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
+        }
+
+        return {"type": "success", "student": student_data}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
 @api_handles.route('/save_student_update', methods=['POST'])
 @login_required
 def save_student_update():
