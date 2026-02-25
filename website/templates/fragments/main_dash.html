@@ -4,8 +4,7 @@
 />
 
 <div class="dash_contents_con">
-
-	
+  
   <!-- Greeting Banner -->
   <div class="dash_greeting_banner primary_background" id="dash_greeting_banner">
     <div class="dash_greeting_avatar">
@@ -22,8 +21,7 @@
     </div>
     <div class="dash_greeting_text">
       <div class="dash_greeting_name primary_color_invert">
-        <span id="dash_greeting_time">Hello</span>, {{ user.name if user.name
-        else user.username }}
+        <span id="dash_greeting_time">Hello</span>, {{ current_user.username }}
       </div>
       <div class="dash_greeting_meta primary_color_invert">
         <span>Date: <span id="dash_today_date">--/--/----</span></span>
@@ -31,90 +29,80 @@
         <span>Semester: <span id="dash_semester">----</span></span>
       </div>
     </div>
-	
-	
-	<div class="bg_banner"> </div>
-	
-	
+    
+    <div class="bg_banner"></div>
   </div>
 
   <!-- Stat Cards -->
   <div class="dash_cards_grid">
+    <!-- Probation Card -->
     <div class="dash_stat_card primary_background">
       <div class="dash_stat_label primary_color normal">
         Currently on Probation
       </div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon secondary_color">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
           </svg>
         </span>
-        <span class="dash_stat_number primary_color" id="stat_probation"
-          >0</span
-        >
+        <span class="dash_stat_number primary_color" id="stat_probation">
+          <span class="loader-spinner"></span>
+        </span>
       </div>
     </div>
 
+    <!-- Tracking Card -->
     <div class="dash_stat_card primary_background">
       <div class="dash_stat_label primary_color normal">On Tracking</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon secondary_color">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M12 3C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm-1 15v-4H7l5-8v4h4l-5 8z"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3C6.48 3 2 7.48 2 13s4.48 10 10 10 10-4.48 10-10S17.52 3 12 3zm-1 15v-4H7l5-8v4h4l-5 8z"/>
           </svg>
         </span>
-        <span class="dash_stat_number primary_color" id="stat_tracking">0</span>
+        <span class="dash_stat_number primary_color" id="stat_tracking">
+          <span class="loader-spinner"></span>
+        </span>
       </div>
     </div>
 
+    <!-- Failed Card -->
     <div class="dash_stat_card primary_background">
       <div class="dash_stat_label primary_color normal">Total Failed</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon dash_stat_icon_warn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
           </svg>
         </span>
-        <span class="dash_stat_number primary_color" id="stat_failed">0</span>
+        <span class="dash_stat_number primary_color" id="stat_failed">
+          <span class="loader-spinner"></span>
+        </span>
       </div>
     </div>
 
+    <!-- Passed Card -->
     <div class="dash_stat_card primary_background">
       <div class="dash_stat_label primary_color normal">Total Passed</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon dash_stat_icon_success">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
           </svg>
         </span>
-        <span class="dash_stat_number primary_color" id="stat_passed">0</span>
+        <span class="dash_stat_number primary_color" id="stat_passed">
+          <span class="loader-spinner"></span>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+  // ========================================
+  // UPDATE GREETING AND SEMESTER
+  // ========================================
   let updateGreeting = function () {
     const today = new Date();
     const formatted =
@@ -126,71 +114,161 @@
     const el = document.getElementById("dash_today_date");
     if (el) el.textContent = formatted;
 
+    // Dynamic greeting based on time of day
+    const hours = new Date().getHours();
+    let greeting = "Hello";
+    let timeClass = "";
 
+    if (hours >= 5 && hours < 12) {
+      greeting = "Morning";
+      timeClass = "morning";
+    } else if (hours >= 12 && hours < 17) {
+      greeting = "Afternoon";
+      timeClass = "afternoon";
+    } else if (hours >= 17 && hours < 21) {
+      greeting = "Evening";
+      timeClass = "evening";
+    } else {
+      greeting = "Evening";
+      timeClass = "evening";
+    }
 
-	// Dynamic greeting based on time of day
-	const hours = new Date().getHours();
+    const greetingEl = document.getElementById("dash_greeting_time");
+    if (greetingEl) {
+      greetingEl.textContent = greeting;
+    }
 
-	let greeting = "Hello";
-	let timeClass = "";
+    const bannerEl = document.getElementById("dash_greeting_banner");
+    if (bannerEl && timeClass) {
+      bannerEl.classList.remove("morning", "afternoon", "evening", "night");
+      bannerEl.classList.add(timeClass);
+    }
 
-	if (hours >= 5 && hours < 12) {
-		greeting = "Morning";
-		timeClass = "morning";
-	} else if (hours >= 12 && hours < 17) {
-		greeting = "Afternoon";
-		timeClass = "afternoon";
-	} else if (hours >= 17 && hours < 21) {
-		greeting = "Evening";
-		timeClass = "evening";
-	} else {
-		greeting = "Evening";
-		timeClass = "evening";
-	}
-
-	const greetingEl = document.getElementById("dash_greeting_time");
-	if (greetingEl) {
-		greetingEl.textContent = greeting;
-	}
-
-	const bannerEl = document.getElementById("dash_greeting_banner");
-	if (bannerEl && timeClass) {
-		// Remove old time classes (optional but recommended)
-		bannerEl.classList.remove("morning", "afternoon", "evening", "night");
-		bannerEl.classList.add(timeClass);
-	}
-	
-	
-
-    // Dynamic semester calculation (assumes academic year starts in September)
+    // Dynamic semester calculation
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1; // 1-12
+    const currentMonth = today.getMonth() + 1;
     let semesterYear;
     if (currentMonth >= 9) {
-      // September to December: start of academic year
       semesterYear = currentYear + "-" + (currentYear + 1);
     } else {
-      // January to August: continuation of previous academic year
       semesterYear = currentYear - 1 + "-" + currentYear;
     }
     const semesterEl = document.getElementById("dash_semester");
     if (semesterEl) semesterEl.textContent = semesterYear;
-
-
-	 
-	  
   };
-  
-  
-  
+
+  // ========================================
+  // FETCH DASHBOARD STATISTICS FROM DATABASE
+  // ========================================
+  let fetchDashboardStats = async function () {
+    try {
+      const response = await fetch('/dashboard_stats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.type === 'success') {
+        // Update stat numbers with animation
+        updateStatNumber('stat_probation', result.stats.probation);
+        updateStatNumber('stat_tracking', result.stats.tracking);
+        updateStatNumber('stat_failed', result.stats.failed);
+        updateStatNumber('stat_passed', result.stats.passed);
+      } else {
+        console.error('Failed to fetch stats:', result.message);
+        // Show error state
+        document.getElementById('stat_probation').textContent = '--';
+        document.getElementById('stat_tracking').textContent = '--';
+        document.getElementById('stat_failed').textContent = '--';
+        document.getElementById('stat_passed').textContent = '--';
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      // Show error state
+      document.getElementById('stat_probation').textContent = '--';
+      document.getElementById('stat_tracking').textContent = '--';
+      document.getElementById('stat_failed').textContent = '--';
+      document.getElementById('stat_passed').textContent = '--';
+    }
+  };
+
+  // ========================================
+  // ANIMATE NUMBER UPDATES
+  // ========================================
+  function updateStatNumber(elementId, newValue) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const currentValue = parseInt(element.textContent) || 0;
+    
+    if (currentValue === newValue) {
+      element.textContent = newValue;
+      return;
+    }
+
+    // Animate the number change
+    const duration = 500; // milliseconds
+    const steps = 20;
+    const stepValue = (newValue - currentValue) / steps;
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      if (currentStep >= steps) {
+        element.textContent = newValue;
+        clearInterval(interval);
+      } else {
+        const tempValue = Math.round(currentValue + (stepValue * currentStep));
+        element.textContent = tempValue;
+      }
+    }, duration / steps);
+  }
+
+
+  // ========================================
+  // INITIALIZE DASHBOARD
+  // ========================================
   updateGreeting();
-  
+  fetchDashboardStats();
+
+  // Refresh greeting every 5 seconds
   window.setInterval(updateGreeting, 5000);
   
-  
-  
+  // Refresh stats every 30 seconds
+  window.setInterval(fetchDashboardStats, 30000);
 </script>
 
+<style>
+  /* Loader spinner for loading state */
+  .loader-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: currentColor;
+    animation: spin 0.8s linear infinite;
+  }
 
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 
+  /* Make stat cards clickable */
+  .dash_stat_card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
 
+  .dash_stat_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .dash_stat_card:active {
+    transform: translateY(-2px);
+  }
+</style>

@@ -803,13 +803,8 @@ def update_student_status():
             return {"type": "error", "message": "Student not found"}
 
         # Ownership check
-<<<<<<< HEAD
         # if student.user_id != current_user.user_id:
         #     return {"type": "error", "message": "You do not have permission to update this record"}
-=======
-        if student.instructor_id != current_user.user_id:
-            return {"type": "error", "message": "You do not have permission to update this record"}
->>>>>>> 35359e6cd6c35c23e537e1349332e6d141d3784e
 
         # Update fields if provided
         if progress is not None:
@@ -829,6 +824,65 @@ def update_student_status():
         return {"type": "error", "message": str(e)}
 
 
+# ================================
+# Dashboard Statistics
+# ================================
+@api_handles.route('/dashboard_stats', methods=['GET', 'POST'])
+@login_required
+def get_dashboard_stats():
+    try:
+        # Get probation count (students with progress = 'on_probation')
+        probation_count = StudentTable.query.filter_by(progress='on_probation').count()
+        
+        # Get tracking count (students assigned to current instructor with progress = 'currently_taking')
+        tracking_count = StudentTable.query.filter(
+            StudentTable.instructor_id == current_user.user_id,
+            StudentTable.progress == 'currently_taking'
+        ).count()
+        
+        # Get failed count (students with status = 'failed')
+        failed_count = StudentTable.query.filter_by(status='failed').count()
+        
+        # Get passed count (students with status = 'passed')
+        passed_count = StudentTable.query.filter_by(status='passed').count()
+        
+        # Get recent students on probation (last 5)
+        recent_probation = db.session.query(
+            StudentTable.student_name,
+            StudentTable.student_number,
+            SubjectCode.subject_name,
+            StudentTable.date
+        ).join(
+            SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
+        ).filter(
+            StudentTable.progress == 'on_probation'
+        ).order_by(
+            StudentTable.date.desc()
+        ).limit(5).all()
+        
+        recent_probation_list = [
+            {
+                'student_name': r[0],
+                'student_number': r[1],
+                'subject_name': r[2],
+                'date': r[3].isoformat() if r[3] else None
+            }
+            for r in recent_probation
+        ]
+        
+        return {
+            "type": "success",
+            "stats": {
+                "probation": probation_count,
+                "tracking": tracking_count,
+                "failed": failed_count,
+                "passed": passed_count
+            },
+            "recent_probation": recent_probation_list
+        }
+        
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
 
 # ================================
 # Student Table End
