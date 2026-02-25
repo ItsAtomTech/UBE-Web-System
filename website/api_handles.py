@@ -445,6 +445,49 @@ def tracking_list():
     }
 
 
+
+# Updating the Status of Student Entry
+
+@api_handles.route('/update_student_status', methods=['POST'])
+@login_required
+def update_student_status():
+
+    try:
+        student_id = request.form.get("student_id")
+        progress = request.form.get("progress")
+        status = request.form.get("status")
+        reason = request.form.get("reason")
+
+        if not student_id:
+            return {"type": "error", "message": "Missing student_id"}
+
+        student = StudentTable.query.get(int(student_id))
+        if not student:
+            return {"type": "error", "message": "Student not found"}
+
+        # Ownership check
+        # if student.user_id != current_user.user_id:
+        #     return {"type": "error", "message": "You do not have permission to update this record"}
+
+        # Update fields if provided
+        if progress is not None:
+            student.progress = progress
+
+        if status is not None:
+            student.status = status
+
+        if reason is not None:
+            student.reason = reason
+
+        db.session.commit()
+
+        return {"type": "success", "message": "Student status updated successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
 # ================================
 # Student Table End
 # ================================
