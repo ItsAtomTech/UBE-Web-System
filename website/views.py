@@ -58,12 +58,38 @@ def soon():
 
 
 
+@views.route('/user_table', methods=['GET', 'POST'])
+@login_required
+def user_tables():
+    page = 'users'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("users_table.html", user=current_user, page=page)
+
+
+@views.route('/new_user_editor', methods=['GET', 'POST'])
+def user_new_editor():
+    page = 'new_user'
+
+    return render_template("user_editor.html", user=current_user, page=page)
+
+
+
+@views.route('/update_user_editor', methods=['GET', 'POST'])
+def user_update_editor():
+    page = 'edit_user'
+
+    return render_template("user_editor.html", user=current_user, page=page)
+
+
+
 
 # =======================
 # Forms Section
 # =======================
 @views.route('/status_editor', methods=['GET', 'POST'])
-def user_new_editor():
+def status_new_editor():
     page = 'new_status_editor'
 
     return render_template("acads_form_editor.html", user=current_user, page=page)
