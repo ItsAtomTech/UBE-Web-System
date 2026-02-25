@@ -30,6 +30,16 @@ function showTrackingTable(elm){
 
 
 
+function showReviewTable(elm){
+	activate(elm);
+
+	let page = open_modal("review_student_table", 'modal_on_container,no_close_button,page_containment', _('general_container'));
+	closeAllPages(page);
+	hideDashboardContents(true);
+}
+
+
+
 
 
 

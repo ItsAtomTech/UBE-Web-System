@@ -1,0 +1,76 @@
+<div class="modal_main_backdrop padded" id="update_stat_1" inert > 
+	<div class="modal_container_box">
+		<!-- Modal Header -->
+		<div class="top_header">
+			<div class="title_form_top"> View Status </div>
+			<div class="close_modal_tright" tabindex='1' onclick="closeModalContent('update_stat_1')"> &times; </div>
+		</div>
+		
+		<!-- Modal Contents Container -->
+
+		<div class="option_main_container">
+			<!-- <div class="medium bold" tag="item_name"> </div> -->
+			<br />
+			
+			<div class="normal info_items"> <span class="fa fa-user"> </span> Student Name: <span class="bold" tag="student_name">  Name here </span></div>
+			<div class="normal info_items"><span class="fa fa-id-card">  </span> ID Number: <span class="bold" tag="student_number"> ###### </span></div>
+						
+			<div class="normal info_items"><span class="fa fa-book">  </span> Subject :  <span class="bold" tag="subject"> SUBJECT Here </span></div>						
+			<div class="normal info_items"><span class="fa fa-user-circle">  </span> Assigned Instructor :  <span class="bold" tag="instructor_name"> SUBJECT Teacher Here </span></div>
+									
+			<div class="normal info_items"><span class="fa fa-calendar">  </span> Date :  <span class="bold" tag="date"> Date </span></div>
+			
+			
+		<div class="flexed padded_gap">
+				
+			
+			<div class="cols_con_ padded_input full_width"><label class="df_label_con required_style_label placeholder_label" for="progress_option">Progress</label>
+				<select id="progress_option" value="" required="" class="fancy_form_df form_display" readonly>
+
+					<option value=""> </option>
+					<option value="currently_taking"> Currently Taking </option>
+					<option value="on_review"> On Review </option>
+					<option value="done"> Done </option>
+
+
+				</select>
+			</div>
+
+			<div class="cols_con_ padded_input full_width"><label class="df_label_con required_style_label placeholder_label" for="status_input">Status</label>
+				<select id="status_input" value="" required="" class="fancy_form_df form_display" readonly>
+
+					<option value="" disabled selected>  </option>
+					<option value="none"> None </option>
+					<option value="passed"> Passed </option>
+					<option value="Failed"> Failed </option>
+				</select>
+			</div>
+
+			
+		</div>
+			
+
+			
+			<div class="cols_con_ full_width padded_input"><label class="df_label_con required_style_label placeholder_label" for="reason_input">Reason</label>
+			
+				<textarea id="reason_input" value="" required class="fancy_form_df form_display" readonly>
+
+				</textarea>
+			</div>
+
+		
+
+				
+			
+		</div>
+		
+		<div class="option_main_container_buttons">
+	
+			
+			
+		</div>
+	
+
+
+	</div>
+</div>

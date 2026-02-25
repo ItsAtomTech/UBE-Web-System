@@ -38,6 +38,299 @@ def dum():
     
 
 
+# ================================
+# Users Section
+# ================================
+@api_handles.route('/user_list', methods=['POST', 'GET'])
+def list_users():
+    try:
+        current_page = int(request.form.get("page") or 1)
+    except ValueError:
+        current_page = 1
+
+    token = request.form.get("token") or 0
+    per_page = 40
+    query = Users.query
+
+    # Require login or valid token
+
+    # Filters
+    filters_raw = request.form.get("filters")
+    if filters_raw:
+        try:
+            filters = json.loads(filters_raw)
+
+            if 'status' in filters and filters['status']:
+                query = query.filter(Users.status == filters['status'])
+
+            if 'level' in filters and str(filters['level']).isdigit():
+                query = query.filter(Users.level == int(filters['level']))
+
+            if 'type' in filters and filters['type']:
+                query = query.filter(Users.type == filters['type'])
+
+        except json.JSONDecodeError:
+            pass
+
+    # Search (name/email)
+    search = request.form.get("search")
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            db.or_(
+                Users.username.ilike(search_term),
+                Users.email.ilike(search_term),
+                Users.type.ilike(search_term),
+                Users.user_id.ilike(search_term),
+                Users.status.ilike(search_term)
+            )
+        )
+
+    # Sorting
+    sortby = request.form.get("sort") or None
+    order = request.form.get("order_by", "asc").lower() or None
+
+    if sortby and hasattr(Users, sortby):
+        sort_column = getattr(Users, sortby)
+        if order == "desc":
+            query = query.order_by(desc(sort_column))
+        else:
+            query = query.order_by(asc(sort_column))
+    else:
+        query = query.order_by(Users.user_id.asc())
+
+    # Pagination
+    pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
+    users = pagination.items
+    total_pages = pagination.pages
+    total_results = pagination.total
+
+    user_list = []
+    for u in users:
+        user_list.append({
+            'user_id': u.user_id,
+            'username': getattr(u, 'username', None),
+            'email': u.email,
+            'type': u.type,
+            'status': getattr(u, 'status', None),
+            'level': getattr(u, 'level', None),
+            'date': u.date.isoformat() if u.date else None
+        })
+
+    return {
+        "type": "success",
+        "users": user_list,
+        "pagination_data": {
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "total_results": total_results
+        }
+    }
+
+
+@api_handles.route('/save_user', methods=['POST'])
+@login_required
+def save_user():
+    if not is_admin(True):
+        return jsonify({"type": "error", "message": "No permission to perform this action"})
+
+    try:
+        user_data = request.form.get("user_data")
+
+        if not user_data:
+            return {"type": "error", "message": "Missing user data"}
+
+        data = json.loads(user_data)
+
+        # Check required fields
+        if not data.get("username") or not data.get("email") or not data.get("password"):
+            return {"type": "error", "message": "Missing required fields"}
+
+        if data.get("password") != data.get("repassword"):
+            return {"type": "error", "message": "Passwords do not match"}
+
+        # Optional: check if email already exists
+        existing_user = Users.query.filter_by(email=data.get("email")).first()
+        if existing_user:
+            return {"type": "error", "message": "Email already exists"}
+
+        new_user = Users(
+            username=data.get("username"),
+            email=data.get("email"),
+            type=data.get("type", "student"),
+            password=generate_password_hash(data.get("password"), method="sha256"),
+            status="pending",
+            avatar="user",
+            level="",
+            date=func.now()
+        )
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return {"type": "success", "message": "User saved successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route('/remove_user', methods=['POST'])
+@login_required
+def remove_user():
+    # --- Ensure only admins can perform this action ---
+    if not is_admin():
+        return jsonify({"type": "error", "message": "No permission to perform this action"})
+
+    try:
+        user_id = request.form.get("user_id")
+
+        if not user_id:
+            return {"type": "error", "message": "Missing user_id"}
+
+        user = Users.query.get(int(user_id))
+        if not user:
+            return {"type": "error", "message": "User not found"}
+
+        # --- Prevent deleting self ---
+        if user.user_id == current_user.user_id:
+            return {"type": "error", "message": "You cannot remove your own account"}
+
+        # --- Prevent deleting admin accounts ---
+        if user.type and user.type.lower() == "admin":
+            return {"type": "error", "message": "You cannot delete another admin account"}
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return {"type": "success", "message": f"User '{user.username}' removed successfully!"}
+
+    except Exception as e:
+        db.session.rollback()
+        return {"type": "error", "message": str(e)}
+
+
+
+
+@api_handles.route('/get_user_by_id', methods=['POST'])
+@login_required
+def get_user_by_id():
+
+    try:
+        user_id = request.form.get("user_id")
+
+        if not user_id:
+            return {"type": "error", "message": "Missing user_id"}
+
+        user = Users.query.get(int(user_id))
+        if not user:
+            return {"type": "error", "message": "User not found"}
+
+        user_data = {
+            "user_id": user.user_id,
+            "username": user.username,
+            "email": user.email,
+            "type": user.type,
+            "status": user.status,
+            "avatar": user.avatar,
+            "misc": user.misc,
+            "date": user.date.strftime("%Y-%m-%d %H:%M:%S") if user.date else None
+        }
+
+        return {"type": "success", "user": user_data}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route('/save_user_update', methods=['POST'])
+@login_required
+def save_user_update():
+    if not is_admin():
+        return jsonify({"type": "error", "message": "No permission to perform this action"})
+
+    try:
+        user_data = request.form.get("user_data")
+
+        if not user_data:
+            return {"type": "error", "message": "Missing user data"}
+
+        data = json.loads(user_data)
+
+        user_id = request.form.get("user_id")
+        if not user_id:
+            return {"type": "error", "message": "Missing user_id"}
+
+        user = Users.query.get(int(user_id))
+        if not user:
+            return {"type": "error", "message": "User not found"}
+
+        if user.user_id == current_user.user_id:
+            return {"type": "error", "message": "You cannot modify your own account in here"}
+
+        # Update fields
+        if data.get("username"):
+            user.username = data["username"]
+
+        if data.get("type"):
+            user.type = data["type"]
+
+        if data.get("email") and data["email"] != user.email:
+            # If email changes, also set status to "pending"
+            user.email = data["email"]
+            user.status = "pending"
+
+        db.session.commit()
+
+        return {"type": "success", "message": "User updated successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route("/update_my_email", methods=["POST"])
+@login_required
+def update_my_email():
+    new_email = request.form.get("email")
+
+    if not new_email:
+        return jsonify({"type": "error", "message": "Email is required."})
+
+    # Only allow updates if user status is pending
+    if current_user.status.lower() != "pending":
+        return jsonify({
+            "type": "error",
+            "message": "Email updates are only allowed while your account status is 'pending'."
+        })
+    
+    if current_user.email == new_email:
+        return jsonify({
+            "type": "error",
+            "message": "The Email is the same as your current"
+        })
+    
+    # Check if the new email is already used by another user
+    existing_user = Users.query.filter_by(email=new_email).first()
+    if existing_user:
+        return jsonify({"type": "error", "message": "This email is already in use."})
+
+    # Proceed with email update
+    current_user.email = new_email
+    db.session.commit()
+
+
+    return jsonify({
+        "type": "success",
+        "message": f"Your email has been successfully updated to '{new_email}'."
+    })
+
+
+# ================================
+# Users Section End
+# ================================
+
 
 
 # ================================
@@ -131,6 +424,50 @@ def get_student_by_id():
             "subject_id": student.subject_id,
             "user_id": student.user_id,
             "instructor_id": student.instructor_id,
+            "student_name": student.student_name,
+            "student_number": student.student_number,
+            "progress": student.progress,
+            "status": student.status,
+            "reason": student.reason,
+            "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
+        }
+
+        return {"type": "success", "student": student_data}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route('/get_student_info_all', methods=['POST'])
+@login_required
+def get_student_info_all():
+    try:
+        student_id = request.form.get("student_id")
+
+        if not student_id:
+            return {"type": "error", "message": "Missing student_id"}
+
+        result = db.session.query(
+            StudentTable,
+            Users.username.label("instructor_name")
+        ).join(
+            Users, StudentTable.instructor_id == Users.user_id
+        ).filter(
+            StudentTable.student_id == int(student_id)
+        ).first()
+
+        if not result:
+            return {"type": "error", "message": "Student not found"}
+
+        student, instructor_name = result
+
+        student_data = {
+            "student_id": student.student_id,
+            "subject_id": student.subject_id,
+            "user_id": student.user_id,
+            "instructor_id": student.instructor_id,
+            "instructor_name": instructor_name,
             "student_name": student.student_name,
             "student_number": student.student_number,
             "progress": student.progress,
@@ -466,8 +803,13 @@ def update_student_status():
             return {"type": "error", "message": "Student not found"}
 
         # Ownership check
+<<<<<<< HEAD
         # if student.user_id != current_user.user_id:
         #     return {"type": "error", "message": "You do not have permission to update this record"}
+=======
+        if student.instructor_id != current_user.user_id:
+            return {"type": "error", "message": "You do not have permission to update this record"}
+>>>>>>> 35359e6cd6c35c23e537e1349332e6d141d3784e
 
         # Update fields if provided
         if progress is not None:
@@ -494,6 +836,21 @@ def update_student_status():
 
 
 
+
+
+
+# ================================
+# Other Section
+# ================================
+def is_admin(silent=False):
+    if current_user.type == 4 or current_user.type == '4':
+        return 1
+    else:
+        return 0
+
+# ================================
+# Other Section End
+# ================================
 
 
 
