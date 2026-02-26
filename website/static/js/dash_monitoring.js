@@ -135,5 +135,5 @@
   // Refresh greeting every 5 seconds
   window.setInterval(updateGreeting, 5000);
   
-  // Refresh stats every 30 seconds
+  // Refresh stats every 5 seconds
   window.setInterval(fetchDashboardStats, 5000);

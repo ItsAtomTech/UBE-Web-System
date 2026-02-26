@@ -35,10 +35,18 @@
 				</select>
 			</div>
 
-			<div class="cols_con_ padded_input full_width"><label class="df_label_con required_style_label placeholder_label" for="status_input">Select Status</label>
-				<select id="status_input" value="" required="" class="fancy_form_df form_display">
+			<div class="cols_con_ padded_input full_width"><label class="df_label_con required_style_label placeholder_label" for="status_input"
+			
 
-					<option value="" disabled selected>  </option>
+			
+			>Select Status</label>
+				<select id="status_input" value="" required="false" class="fancy_form_df form_display" 			
+				
+			{% if current_user.type == 1 %}
+				disabled
+			{% endif %} >
+
+					<option value=" " disabled selected> None Yet </option>
 					<option value="none"> None </option>
 					<option value="passed"> Passed </option>
 					<option value="Failed"> Failed </option>
@@ -67,8 +75,6 @@
 
 		
 
-				
-			
 		</div>
 		
 		<div class="option_main_container_buttons">

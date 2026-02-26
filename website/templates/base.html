@@ -96,15 +96,31 @@
 			<div class="sidebar_button df_button primary_color" onclick="showUserManageTable(this);" > <span class="fa fa-users" tooltip="Manage User Roles / Add User"> </span> <span class="normal nav_text"> User Management </span> </div>
 		</div>
 		
-		{% else %}
-		<!-- For Teachers side bar -->
-		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showSubjectManagementPage(this);" > <span class="fa fa-book" tooltip="Manage User Roles / Add User"> </span> <span class="normal nav_text"> Manage Subjects </span> </div>
+		</div>
 		
 		
 		<!-- For Dean side bar -->
-
+		{% elif current_user.type == 2 %}
+		
 		
 
+		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showAssessmentTable(this);" tooltip="Go to Assessment Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Assesment </span> </div>
+		</div>
+		
+		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showReviewTable(this);"> <span class="fa fa-check-square"> </span> <span class="normal nav_text"> Review Students </span> </div>
+		</div>
+		
+		
+		
+		{% else %}
+		<!-- For Teachers side bar -->
+		
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showOnProbTable(this);" > <span class="fa fa-exclamation-triangle" tooltip="Open Onprobation List"> </span> <span class="normal nav_text"> On probation List </span> </div>
 		</div>
@@ -113,9 +129,7 @@
 			<div class="sidebar_button df_button primary_color" onclick="showTrackingTable(this);" tooltip="Go to Student Tracking Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Track Student </span> </div>
 		</div>
 
-		<div class="sidebar_box_con" >
-			<div class="sidebar_button df_button primary_color" onclick="showReviewTable(this);"> <span class="fa fa-check-square"> </span> <span class="normal nav_text"> Review Students </span> </div>
-		</div>
+
 		
 		
 		{% endif %}
@@ -220,8 +234,6 @@
 				<button class="_extra_a_but secondary_background primary_color_invert" onclick='go_to_modal("my_profile");togle_dia_user(this);'> My Profile <span class="fa fa-user"></span></button>
 				
 
-		
-
 
 		{% endif %}
 	</div>
@@ -234,8 +246,8 @@
 		{% if current_user.is_authenticated %}
 		<button class="_logout_a_but"  onclick="go_to('logout')"> Logout</button>
 		{% else %}
-		<button class="_signup_a_but" onclick="go_to_modal('signup');togle_dia_user(this);"> Signup</button>
-		<button class="_login_a_but" onclick="go_to_modal('login');togle_dia_user(this);"> Login</button>
+		<!-- <button class="_signup_a_but" onclick="go_to_modal('signup');togle_dia_user(this);"> Signup</button> -->
+		<!-- <button class="_login_a_but" onclick="go_to_modal('login');togle_dia_user(this);"> Login</button> -->
 		{% endif %}
 	</div>
 

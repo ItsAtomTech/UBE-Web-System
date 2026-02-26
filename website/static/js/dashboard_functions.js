@@ -56,6 +56,19 @@ function showReviewTable(elm){
 
 
 
+// ==========================
+// Teacher Functions Etc.
+// ==========================
+
+
+
+function showAssessmentTable(elm){
+	activate(elm);
+
+	let page = open_modal("assess_student_table", 'modal_on_container,no_close_button,page_containment', _('general_container'));
+	closeAllPages(page);
+	hideDashboardContents(true);
+}
 
 
 function closeAllPages(exclude=undefined){

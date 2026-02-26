@@ -39,7 +39,7 @@ let tableFormat = [
 		
 	},
 
-	
+		
 
 ];
 
@@ -196,7 +196,7 @@ function tableLoader(data){
 					edit_action.setAttribute("onclick",'loadItemToEdit("'+forms[index].student_id+'")');
 				
 					
-					if(forms[index].status == "") action_div.appendChild(edit_action);
+					if(forms[index].progress == "") action_div.appendChild(edit_action);
 					
 					
 			if(pageType == "trash"){
@@ -206,7 +206,7 @@ function tableLoader(data){
 					remove_action.setAttribute("onclick","restoreItemHelper('"+forms[index].student_id+"')");
 					remove_action.setAttribute("title","Restore to Items Table");
 					
-					if(forms[index].status == "") action_div.appendChild(remove_action);
+					if(forms[index].progress == "") action_div.appendChild(remove_action);
 					
 			}else{
 				
@@ -214,7 +214,7 @@ function tableLoader(data){
 					remove_action.classList.add("fa","fa-trash","flexed","df_button_flat","df_small","medium","remove", "buttonize");
 					remove_action.setAttribute("onclick","moveToTrashHelper('"+forms[index].student_id+"')");
 					
-					if(forms[index].status == "") action_div.appendChild(remove_action);
+					if(forms[index].progress == "") action_div.appendChild(remove_action);
 					
 			}
 					
