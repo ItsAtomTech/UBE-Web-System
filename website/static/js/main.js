@@ -298,6 +298,16 @@ function removeSpecialChars(str) {
 }
 
 
+//Convert Underscores to spaces and Capitalize
+function formatString(str) {
+  if (!str) return "";
+  
+  const withSpaces = str.replace(/_/g, " ");
+  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
+}
+
+
+
 //for playing sound effects
 function playSfx(path) {
 	let ext_path;

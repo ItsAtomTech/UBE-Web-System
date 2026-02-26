@@ -41,6 +41,15 @@ def about():
 
 
 
+@views.route('/preview', methods=['GET', 'POST'])
+def prev_dash():
+    page = 'preview'
+
+    return render_template("dashboard.html", user=current_user, page=page)
+    
+
+
+
 @views.route('/soon', methods=['GET', 'POST'])
 def soon():
     page = 'under'

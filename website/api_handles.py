@@ -157,11 +157,10 @@ def save_user():
         new_user = Users(
             username=data.get("username"),
             email=data.get("email"),
-            type=data.get("type", "student"),
-            password=generate_password_hash(data.get("password"), method="sha256"),
+            type=data.get("type", "1"),
+            password=generate_password_hash(data.get("password"), method="pbkdf2:sha256"),
             status="pending",
             avatar="user",
-            level="",
             date=func.now()
         )
 
@@ -827,27 +826,41 @@ def update_student_status():
 # ================================
 # Dashboard Statistics
 # ================================
+
 @api_handles.route('/dashboard_stats', methods=['GET', 'POST'])
-@login_required
 def get_dashboard_stats():
     try:
-        # Get probation count (students with progress = 'on_probation')
-        probation_count = StudentTable.query.filter_by(progress='on_probation').count()
-        
-        # Get tracking count (students assigned to current instructor with progress = 'currently_taking')
-        tracking_count = StudentTable.query.filter(
-            StudentTable.instructor_id == current_user.user_id,
+        is_logged_in = current_user.is_authenticated
+
+        # Determine if we filter by instructor
+        instructor_filter = None
+        if is_logged_in and current_user.type == 1:  # Instructor
+            instructor_filter = StudentTable.instructor_id == current_user.user_id
+
+        # Base query
+        base_query = StudentTable.query
+        if instructor_filter is not None:
+            base_query = base_query.filter(instructor_filter)
+
+        # Counts
+        probation_count = base_query.filter(
+            StudentTable.progress == 'on_probation'
+        ).count()
+
+        tracking_count = base_query.filter(
             StudentTable.progress == 'currently_taking'
         ).count()
-        
-        # Get failed count (students with status = 'failed')
-        failed_count = StudentTable.query.filter_by(status='failed').count()
-        
-        # Get passed count (students with status = 'passed')
-        passed_count = StudentTable.query.filter_by(status='passed').count()
-        
-        # Get recent students on probation (last 5)
-        recent_probation = db.session.query(
+
+        failed_count = base_query.filter(
+            StudentTable.status == 'failed'
+        ).count()
+
+        passed_count = base_query.filter(
+            StudentTable.status == 'passed'
+        ).count()
+
+        # Recent probation list
+        probation_query = db.session.query(
             StudentTable.student_name,
             StudentTable.student_number,
             SubjectCode.subject_name,
@@ -856,20 +869,25 @@ def get_dashboard_stats():
             SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
         ).filter(
             StudentTable.progress == 'on_probation'
-        ).order_by(
+        )
+
+        if instructor_filter is not None:
+            probation_query = probation_query.filter(instructor_filter)
+
+        recent_probation = probation_query.order_by(
             StudentTable.date.desc()
         ).limit(5).all()
-        
+
         recent_probation_list = [
             {
-                'student_name': r[0],
-                'student_number': r[1],
-                'subject_name': r[2],
-                'date': r[3].isoformat() if r[3] else None
+                "student_name": r[0],
+                "student_number": r[1],
+                "subject_name": r[2],
+                "date": r[3].isoformat() if r[3] else None
             }
             for r in recent_probation
         ]
-        
+
         return {
             "type": "success",
             "stats": {
@@ -880,7 +898,7 @@ def get_dashboard_stats():
             },
             "recent_probation": recent_probation_list
         }
-        
+
     except Exception as e:
         return {"type": "error", "message": str(e)}
 

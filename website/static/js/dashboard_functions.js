@@ -6,6 +6,21 @@ window.addEventListener('resize', () => {
 
 
 // ==========================
+// Admin Functions Etc.
+// ==========================
+
+function showUserManageTable(elm){
+	activate(elm);
+
+	let page = open_modal("user_table", 'modal_on_container,no_close_button,page_containment', _('general_container'));
+	closeAllPages(page);
+	hideDashboardContents(true);
+	
+}
+
+
+
+// ==========================
 // Teacher Functions Etc.
 // ==========================
 

@@ -90,7 +90,13 @@
 		<!-- For Admin side bar -->
 		
 		
+		{% if current_user.type == 4 %}
 		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showUserManageTable(this);" > <span class="fa fa-users" tooltip="Manage User Roles / Add User"> </span> <span class="normal nav_text"> User Management </span> </div>
+		</div>
+		
+		{% else %}
 		<!-- For Teachers side bar -->
 		
 		
@@ -110,6 +116,12 @@
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showReviewTable(this);"> <span class="fa fa-check-square"> </span> <span class="normal nav_text"> Review Students </span> </div>
 		</div>
+		
+		
+		{% endif %}
+		
+		
+		
 
 {% endif %}
 

@@ -16,8 +16,6 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/extra_tablestyles.css') }}">
 
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashstyles.css') }}">
-
 
 
 <!-- <script src="{{ url_for('static', filename='js/data/profiling_config.js') }}"></script> -->
@@ -42,29 +40,29 @@
 
 		<!-- Search, Filter, and Create Account button -->
 		<div class="search-filter-container">
-			<div class="search_and_select primary_color">
+			<div class="search_and_select primary_color_invert">
 			<div class="input_class_rounded">  
 				<label class="small"> <span class="fa fa-search"> </span> Search: </label>
-				<input class="small use_vkb" id="search_input" type="text" placeholder="Name, Email or Id" onblur="delayedQuerry()" onchange="delayedQuerry()" oninput="delayedQuerry()">
+				<input class="small primary_color_invert" id="search_input" type="text" placeholder="Name, Email or Id" onblur="delayedQuerry()" onchange="delayedQuerry()" oninput="delayedQuerry()">
 			 </div>   
 
 			 <div class="input_class_rounded">
 				<label class="small"> Account Activation: </label>
-				<select class="small primary_color" oninput="delayedQuerry()" id="status_input">
-					<option value="" disabled selected>Filter by</option>
-					<option value="" >All</option>
-					<option value="pending" >Pending</option>
-					<option value="confirmed" >Confirmed</option>
+				<select class="small primary_color_invert" oninput="delayedQuerry()" id="status_input">
+					<option class="primary_background primary_color" value="" disabled selected>Filter by</option>
+					<option  class="primary_background primary_color" value="" >All</option>
+					<option  class="primary_background primary_color" value="pending" >Pending</option>
+					<option class="primary_background primary_color" value="confirmed" >Confirmed</option>
 
 				</select>
 			</div>
 			
 			 <div class="input_class_rounded">
 				<label class="small"> Account Type: </label>
-				<select class="small primary_color" oninput="delayedQuerry()" id="account_type">
+				<select class="small primary_color_invert" oninput="delayedQuerry()" id="account_type">
 					<option value="" > All </option>
 					{% for user_type in get_user_types() %}
-					<option value="{{ user_type.type_id}}">{{ user_type.type }}</option>
+					<option onload="this.innerText = formatString(this.innerText);" value="{{ user_type.type_id}}">{{ user_type.type }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -145,7 +143,7 @@
 
 
 <!-- Bottom Status/Tool Bar -->
-<div class="bottom_toolbar_con primary_background">
+<div class="bottom_toolbar_con primary_color_invert">
 
 		<div class="pagination small" id="paginations">
 			<a href="#">Prev page</a>
@@ -194,6 +192,34 @@ if(pageType == "trash"){
 <script src="{{ url_for('static', filename='js/users_table.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+
+
+<script id="removeME">
+
+
+_("account_type").innerText = "";
+_("account_type").innerHTML = "<option value='' > All </option>";
+
+
+function addTypeOptions(id_value, usertype){
+	console.log(id_value, usertype);
+	let sel = make("option");
+
+	sel.innerText = formatString(usertype);
+	sel.value = id_value;
+	sel.classList.add("primary_background_darker", "primary_color");
+	_("account_type").appendChild(sel);
+};
+
+
+
+
+{% for user_type in get_user_types() %}
+	addTypeOptions("{{user_type.type_id}}", "{{user_type.type}}");
+{% endfor %}
+_("removeME").remove();
+</script>
+
 
 {% endblock %}
 
