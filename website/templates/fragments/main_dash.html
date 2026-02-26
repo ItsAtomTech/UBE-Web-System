@@ -3,32 +3,81 @@
   href="{{ url_for('static', filename='css/main_home_dash.css') }}"
 />
 
+
+<style>
+  /* Loader spinner for loading state */
+  .loader-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: currentColor;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Make stat cards clickable */
+  .dash_stat_card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .dash_stat_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .dash_stat_card:active {
+    transform: translateY(-2px);
+  }
+</style>
+
+
+
+
 <div class="dash_contents_con">
   
   <!-- Greeting Banner -->
   <div class="dash_greeting_banner primary_background" id="dash_greeting_banner">
-    <div class="dash_greeting_avatar">
-      <img
-        src="{{ url_for('static', filename='images/'+current_user.avatar+'.png') }}"
-        alt="User Avatar"
-        class="greeting_avatar_img"
-        onerror="
-          this.style.background = '#4a5a9a';
-          this.src = '';
-          this.onerror = null;
-        "
-      />
-    </div>
-    <div class="dash_greeting_text">
-      <div class="dash_greeting_name primary_color_invert">
-        <span id="dash_greeting_time">Hello</span>, {{ current_user.username }}
-      </div>
-      <div class="dash_greeting_meta primary_color_invert">
-        <span>Date: <span id="dash_today_date">--/--/----</span></span>
-        <span class="meta_sep">|</span>
-        <span>Semester: <span id="dash_semester">----</span></span>
-      </div>
-    </div>
+  
+  
+<div class="dash_greeting_avatar">
+  <img
+    src="{% if current_user.is_authenticated %}
+            {{ url_for('static', filename='images/' + current_user.avatar + '.png') }}
+         {% else %}
+            {{ url_for('static', filename='images/user.png') }}
+         {% endif %}"
+    alt="User Avatar"
+    class="greeting_avatar_img"
+    onerror="
+      this.style.background = '#4a5a9a';
+      this.src = '';
+      this.onerror = null;
+    "
+  />
+</div>
+
+<div class="dash_greeting_text">
+  <div class="dash_greeting_name primary_color_invert">
+    <span id="dash_greeting_time">Hello</span>, 
+    {% if current_user.is_authenticated %}
+      {{ current_user.username }}
+    {% else %}
+      Visitor
+    {% endif %}
+  </div>
+
+  <div class="dash_greeting_meta primary_color_invert">
+    <span>Date: <span id="dash_today_date">--/--/----</span></span>
+    <span class="meta_sep">|</span>
+    <span>Semester: <span id="dash_semester">----</span></span>
+  </div>
+</div>
     
     <div class="bg_banner"></div>
   </div>
@@ -99,176 +148,13 @@
   </div>
 </div>
 
-<script>
-  // ========================================
-  // UPDATE GREETING AND SEMESTER
-  // ========================================
-  let updateGreeting = function () {
-    const today = new Date();
-    const formatted =
-      (today.getMonth() + 1).toString().padStart(2, "0") +
-      "/" +
-      today.getDate().toString().padStart(2, "0") +
-      "/" +
-      today.getFullYear();
-    const el = document.getElementById("dash_today_date");
-    if (el) el.textContent = formatted;
-
-    // Dynamic greeting based on time of day
-    const hours = new Date().getHours();
-    let greeting = "Hello";
-    let timeClass = "";
-
-    if (hours >= 5 && hours < 12) {
-      greeting = "Morning";
-      timeClass = "morning";
-    } else if (hours >= 12 && hours < 17) {
-      greeting = "Afternoon";
-      timeClass = "afternoon";
-    } else if (hours >= 17 && hours < 21) {
-      greeting = "Evening";
-      timeClass = "evening";
-    } else {
-      greeting = "Evening";
-      timeClass = "evening";
-    }
-
-    const greetingEl = document.getElementById("dash_greeting_time");
-    if (greetingEl) {
-      greetingEl.textContent = greeting;
-    }
-
-    const bannerEl = document.getElementById("dash_greeting_banner");
-    if (bannerEl && timeClass) {
-      bannerEl.classList.remove("morning", "afternoon", "evening", "night");
-      bannerEl.classList.add(timeClass);
-    }
-
-    // Dynamic semester calculation
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
-    let semesterYear;
-    if (currentMonth >= 9) {
-      semesterYear = currentYear + "-" + (currentYear + 1);
-    } else {
-      semesterYear = currentYear - 1 + "-" + currentYear;
-    }
-    const semesterEl = document.getElementById("dash_semester");
-    if (semesterEl) semesterEl.textContent = semesterYear;
-  };
-
-  // ========================================
-  // FETCH DASHBOARD STATISTICS FROM DATABASE
-  // ========================================
-  let fetchDashboardStats = async function () {
-    try {
-      const response = await fetch('/dashboard_stats', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }
-      });
-
-      const result = await response.json();
-
-      if (result.type === 'success') {
-        // Update stat numbers with animation
-        updateStatNumber('stat_probation', result.stats.probation);
-        updateStatNumber('stat_tracking', result.stats.tracking);
-        updateStatNumber('stat_failed', result.stats.failed);
-        updateStatNumber('stat_passed', result.stats.passed);
-      } else {
-        console.error('Failed to fetch stats:', result.message);
-        // Show error state
-        document.getElementById('stat_probation').textContent = '--';
-        document.getElementById('stat_tracking').textContent = '--';
-        document.getElementById('stat_failed').textContent = '--';
-        document.getElementById('stat_passed').textContent = '--';
-      }
-    } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
-      // Show error state
-      document.getElementById('stat_probation').textContent = '--';
-      document.getElementById('stat_tracking').textContent = '--';
-      document.getElementById('stat_failed').textContent = '--';
-      document.getElementById('stat_passed').textContent = '--';
-    }
-  };
-
-  // ========================================
-  // ANIMATE NUMBER UPDATES
-  // ========================================
-  function updateStatNumber(elementId, newValue) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-
-    const currentValue = parseInt(element.textContent) || 0;
-    
-    if (currentValue === newValue) {
-      element.textContent = newValue;
-      return;
-    }
-
-    // Animate the number change
-    const duration = 500; // milliseconds
-    const steps = 20;
-    const stepValue = (newValue - currentValue) / steps;
-    let currentStep = 0;
-
-    const interval = setInterval(() => {
-      currentStep++;
-      if (currentStep >= steps) {
-        element.textContent = newValue;
-        clearInterval(interval);
-      } else {
-        const tempValue = Math.round(currentValue + (stepValue * currentStep));
-        element.textContent = tempValue;
-      }
-    }, duration / steps);
-  }
 
 
-  // ========================================
-  // INITIALIZE DASHBOARD
-  // ========================================
-  updateGreeting();
-  fetchDashboardStats();
 
-  // Refresh greeting every 5 seconds
-  window.setInterval(updateGreeting, 5000);
-  
-  // Refresh stats every 30 seconds
-  window.setInterval(fetchDashboardStats, 30000);
-</script>
 
-<style>
-  /* Loader spinner for loading state */
-  .loader-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: currentColor;
-    animation: spin 0.8s linear infinite;
-  }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
 
-  /* Make stat cards clickable */
-  .dash_stat_card {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+{% block extra_js %}
+<script defer src="{{ url_for('static', filename='js/dash_monitoring.js') }}"> </script>
+{% endblock %}
 
-  .dash_stat_card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  .dash_stat_card:active {
-    transform: translateY(-2px);
-  }
-</style>

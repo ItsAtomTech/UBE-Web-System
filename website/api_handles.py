@@ -157,11 +157,10 @@ def save_user():
         new_user = Users(
             username=data.get("username"),
             email=data.get("email"),
-            type=data.get("type", "student"),
-            password=generate_password_hash(data.get("password"), method="sha256"),
+            type=data.get("type", "1"),
+            password=generate_password_hash(data.get("password"), method="pbkdf2:sha256"),
             status="pending",
             avatar="user",
-            level="",
             date=func.now()
         )
 
@@ -676,6 +675,119 @@ def list_students():
 
 
 
+@api_handles.route('/final_assessment_list', methods=['POST', 'GET'])
+@login_required
+def final_assessment_list():
+    try:
+        current_page = int(request.form.get("page") or 1)
+    except ValueError:
+        current_page = 1
+
+    per_page = 40
+
+    query = db.session.query(
+        StudentTable,
+        SubjectCode.subject_name,
+        Users.username.label("instructor_name")
+    ).join(
+        SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
+    ).join(
+        Users, StudentTable.instructor_id == Users.user_id
+    )
+    
+    # Only show students ready for final assessment
+    query = query.filter(
+        StudentTable.progress.in_(["on_review", "done"]),
+        StudentTable.progress.isnot(None),
+        StudentTable.progress != ""
+    )
+    
+    
+    # Filters
+    filters_raw = request.form.get("filters")
+    if filters_raw:
+        try:
+            filters = json.loads(filters_raw)
+
+            if 'subject_id' in filters and filters['subject_id']:
+                query = query.filter(StudentTable.subject_id == filters['subject_id'])
+
+
+        except json.JSONDecodeError:
+            pass
+    
+    # Search
+    search = request.form.get("search")
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            db.or_(
+                StudentTable.student_name.ilike(search_term),
+                SubjectCode.subject_name.ilike(search_term),
+                Users.username.ilike(search_term),
+                StudentTable.status.ilike(search_term)
+            )
+        )
+
+    # Sorting
+    sortby = request.form.get("sort")
+    order = request.form.get("order_by", "asc").lower()
+
+    sortable_columns = {
+        "student_name": StudentTable.student_name,
+        "student_number": StudentTable.student_number,
+        "subject_name": SubjectCode.subject_name,
+        "instructor_name": Users.username,
+        "status": StudentTable.status,
+        "date": StudentTable.date
+    }
+
+    if sortby in sortable_columns:
+        sort_column = sortable_columns[sortby]
+        if order == "desc":
+            query = query.order_by(desc(sort_column))
+        else:
+            query = query.order_by(asc(sort_column))
+    else:
+        query = query.order_by(StudentTable.student_id.asc())
+
+    # Pagination
+    pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
+
+    results = pagination.items
+    total_pages = pagination.pages
+    total_results = pagination.total
+
+    student_list = []
+
+    for student, subject_name, instructor_name in results:
+        student_list.append({
+            "student_id": student.student_id,
+            "student_name": student.student_name,
+            "student_number": student.student_number,
+            "subject_id": student.subject_id,
+            "subject_name": subject_name,
+            "instructor_id": student.instructor_id,
+            "instructor_name": instructor_name,
+            "progress": student.progress,
+            "status": student.status,
+            "reason": student.reason,
+            "date": student.date.isoformat() if student.date else None
+        })
+
+    return {
+        "type": "success",
+        "students": student_list,
+        "pagination_data": {
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "total_results": total_results
+        }
+    }
+
+
+
+
 @api_handles.route('/tracking_list', methods=['POST', 'GET'])
 @login_required
 def tracking_list():
@@ -827,27 +939,41 @@ def update_student_status():
 # ================================
 # Dashboard Statistics
 # ================================
+
 @api_handles.route('/dashboard_stats', methods=['GET', 'POST'])
-@login_required
 def get_dashboard_stats():
     try:
-        # Get probation count (students with progress = 'on_probation')
-        probation_count = StudentTable.query.filter_by(progress='on_probation').count()
-        
-        # Get tracking count (students assigned to current instructor with progress = 'currently_taking')
-        tracking_count = StudentTable.query.filter(
-            StudentTable.instructor_id == current_user.user_id,
+        is_logged_in = current_user.is_authenticated
+
+        # Determine if we filter by instructor
+        instructor_filter = None
+        if is_logged_in and current_user.type == 1:  # Instructor
+            instructor_filter = StudentTable.instructor_id == current_user.user_id
+
+        # Base query
+        base_query = StudentTable.query
+        if instructor_filter is not None:
+            base_query = base_query.filter(instructor_filter)
+
+        # Counts
+        probation_count = base_query.filter(
+            StudentTable.progress == 'on_probation'
+        ).count()
+
+        tracking_count = base_query.filter(
             StudentTable.progress == 'currently_taking'
         ).count()
-        
-        # Get failed count (students with status = 'failed')
-        failed_count = StudentTable.query.filter_by(status='failed').count()
-        
-        # Get passed count (students with status = 'passed')
-        passed_count = StudentTable.query.filter_by(status='passed').count()
-        
-        # Get recent students on probation (last 5)
-        recent_probation = db.session.query(
+
+        failed_count = base_query.filter(
+            StudentTable.status == 'failed'
+        ).count()
+
+        passed_count = base_query.filter(
+            StudentTable.status == 'passed'
+        ).count()
+
+        # Recent probation list
+        probation_query = db.session.query(
             StudentTable.student_name,
             StudentTable.student_number,
             SubjectCode.subject_name,
@@ -856,20 +982,25 @@ def get_dashboard_stats():
             SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
         ).filter(
             StudentTable.progress == 'on_probation'
-        ).order_by(
+        )
+
+        if instructor_filter is not None:
+            probation_query = probation_query.filter(instructor_filter)
+
+        recent_probation = probation_query.order_by(
             StudentTable.date.desc()
         ).limit(5).all()
-        
+
         recent_probation_list = [
             {
-                'student_name': r[0],
-                'student_number': r[1],
-                'subject_name': r[2],
-                'date': r[3].isoformat() if r[3] else None
+                "student_name": r[0],
+                "student_number": r[1],
+                "subject_name": r[2],
+                "date": r[3].isoformat() if r[3] else None
             }
             for r in recent_probation
         ]
-        
+
         return {
             "type": "success",
             "stats": {
@@ -880,7 +1011,7 @@ def get_dashboard_stats():
             },
             "recent_probation": recent_probation_list
         }
-        
+
     except Exception as e:
         return {"type": "error", "message": str(e)}
 

@@ -2,6 +2,7 @@
 :root {
   --primary_background: #121212; /* Dark base */
   --primary_background_darker: #1e1e1e; /* Slightly lighter dark */
+  --primary_background_faded: #efefef35;
   --primary_color: rgba(230,230,230,1); /* Light text */
   --primary_color_faded: rgba(230,230,230,0.6);
   --primary_color_invert: rgba(240,240,240,1); /* Near-black for invert */

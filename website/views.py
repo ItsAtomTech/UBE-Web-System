@@ -41,6 +41,15 @@ def about():
 
 
 
+@views.route('/preview', methods=['GET', 'POST'])
+def prev_dash():
+    page = 'preview'
+
+    return render_template("dashboard.html", user=current_user, page=page)
+    
+
+
+
 @views.route('/soon', methods=['GET', 'POST'])
 def soon():
     page = 'under'
@@ -156,6 +165,17 @@ def review_student_table():
         return redirect(url_for('user_control.show_profile'))
 
     return render_template("student_review_table.html", user=current_user, page=page)
+
+
+
+@views.route('/assess_student_table', methods=['GET', 'POST'])
+@login_required
+def assess_student_table():
+    page = 'tracking'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("student_assessment_table.html", user=current_user, page=page)
 
 
 
