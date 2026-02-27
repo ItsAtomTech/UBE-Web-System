@@ -1022,6 +1022,235 @@ def get_dashboard_stats():
 
 
 
+# ================================
+# Subject Section
+# ================================
+@api_handles.route('/save_subject', methods=['POST'])
+@login_required
+def save_subject():
+
+    if not is_admin():
+        return {"type": "error", "message": "No permission to perform this action"}
+
+    try:
+        subject_name = request.form.get("subject_name")
+        subject_code = request.form.get("subject_code")
+        units = request.form.get("units")
+
+        if not subject_name or not subject_code:
+            return {"type": "error", "message": "Missing required fields"}
+
+        new_subject = SubjectCode(
+            subject_name=subject_name,
+            subject_code=subject_code,
+            units=int(units) if units else None
+        )
+
+        db.session.add(new_subject)
+        db.session.commit()
+
+        return {"type": "success", "message": "Subject saved successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+
+@api_handles.route('/list_subjects', methods=['POST', 'GET'])
+@login_required
+def list_subjects():
+    try:
+        current_page = int(request.form.get("page") or 1)
+    except ValueError:
+        current_page = 1
+
+    per_page = 20
+
+    query = db.session.query(SubjectCode)
+
+    # Filters
+    filters_raw = request.form.get("filters")
+    if filters_raw:
+        try:
+            filters = json.loads(filters_raw)
+
+            if 'units' in filters and filters['units']:
+                query = query.filter(SubjectCode.units == filters['units'])
+
+        except json.JSONDecodeError:
+            pass
+
+    # Search
+    search = request.form.get("search")
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            db.or_(
+                SubjectCode.subject_name.ilike(search_term),
+                SubjectCode.subject_code.ilike(search_term)
+            )
+        )
+
+    # Sorting
+    sortby = request.form.get("sort")
+    order = request.form.get("order_by", "asc").lower()
+
+    sortable_columns = {
+        "subject_id": SubjectCode.subject_id,
+        "subject_name": SubjectCode.subject_name,
+        "subject_code": SubjectCode.subject_code,
+        "units": SubjectCode.units,
+        "date": SubjectCode.subject_id  # fallback since no date column
+    }
+
+    if sortby in sortable_columns:
+        sort_column = sortable_columns[sortby]
+        if order == "desc":
+            query = query.order_by(desc(sort_column))
+        else:
+            query = query.order_by(asc(sort_column))
+    else:
+        query = query.order_by(SubjectCode.subject_id.asc())
+
+    # Pagination
+    pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
+
+    results = pagination.items
+    total_pages = pagination.pages
+    total_results = pagination.total
+
+    subject_list = []
+
+    for subject in results:
+        subject_list.append({
+            "subject_id": subject.subject_id,
+            "subject_name": subject.subject_name,
+            "subject_code": subject.subject_code,
+            "units": subject.units
+        })
+
+    return {
+        "type": "success",
+        "subjects": subject_list,
+        "pagination_data": {
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "total_results": total_results
+        }
+    }
+
+
+
+@api_handles.route('/get_subject_by_id', methods=['POST'])
+def get_subject_by_id():
+
+    try:
+        subject_id = request.form.get("subject_id")
+        if not subject_id:
+            return {"type": "error", "message": "Missing subject_id"}
+
+        subject = SubjectCode.query.get(int(subject_id))
+        if not subject:
+            return {"type": "error", "message": "Subject not found"}
+
+        subject_data = {
+            "subject_id": subject.subject_id,
+            "subject_name": subject.subject_name,
+            "subject_code": subject.subject_code,
+            "units": subject.units
+        }
+
+        return {"type": "success", "subject": subject_data}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route('/update_subject', methods=['POST'])
+@login_required
+def update_subject():
+
+    if not is_admin():
+        return {"type": "error", "message": "No permission to perform this action"}
+
+    try:
+        subject_id = request.form.get("subject_id")
+        if not subject_id:
+            return {"type": "error", "message": "Missing subject_id"}
+
+        subject = SubjectCode.query.get(int(subject_id))
+        if not subject:
+            return {"type": "error", "message": "Subject not found"}
+
+        subject_name = request.form.get("subject_name")
+        subject_code = request.form.get("subject_code")
+        units = request.form.get("units")
+
+        if subject_name:
+            subject.subject_name = subject_name
+
+        if subject_code:
+            subject.subject_code = subject_code
+
+        if units is not None:
+            subject.units = int(units)
+
+        db.session.commit()
+
+        return {"type": "success", "message": "Subject updated successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+        
+        
+        
+        
+@api_handles.route('/remove_subject', methods=['POST'])
+@login_required
+def remove_subject():
+
+    if not is_admin():
+        return {"type": "error", "message": "No permission to perform this action"}
+
+    try:
+        subject_id = request.form.get("subject_id")
+        if not subject_id:
+            return {"type": "error", "message": "Missing subject_id"}
+
+        subject = SubjectCode.query.get(int(subject_id))
+        if not subject:
+            return {"type": "error", "message": "Subject not found"}
+
+        # Check if subject is used in StudentTable
+        student_usage = StudentTable.query.filter_by(subject_id=subject.subject_id).count()
+
+
+
+        if student_usage > 0:
+            return {
+                "type": "error",
+                "message": "Cannot remove subject. It is already assigned to students or instructors."
+            }
+
+        db.session.delete(subject)
+        db.session.commit()
+
+        return {"type": "success", "message": "Subject removed successfully!"}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}   
+# ================================
+# Subject Section End
+# ================================
+
+
+
+
+
+
+
 
 
 # ================================

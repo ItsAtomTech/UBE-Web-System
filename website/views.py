@@ -191,6 +191,16 @@ def assess_student_table():
 # =======================
 # Other Section Start
 # =======================
+@views.route('/subject_table', methods=['GET', 'POST'])
+@login_required
+def subject_table():
+    page = 'subject_table'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("subject_table.html", user=current_user, page=page)
+
+
 
 
 
