@@ -491,13 +491,7 @@ select > option{
 	padding:20px;
 	display:flex;
 	gap:10px;
-}
-
-div.item_code{
-	padding:10px;
-	
-}
-	
+}	
 	
 .sidebar_button.new_notification::before {
     content: attr(count);
@@ -813,6 +807,21 @@ div.item_code{
 	text-align:justify !important;
 	
 }
+
+
+.obfuscated_text{
+	cursor:pointer;
+	opacity:1;
+	transition:0.2s;
+	-webkit-transition:0.2s;
+}
+
+.obfuscated_text:hover{
+	opacity:0.7;
+	border:dashed 1px var(--primary_color_faded);
+}
+
+
 
 .type_error{
     background:var(--primary_background);

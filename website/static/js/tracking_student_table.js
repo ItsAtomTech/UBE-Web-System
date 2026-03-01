@@ -14,7 +14,7 @@ let tableFormat = [
 		label: "Student Name",
 		data_path: "student_name",
 		sort: true,
-		// parser:parseBranch,
+		parser:obfuscateText,
 		
 	},		
 	{	
@@ -390,7 +390,7 @@ function loadItemToEdit(id){
 			res_data = res_data.student;
 			
 			selectedItemId = student_id;
-			tag('student_name',_('update_stat_1'))[0].innerText = res_data.student_name;
+			tag('student_name',_('update_stat_1'))[0].innerHTML = obfuscateText(res_data.student_name);
 			
 			tag('student_number',_('update_stat_1'))[0].innerText = res_data.student_number;	
 			

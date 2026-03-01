@@ -306,6 +306,67 @@ function formatString(str) {
   return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
 }
 
+//Format a string into Privacy *** text 
+function obfuscateText(str, asString = false) {
+  if (typeof str !== "string") return null;
+
+  const obfuscated = str
+    .split(" ")
+    .map(word => {
+      if (word.length <= 2) return word; // too short to obfuscate
+
+      const firstTwo = word.slice(0, 2);
+      const lastChar = word.slice(-1);
+      const stars = "*".repeat(word.length - 3);
+
+      return firstTwo + stars + lastChar;
+    })
+    .join(" ");
+
+  if (asString) {
+    return obfuscated;
+  }
+
+  const span = document.createElement("span");
+  span.textContent = obfuscated;
+  span.setAttribute("original", btoa(str)); // base64 encode original text
+  span.setAttribute("onclick", "toggleObfuscation(this)");
+  span.classList.add("obfuscated_text");
+
+
+  return span.outerHTML;
+}
+
+//function helper to get the original to show up
+function toggleObfuscation(el) {
+  const encoded = el.getAttribute("original");
+  if (!encoded) return;
+
+  const original = atob(encoded);
+
+  // helper to obfuscate same way as before
+  function obfuscate(str) {
+    return str
+      .split(" ")
+      .map(word => {
+        if (word.length <= 2) return word;
+
+        const firstTwo = word.slice(0, 2);
+        const lastChar = word.slice(-1);
+        const stars = "*".repeat(word.length - 3);
+
+        return firstTwo + stars + lastChar;
+      })
+      .join(" ");
+  }
+
+  // check current state
+  if (el.textContent === original) {
+    el.textContent = obfuscate(original);
+  } else {
+    el.textContent = original;
+  }
+}
 
 
 //for playing sound effects

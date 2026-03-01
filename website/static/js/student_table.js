@@ -14,7 +14,7 @@ let tableFormat = [
 		label: "Student Name",
 		data_path: "student_name",
 		sort: true,
-		// parser:parseBranch,
+		parser:obfuscateText,
 		
 	},	
 	{	
@@ -196,7 +196,7 @@ function tableLoader(data){
 					edit_action.setAttribute("onclick",'loadItemToEdit("'+forms[index].student_id+'")');
 				
 					
-					if(forms[index].progress == "") action_div.appendChild(edit_action);
+					if(forms[index].progress == "" || forms[index].progress == "on_probation" ) action_div.appendChild(edit_action);
 					
 					
 			if(pageType == "trash"){
@@ -214,7 +214,7 @@ function tableLoader(data){
 					remove_action.classList.add("fa","fa-trash","flexed","df_button_flat","df_small","medium","remove", "buttonize");
 					remove_action.setAttribute("onclick","moveToTrashHelper('"+forms[index].student_id+"')");
 					
-					if(forms[index].progress == "") action_div.appendChild(remove_action);
+					if(forms[index].progress == "" || forms[index].progress == "on_probation" ) action_div.appendChild(remove_action);
 					
 			}
 					

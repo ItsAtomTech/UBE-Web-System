@@ -389,7 +389,7 @@ def save_student():
             instructor_id=instructor_id,
             user_id=current_user.user_id,  # Entry creator
             progress="on_probation",
-            status=""
+            status=" "
         )
 
         db.session.add(new_student)
@@ -612,7 +612,8 @@ def list_students():
                 StudentTable.student_name.ilike(search_term),
                 SubjectCode.subject_name.ilike(search_term),
                 Users.username.ilike(search_term),
-                StudentTable.status.ilike(search_term)
+                StudentTable.status.ilike(search_term),
+                StudentTable.student_number.ilike(search_term)
             )
         )
 
@@ -725,7 +726,8 @@ def final_assessment_list():
                 StudentTable.student_name.ilike(search_term),
                 SubjectCode.subject_name.ilike(search_term),
                 Users.username.ilike(search_term),
-                StudentTable.status.ilike(search_term)
+                StudentTable.status.ilike(search_term),
+                StudentTable.student_number.ilike(search_term)
             )
         )
 
@@ -833,7 +835,8 @@ def tracking_list():
                 StudentTable.student_name.ilike(search_term),
                 SubjectCode.subject_name.ilike(search_term),
                 Users.username.ilike(search_term),
-                StudentTable.status.ilike(search_term)
+                StudentTable.status.ilike(search_term),
+                StudentTable.student_number.ilike(search_term)
             )
         )
 
