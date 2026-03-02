@@ -20,6 +20,7 @@
   /* Extra Colors */
   --secondary_color_faded1: #92671660;
   --secondary_color_faded2: #1f911b60;
+  --failed_color_faded: #e91e63a0;
 }
 
 *::-moz-selection {

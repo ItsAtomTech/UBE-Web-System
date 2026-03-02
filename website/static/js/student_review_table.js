@@ -46,7 +46,7 @@ let tableFormat = [
 		label: "Progress",
 		data_path: "progress",
 		sort: true,
-		// parser:parseBranch,
+		parser:formatString,
 		
 	},
 	{	
@@ -273,7 +273,8 @@ function tableLoader(data){
 
 
 function loadAllItems(dataOnly=false){
-	// qBuilder.filters.status = _("status_input").value;
+	qBuilder.filters.status = _("status_filter").value;
+	qBuilder.filters.progress = _("progress_filter").value;
 	qBuilder.filters.subject_id = _("subject_input").value;
 	qBuilder.search = _("search_input").value;
 	
@@ -601,9 +602,8 @@ function parseStatus(data){
 		return "None"
 	};
 	
+	return parseStatusText(data);
 	
-	
-	return data;
 }
 
 

@@ -575,9 +575,7 @@ function parseStatus(data){
 		return "None"
 	};
 	
-	
-	
-	return data;
+	return parseStatusText(data);
 }
 
 

@@ -597,7 +597,12 @@ def list_students():
             filters = json.loads(filters_raw)
 
             if 'subject_id' in filters and filters['subject_id']:
-                query = query.filter(StudentTable.subject_id == filters['subject_id'])
+                query = query.filter(StudentTable.subject_id == filters['subject_id'])    
+            if 'status' in filters and filters['status']:
+                query = query.filter(StudentTable.status == filters['status'])
+                
+            if 'progress' in filters and filters['progress']:
+                query = query.filter(StudentTable.progress == filters['progress'])
 
 
         except json.JSONDecodeError:
@@ -937,6 +942,7 @@ def update_student_status():
         return {"type": "error", "message": str(e)}
 
 
+
 # ================================
 # Dashboard Statistics
 # ================================
@@ -944,9 +950,7 @@ def update_student_status():
 @api_handles.route('/dashboard_stats', methods=['GET', 'POST'])
 def get_dashboard_stats():
     try:
-        # Base query - show ALL data regardless of user role
         base_query = StudentTable.query
-
         # Counts
         probation_count = base_query.filter(
             StudentTable.progress == 'on_probation'

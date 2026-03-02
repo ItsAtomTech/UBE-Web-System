@@ -369,7 +369,27 @@ function toggleObfuscation(el) {
 }
 
 
-//for playing sound effects
+// parse status text
+function parseStatusText(text){
+	let sp = make("span");
+		sp.innerText = formatString(text);
+		
+	try{
+		sp.classList.add("status_"+text.toLowerCase(), "status_pill");
+	}catch(e){
+		//--
+	}		
+	
+	if(text == " "){
+		sp.innerText = "None";
+	}
+	
+	return sp.outerHTML;
+	
+}
+
+
+// for playing sound effects
 function playSfx(path) {
 	let ext_path;
 	
