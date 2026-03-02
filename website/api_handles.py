@@ -808,8 +808,6 @@ def tracking_list():
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
-    ).filter(
-        StudentTable.instructor_id == current_user.user_id
     )
     
     
@@ -946,17 +944,8 @@ def update_student_status():
 @api_handles.route('/dashboard_stats', methods=['GET', 'POST'])
 def get_dashboard_stats():
     try:
-        is_logged_in = current_user.is_authenticated
-
-        # Determine if we filter by instructor
-        instructor_filter = None
-        if is_logged_in and current_user.type == 1:  # Instructor
-            instructor_filter = StudentTable.instructor_id == current_user.user_id
-
-        # Base query
+        # Base query - show ALL data regardless of user role
         base_query = StudentTable.query
-        if instructor_filter is not None:
-            base_query = base_query.filter(instructor_filter)
 
         # Counts
         probation_count = base_query.filter(
@@ -986,9 +975,6 @@ def get_dashboard_stats():
         ).filter(
             StudentTable.progress == 'on_probation'
         )
-
-        if instructor_filter is not None:
-            probation_query = probation_query.filter(instructor_filter)
 
         recent_probation = probation_query.order_by(
             StudentTable.date.desc()
