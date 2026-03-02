@@ -52,6 +52,13 @@ html {
     padding: 5px;
 }
 
+
+tbody#data_generative tr:nth-child(even) {
+    background-color: var(--third_much_faded) !important; 
+}
+
+
+
 .main_container_side_bar {
     display: flex;
 }
