@@ -227,10 +227,13 @@ html {
 
 .user-management-container {
     margin: 20px;
+	margin-right:0px;
     margin-left:0px;
     margin-bottom: 0;
     padding-bottom:10px;
     margin-top:0px;
+	background-color:var(--third_color_faded);
+	
 }
 
 .user-management-container h2 {
