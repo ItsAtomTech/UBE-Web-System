@@ -261,8 +261,9 @@ function tableLoader(data){
 
 
 
-function loadAllItems(dataOnly=false){
-	// qBuilder.filters.status = _("status_input").value;
+function loadAllItems(dataOnly=false){	
+	qBuilder.filters.status = _("status_filter").value;
+	qBuilder.filters.progress = _("progress_filter").value;
 	qBuilder.filters.subject_id = _("subject_input").value;
 	qBuilder.search = _("search_input").value;
 	

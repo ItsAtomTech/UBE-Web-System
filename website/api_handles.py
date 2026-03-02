@@ -717,6 +717,12 @@ def final_assessment_list():
 
             if 'subject_id' in filters and filters['subject_id']:
                 query = query.filter(StudentTable.subject_id == filters['subject_id'])
+                
+            if 'status' in filters and filters['status']:
+                query = query.filter(StudentTable.status == filters['status'])
+                
+            if 'progress' in filters and filters['progress']:
+                query = query.filter(StudentTable.progress == filters['progress'])
 
 
         except json.JSONDecodeError:
@@ -824,7 +830,12 @@ def tracking_list():
 
             if 'subject_id' in filters and filters['subject_id']:
                 query = query.filter(StudentTable.subject_id == filters['subject_id'])
-
+                
+            if 'status' in filters and filters['status']:
+                query = query.filter(StudentTable.status == filters['status'])
+                
+            if 'progress' in filters and filters['progress']:
+                query = query.filter(StudentTable.progress == filters['progress'])
 
         except json.JSONDecodeError:
             pass
