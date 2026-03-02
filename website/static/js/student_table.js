@@ -250,6 +250,13 @@ function tableLoader(data){
 
 function loadAllItems(dataOnly=false){
 	// qBuilder.filters.status = _("status_input").value;
+	
+	try{
+		qBuilder.filters.status = _("status_filter").value;
+		qBuilder.filters.subject_id = _("subject_input").value;	
+	}catch(e){
+		//--
+	}
 	qBuilder.filters.subject_id = _("subject_input").value;
 	qBuilder.search = _("search_input").value;
 	
@@ -575,9 +582,7 @@ function parseStatus(data){
 		return "None"
 	};
 	
-	
-	
-	return data;
+	return parseStatusText(data);
 }
 
 

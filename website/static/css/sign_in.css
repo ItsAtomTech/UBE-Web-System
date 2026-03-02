@@ -21,12 +21,17 @@
 	font-family:Gotham Rounded;
 	
 }
+
 #main_body{
-	background-color:var(--primary_background_darker);
-	background-image:url("../images/bg_1.png");
-	background-size:cover;
-	background-attachment:fixed;
+		background-color:var(--primary_background_darker);
+		background-image:var(--bg_src);
+		background-size:cover;
+		background-attachment:fixed;
+		transition:0.2s;
+		-webkit-transition:0.2s;
 }
+
+
 
 
 .sig_message_bar_small_{

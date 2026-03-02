@@ -69,15 +69,26 @@
 			
 			
 			
-			 <!-- <div class="input_class_rounded"> -->
-				<!-- <label class="small"> Account Type: </label> -->
-				<!-- <select class="small primary_color" oninput="delayedQuerry()" id="account_type"> -->
-					<!-- <option value="" > All </option> -->
-					<!-- <option value="student" > Student </option> -->
-					<!-- <option value="teacher" > Teacher </option> -->
-					<!-- <option value="admin" > Admin </option> -->
-				<!-- </select> -->
-			<!-- </div> -->
+			 <div class="input_class_rounded primary_color_invert">
+				<label class="small" for="status_filter"> Status: </label>
+				<select class="small primary_color_invert" oninput="delayedQuerry()" id="status_filter">
+					<option class="primary_color" value="" > All </option>
+					<option class="primary_color" value=" " > None </option>
+					<option class="primary_color" value="passed" > Passed </option>
+					<option class="primary_color" value="failed" > Failed </option>
+				</select>
+			</div>
+						
+			
+			 <div class="input_class_rounded primary_color_invert">
+				<label class="small" for="progress_filter"> Progress: </label>
+				<select class="small primary_color_invert" oninput="delayedQuerry()" id="progress_filter">
+					<option class="primary_color" value="" > All </option>
+					<option class="primary_color" value="on_probation" > On Probation </option>
+					<option class="primary_color" value="currently_taking" > Currently taking </option>
+					<option class="primary_color" value="on_review" > On Review </option>
+				</select>
+			</div>
 			
 			
 			 

@@ -29,11 +29,12 @@
 
 #main_body{
 		background-color:var(--primary_background_darker);
-		background-image:url('../images/bg_1.png');
+		background-image:var(--bg_src);
 		background-size:cover;
 		background-attachment:fixed;
+		transition:0.2s;
+		-webkit-transition:0.2s;
 }
-
 
 
 

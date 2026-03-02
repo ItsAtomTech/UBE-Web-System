@@ -542,6 +542,27 @@ th.sortable::after {
 	
 }
 
+.status_pill{
+	padding:5px;
+	border-radius:5px;
+}
+
+.status_pill.status_passed{
+	padding:5px;
+	background-color:var(--secondary_color_faded2);
+	border-radius:5px;
+	
+}
+
+.status_pill.status_failed{
+	padding:5px;
+	background-color:var(--failed_color_faded);
+	color:var(--primary_color_invert);
+	border-radius:5px;
+	
+}
+
+
 
 
 @media (max-width:600px){
