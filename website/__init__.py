@@ -88,7 +88,13 @@ def create_app():
             typ = UserType.query.all()
             return typ
         return dict(get_user_types=get_user_types)
-
+    
+    @app.context_processor
+    def get_type():
+        def get_user_type(ids):
+            typ = UserType.query.filter_by(type_id=ids).first()
+            return typ
+        return dict(get_user_type=get_user_type)
     
 
     @app.context_processor

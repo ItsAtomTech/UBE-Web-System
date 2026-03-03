@@ -212,7 +212,7 @@
 			
 			
 			<span class="role___" >
-			{{ current_user.type }}
+			{{ get_user_type(current_user.type).type }}
 			</span>
 			{% else %}
 			<span class="name___">
