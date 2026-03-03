@@ -701,9 +701,9 @@ def final_assessment_list():
         Users, StudentTable.instructor_id == Users.user_id
     )
     
-    # Only show students ready for final assessment
+    # Only show students ready for final assessment, don't display done status
     query = query.filter(
-        StudentTable.progress.in_(["on_review", "done"]),
+        StudentTable.progress.in_(["on_review", "currently_taking"]),
         StudentTable.progress.isnot(None),
         StudentTable.progress != ""
     )
