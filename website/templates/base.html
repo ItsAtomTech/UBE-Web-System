@@ -107,6 +107,7 @@
 		
 
 		
+		
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showAssessmentTable(this);" tooltip="Go to Assessment Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Assesment </span> </div>
 		</div>
@@ -116,6 +117,20 @@
 			<div class="sidebar_button df_button primary_color" onclick="showReviewTable(this);"> <span class="fa fa-check-square"> </span> <span class="normal nav_text"> Review Students </span> </div>
 		</div>
 		
+		
+		
+		<!-- For Program Chair side bar -->
+
+		{% elif current_user.type == 3 %}
+		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showOnProbTable(this);" > <span class="fa fa-exclamation-triangle" tooltip="Open Onprobation List"> </span> <span class="normal nav_text"> On probation List </span> </div>
+		</div>
+		
+		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showAssessmentTable(this);" tooltip="Go to Assessment Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Assesment </span> </div>
+		</div>
 		
 		
 		{% else %}

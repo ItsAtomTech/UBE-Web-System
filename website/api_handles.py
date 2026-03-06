@@ -819,9 +819,10 @@ def tracking_list():
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
-    ).filter(
-        StudentTable.instructor_id == current_user.user_id,
     )
+
+    if current_user.type != 3:
+        query = query.filter(StudentTable.instructor_id == current_user.user_id)
     
     
     # Filters
