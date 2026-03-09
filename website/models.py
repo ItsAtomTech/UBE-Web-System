@@ -35,6 +35,7 @@ class StudentTable(db.Model):
     instructor_id = db.Column(db.Integer, db.ForeignKey('users.user_id')) # Assigned Instructor
     student_name = db.Column(db.String(50))
     student_number = db.Column(db.Integer)
+    department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     progress = db.Column(db.String(100)) # possible values: currently_taking, done, on_review
     status = db.Column(db.String(50)) # possible values: failed,passed,none 
     reason = db.Column(db.String(1000))
@@ -53,4 +54,24 @@ class SubjectCode(db.Model):
 
 
 
+
+# =========================
+# Other Essential Stuffs
+# =========================
+
+class College(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True)       # e.g., CAS, COE, CME
+    name = db.Column(db.String(255))                   # Full name of the college
+    date = db.Column(db.DateTime(timezone=True), default=manila_time)
+
+    # Relationship
+    departments = db.relationship('Department', backref='college', lazy=True)
+
+
+class Department(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    college_id = db.Column(db.Integer, db.ForeignKey('college.id'))
+    name = db.Column(db.String(255))                   # e.g. Mathematics, Social Science, HM/TM
+    date = db.Column(db.DateTime(timezone=True), default=manila_time)
 
