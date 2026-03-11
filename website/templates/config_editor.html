@@ -1,0 +1,146 @@
+{% extends "base_headless.html" %}
+
+{% block title%}Settings and Configuration{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form_editor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_fancylabel.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_formeditor.css') }}">	
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table_page.css') }}">	
+<!-- Advance Editor Styling -->
+
+{% endblock %}
+
+{% block contents %}
+
+
+
+
+<div class="modal_main_backdrop padded" id="settings_option" inert > 
+	<div class="modal_container_box">
+		<!-- Modal Header -->
+		<div class="top_header">
+			<div class="title_form_top"> Edit Settings and Configurations </div>
+			<div class="close_modal_tright" tabindex='1' onclick="closeModalContent('settings_option');postMessageToParent('close')"> &times; </div>
+		</div>
+		
+		<!-- Modal Contents Container -->
+
+		<div class="option_main_container">
+			<!-- <div class="medium bold" tag="item_name"> </div> -->
+			<br />
+			
+
+			
+			
+		<div class="flexed padded_gap">
+				
+			
+			<div class="cols_con_ padded_input full_width"><label class="df_label_con required_style_label placeholder_label" for="progress_option">Progress</label>
+				<select id="progress_option" value="" required="" class="fancy_form_df form_display">
+
+					<option value=""> </option>
+					<option value="currently_taking"> Currently Taking </option>
+					<option value="on_review"> On Review </option>
+					<option value="completed"> Completed </option>
+
+
+				</select>
+			</div>
+
+			<div class="cols_con_ padded_input full_width"><label class="df_label_con placeholder_label {% if current_user.type == 1 %} infocus {% endif %} >" for="status_input"
+		
+			>Status</label>
+				<select id="status_input" value="" required="false" class="fancy_form_df form_display" 			
+				
+			{% if current_user.type == 1 %}
+				disabled
+			{% endif %} >
+
+					<option value=" " disabled selected> None Yet </option>
+					<option value="none"> None </option>
+					<option value="passed"> Passed </option>
+					<option value="failed"> Failed </option>
+				</select>
+			</div>
+
+			
+		</div>
+			
+
+			
+			<div class="cols_con_ full_width padded_input"><label class="df_label_con required_style_label placeholder_label" for="reason_input">Select Reason</label>
+			
+				<select id="reason_input" value="" required class="fancy_form_df form_display">
+				  <option value=""></option>
+				  <option value="Incurred a Grade of 5.0">Incurred a Grade of 5.0</option>
+				  <option value="Incurred two or more INCs">Incurred two or more INCs</option>
+				  <option value="Incurred two or more 4.0">Incurred two or more 4.0</option>
+				  <option value="Incurred one INC and one 4.0">Incurred one INC and one 4.0</option>
+				  <option value="Selectively dropped two or more courses">Selectively dropped two or more courses</option>
+				  <option value="GWA below cut-off grade for major/specialization">
+					GWA below cut-off grade for major/specialization
+				  </option>
+				</select>
+			</div>
+
+		
+
+		</div>
+		
+		<div class="option_main_container_buttons">
+			<button class="df_button secondary_background primary_color_invert small" onclick="updateItemStatus()"> <span class="fa fa-check"> </span> Update </button>
+			
+			
+			<button class="df_button_flat primary_background_darker primary_color small" onclick="closeModalContent('settings_option');postMessageToParent('close')"> <span class="fa fa-close"> </span> Close </button>
+		</div>
+	
+
+
+	</div>
+</div>
+
+
+
+
+
+<script>
+let hasChanges = false;
+function updatesOn(elm){
+	if(event.type == "change"){
+		hasChanges = true;
+	}
+}
+</script>
+
+
+
+<script src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
+
+<script defer src="{{ url_for('static', filename='js/modalizer.js') }}"></script>
+
+<script>
+//init and Render the Forms we have
+let editType = "{{ page }}";
+qBuilder.server_address = "_";
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+
+showModalContent('settings_option');
+
+</script>
+{% endblock %}
+

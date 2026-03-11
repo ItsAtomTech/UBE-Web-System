@@ -201,6 +201,12 @@ def subject_table():
     return render_template("subject_table.html", user=current_user, page=page)
 
 
+@views.route('/config_editor', methods=['GET', 'POST'])
+@login_required
+def config_manager():
+    page = 'conf'
+
+    return render_template("config_editor.html", user=current_user, page=page)
 
 
 

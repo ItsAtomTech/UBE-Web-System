@@ -30,6 +30,16 @@ function showSubjectManagementPage(elm){
 }
 
 
+function showSettingsPage(elm){
+	activate(elm);
+
+	let page = open_modal("config_editor", 'no_close_button,blurred,padded');
+	// closeAllPages(page);
+	// hideDashboardContents(true);
+	
+}
+
+
 
 // ==========================
 // Teacher Functions Etc.
