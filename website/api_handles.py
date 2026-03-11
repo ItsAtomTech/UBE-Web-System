@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 from . import db
 from datetime import datetime, timedelta
-from .models import Users, StudentTable, SubjectCode
+from .models import Users, StudentTable, SubjectCode, Department
 
 
 plt = ""  # empty this var when on live website
@@ -379,6 +379,7 @@ def save_student():
         subject_id = data.get("subject_id")
         instructor_id = data.get("instructor_id")
         reason = data.get("reason")
+        department_id = data.get("department_id")
 
         if not all([student_name, student_number, subject_id, instructor_id]):
             return {"type": "error", "message": "Incomplete student data"}
@@ -391,7 +392,8 @@ def save_student():
             user_id=current_user.user_id,  # Entry creator
             progress="on_probation",
             reason=reason,
-            status=" "
+            status=" ",
+            department_id=department_id
         )
 
         db.session.add(new_student)
@@ -428,6 +430,7 @@ def get_student_by_id():
             "student_name": student.student_name,
             "student_number": student.student_number,
             "progress": student.progress,
+            "department_id": student.department_id,
             "status": student.status,
             "reason": student.reason,
             "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
@@ -527,6 +530,9 @@ def save_student_update():
         if data.get("reason"):
             student.reason = data["reason"]
 
+        if data.get("department_id"):
+            student.department_id = data["department_id"]
+
         db.session.commit()
 
         return {"type": "success", "message": "Student updated successfully!"}
@@ -587,11 +593,14 @@ def list_students():
     query = db.session.query(
         StudentTable,
         SubjectCode.subject_name,
-        Users.username.label("instructor_name")
+        Users.username.label("instructor_name"),
+        Department.name.label("department_name")
     ).join(
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
+    ).outerjoin(
+    Department, StudentTable.department_id == Department.id
     )
     
     
@@ -658,7 +667,7 @@ def list_students():
 
     student_list = []
 
-    for student, subject_name, instructor_name in results:
+    for student, subject_name, instructor_name, department_name in results:
         student_list.append({
             "student_id": student.student_id,
             "student_name": student.student_name,
@@ -670,7 +679,8 @@ def list_students():
             "progress": student.progress,
             "status": student.status,
             "reason": student.reason,
-            "date": student.date.isoformat() if student.date else None
+            "date": student.date.isoformat() if student.date else None,"department_id": student.department_id,
+            "department": department_name,
         })
 
     return {

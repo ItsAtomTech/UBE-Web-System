@@ -47,19 +47,20 @@
 
 
 
-
-<datalist id="categories">
+<datalist id="department_list">
 	<option value=""></option>
-
+{% for program in get_programs() %}
+    <option value="{{ program.id }}">{{ program.name }}</option>
+{% endfor %}
 </datalist>
 
 
 <datalist id="subject_list">
+<option value=""></option>
 {% for subj in get_subjects() %}
     <option value="{{ subj.subject_id }}">{{ subj.subject_name }}</option>
 {% endfor %}
 </datalist>
-
 
 
 

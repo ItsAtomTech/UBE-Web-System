@@ -18,6 +18,13 @@ let tableFormat = [
 		
 	},	
 	{	
+		label: "Program",
+		data_path: "department",
+		sort: true,
+		// parser:parseBranch,
+		
+	},	
+	{	
 		label: "Subject",
 		data_path: "subject_name",
 		sort: true,
@@ -37,6 +44,13 @@ let tableFormat = [
 		sort: true,
 		parser:parseStatus,
 		
+	},	
+	{	
+		label: "Date",
+		data_path: "date",
+		sort: true,
+		parser: utility.formatDate,
+		
 	},
 
 		
@@ -47,6 +61,8 @@ let hiddenColumns = [];
 let page = 1;
 
 let userList;
+
+
 
 function tableLoader(data){
 	let resData = (JSON.parse(data.responseText));
@@ -244,7 +260,6 @@ function tableLoader(data){
 	}
 	
 }
-
 
 
 
