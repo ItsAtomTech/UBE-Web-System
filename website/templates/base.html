@@ -99,6 +99,12 @@
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showSubjectManagementPage(this);" > <span class="fa fa-book" tooltip="Manage User Roles / Add User"> </span> <span class="normal nav_text"> Manage Subjects </span> </div>
 		</div>
+				
+				
+				
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showToast('Work in Progress');showConfigManagementPage(this);" > <span class="fa fa-cogs" tooltip="Open the page for Settings"> </span> <span class="normal nav_text"> Settings </span> </div>
+		</div>
 		
 		
 		<!-- For Dean side bar -->
@@ -106,6 +112,7 @@
 		
 		
 
+		
 		
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showAssessmentTable(this);" tooltip="Go to Assessment Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Assesment </span> </div>
@@ -118,12 +125,26 @@
 		
 		
 		
-		{% else %}
-		<!-- For Teachers side bar -->
+		<!-- For Program Chair side bar -->
+
+		{% elif current_user.type == 3 %}
 		
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showOnProbTable(this);" > <span class="fa fa-exclamation-triangle" tooltip="Open Onprobation List"> </span> <span class="normal nav_text"> On probation List </span> </div>
 		</div>
+		
+		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showAssessmentTable(this);" tooltip="Go to Assessment Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Assesment </span> </div>
+		</div>
+		
+		
+		{% else %}
+		<!-- For Teachers side bar -->
+		
+		<!-- <div class="sidebar_box_con" > -->
+			<!-- <div class="sidebar_button df_button primary_color" onclick="showOnProbTable(this);" > <span class="fa fa-exclamation-triangle" tooltip="Open Onprobation List"> </span> <span class="normal nav_text"> On probation List </span> </div> -->
+		<!-- </div> -->
 
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showTrackingTable(this);" tooltip="Go to Student Tracking Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Track Student </span> </div>
@@ -212,7 +233,7 @@
 			
 			
 			<span class="role___" >
-			{{ current_user.type }}
+			{{ get_user_type(current_user.type).type }}
 			</span>
 			{% else %}
 			<span class="name___">

@@ -66,7 +66,7 @@
   <div class="dash_greeting_name primary_color_invert">
     <span id="dash_greeting_time">Hello</span>, 
     {% if current_user.is_authenticated %}
-      {{ current_user.username }}
+      {{ current_user.username }} <span class="role_text normal">({{ get_user_type(current_user.type).type }})</span>
     {% else %}
       Visitor
     {% endif %}

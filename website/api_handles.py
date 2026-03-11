@@ -378,6 +378,7 @@ def save_student():
         student_number = data.get("student_number")
         subject_id = data.get("subject_id")
         instructor_id = data.get("instructor_id")
+        reason = data.get("reason")
 
         if not all([student_name, student_number, subject_id, instructor_id]):
             return {"type": "error", "message": "Incomplete student data"}
@@ -389,6 +390,7 @@ def save_student():
             instructor_id=instructor_id,
             user_id=current_user.user_id,  # Entry creator
             progress="on_probation",
+            reason=reason,
             status=" "
         )
 
@@ -502,11 +504,11 @@ def save_student_update():
             return {"type": "error", "message": "Student not found"}
 
         # Check ownership
-        if student.user_id != current_user.user_id:
+        if student.user_id != current_user.user_id and current_user.type != 3:
             return {"type": "error", "message": "You do not have permission to modify this record"}
 
         # Only allow update if status is 'none'
-        if student.status != "" :
+        if student.status != "" and student.status != " " :
             return {"type": "error", "message": "This student record can no longer be modified"}
 
         # Update allowed fields
@@ -521,6 +523,9 @@ def save_student_update():
 
         if data.get("subject_id"):
             student.subject_id = data["subject_id"]
+            
+        if data.get("reason"):
+            student.reason = data["reason"]
 
         db.session.commit()
 
@@ -701,9 +706,9 @@ def final_assessment_list():
         Users, StudentTable.instructor_id == Users.user_id
     )
     
-    # Only show students ready for final assessment
+    # Only show students ready for final assessment, don't display done/completed status
     query = query.filter(
-        StudentTable.progress.in_(["on_review", "done"]),
+        StudentTable.progress.in_(["on_review", "currently_taking"]),
         StudentTable.progress.isnot(None),
         StudentTable.progress != ""
     )
@@ -819,9 +824,10 @@ def tracking_list():
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
-    ).filter(
-        StudentTable.instructor_id == current_user.user_id,
     )
+
+    if current_user.type != 3:
+        query = query.filter(StudentTable.instructor_id == current_user.user_id)
     
     
     # Filters

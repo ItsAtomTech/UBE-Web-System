@@ -257,7 +257,8 @@
 	display:block;
 	font-style:italic;
 	font-size:0.7em;
-	color:rgba(100,100,100,0.7);
+	color:var(--primary_color_faded);
+	text-transform: capitalize;
 	
 }
 

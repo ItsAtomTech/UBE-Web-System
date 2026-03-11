@@ -25,7 +25,7 @@ let tableFormat = [
 		
 	},
 	{	
-		label: "Subject Code",
+		label: "Units",
 		data_path: "units",
 		sort: true,
 		// parser:parseBranch,

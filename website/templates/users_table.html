@@ -189,7 +189,7 @@ if(pageType == "trash"){
 
 {% block extra_js %}
 
-<script src="{{ url_for('static', filename='js/users_table.js') }}"></script>
+<script defer src="{{ url_for('static', filename='js/users_table.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
 
@@ -200,6 +200,7 @@ if(pageType == "trash"){
 _("account_type").innerText = "";
 _("account_type").innerHTML = "<option value='' > All </option>";
 
+let userTypesRepo = {};
 
 function addTypeOptions(id_value, usertype){
 	let sel = make("option");
@@ -207,6 +208,8 @@ function addTypeOptions(id_value, usertype){
 	sel.innerText = formatString(usertype);
 	sel.value = id_value;
 	sel.classList.add("primary_background_darker", "primary_color");
+	userTypesRepo[id_value] = usertype;
+	
 	_("account_type").appendChild(sel);
 };
 

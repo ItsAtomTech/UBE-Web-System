@@ -28,7 +28,7 @@ let tableFormat = [
 		label: "User Type",
 		data_path: "type",
 		sort: true,
-		// parser:parseBranch,
+		parser:parseUserType,
 		
 	},
 	{	
@@ -596,7 +596,6 @@ function selectHandle(){
 }
 
 
-
 function toggleSelectOption(visible=false){
 	let options = _("selection_options").getElementsByClassName("df_button_flat");
 	
@@ -610,11 +609,15 @@ function toggleSelectOption(visible=false){
 		}
 		
 	}
-	
-	
+}
 
-	
-	
+
+function parseUserType(data){
+	try{
+		return formatString(userTypesRepo[data]);
+	}catch(e){
+		return userTypesRepo[data];
+	}
 }
 
 

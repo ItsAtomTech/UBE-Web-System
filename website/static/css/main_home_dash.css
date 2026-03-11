@@ -100,6 +100,11 @@
 	z-index:2;
 }
 
+.role_text{
+	text-transform:capitalize;
+}
+
+
 .dash_greeting_name {
 	font-size: 1.55em;
 	font-weight: bold;

@@ -73,6 +73,30 @@ let acadStatsForm = {
       id: "instructor_id",
       index: 4,
     },
+    {
+      type: "select",
+      events: {},
+      value: "",
+      config: {
+        config: {
+          min: "0",
+          max: "-1",
+          column_view: false,
+          allow_others: true,
+        },
+      },
+      label: "Reason",
+      fancy: true,
+      required: true,
+      description: "",
+      group: "g_a0ce45a7-c617-416e-9157-3539dc5d4812",
+      row_span: null,
+	  "list": "reasons",
+      col_span: 5,
+      span_column: false,
+      id: "reason",
+      index: 8,
+    }
   ],
   groups: [
     {
