@@ -1270,7 +1270,78 @@ def remove_subject():
 
 
 
+# =============================
+# Configuration Process Start ===
+# =============================
 
+@api_handles.route('/save_config', methods=['POST'])
+@login_required
+def save_config():
+
+    if not is_admin():
+         return jsonify({"type": "error", "message": "No permission to perform this action"})
+
+    try:
+        config_data = request.form.get("config_data")
+
+        if not config_data:
+            return jsonify({"type": "error", "message": "Missing config_data"})
+        
+        # Try to parse the string to ensure it's valid JSON
+        parsed_data = json.loads(config_data)
+
+        config_path = os.path.join(os.getcwd(), 'config.json')
+
+        with open(config_path, 'w') as config_file:
+            json.dump(parsed_data, config_file, indent=4)
+        load_config()
+        return jsonify({"type": "success", "message": "Config saved successfully"})
+
+    except json.JSONDecodeError:
+        return jsonify({"type": "error", "message": "Invalid JSON format"})
+    except Exception as e:
+        return jsonify({"type": "error", "message": str(e)})
+
+
+
+@api_handles.route('/get_config', methods=['POST'])
+def get_config():
+    try:
+        config_path = os.path.join(os.getcwd(), 'config.json')
+
+        if not os.path.exists(config_path):
+            return jsonify({"type": "error", "message": "Config file not found"})
+
+        with open(config_path, 'r') as config_file:
+            config_data = json.load(config_file)
+
+        return jsonify({"type": "success", "data": config_data})
+
+    except Exception as e:
+        return jsonify({"type": "error", "message": str(e)})
+
+
+def load_config():
+    global CONFIG_DATA
+    config_path = os.path.join(os.getcwd(), 'config.json')
+
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r') as config_file:
+                CONFIG_DATA = json.load(config_file)
+        except Exception as e:
+            print(f"Error loading config: {e}")
+            CONFIG_DATA = {}
+    else:
+        CONFIG_DATA = {}
+        
+    print(" [INFO] Config Loaded to Global")
+    
+load_config()
+
+# =============================
+# Configuration Process End ===
+# =============================
 
 
 
@@ -1287,6 +1358,7 @@ def is_admin(silent=False):
 # ================================
 # Other Section End
 # ================================
+
 
 
 
