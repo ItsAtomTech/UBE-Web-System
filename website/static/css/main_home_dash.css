@@ -250,6 +250,10 @@
 		padding: 12px;
 		gap: 14px;
 	}
+	.padded_container {
+		padding: 12px !important;
+		
+	}
 
 	.dash_cards_grid {
 		grid-template-columns: repeat(2, 1fr);
