@@ -41,3 +41,40 @@ generateMultiLineChart(
   'probationLineChart',
   false  // asPercentage = false for raw numbers
 );
+
+
+
+
+qBuilder.server_address = "_";
+
+//getsems_progdata
+
+
+
+
+
+function getSemServerData(){
+	
+	
+	let querys = qBuilder.sendQuery(renderToGraph,"getsems_progdata",[],undefined);
+	
+	
+}
+
+
+function renderToGraph(data){
+	let setsdata = JSON.parse(event.target.responseText);
+	console.log(setsdata);
+	
+	generateMultiLineChart(
+	  setsdata.data,
+	  'probationLineChart',
+	  false  // asPercentage = false for raw numbers
+	);
+	
+	
+}
+
+
+getSemServerData();
+window.setInterval(getSemServerData, 2000);

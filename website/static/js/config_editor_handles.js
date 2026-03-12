@@ -1,8 +1,13 @@
 
 
 //For Saving Config
-function saveConfig(){
-	let values = formMaker.retriveFormInput(true);
+function saveChangesToConfig(){
+	let values = {
+		"months": _("number_of_months").value,
+		"month_1st_sem": _("month_first").value,
+		"month_2nd_sem": _("month_second").value,
+		
+	}
 	let params = [
 		{
 		"name": "config_data",
@@ -10,7 +15,6 @@ function saveConfig(){
 		}
 	
 	];
-	
 	
 	
 	if(!validateRequired(formIdCollections)){
@@ -57,31 +61,12 @@ function loadIntoForms(){
 	if(setdata.type != "success"){
 		return;
 	}
-	
-	loadEvents();
-	
 	let datajs = setdata.data;
 	
-	    for (let key in datajs) {
-        if (datajs.hasOwnProperty(key)) {
-            let itemValue = datajs[key];
-			
-			try{
-				let form = formDatas.forms[formIdCollections.indexOf(key)];
-					if(form.type == "date"){
-						itemValue = utility.dateNormalize(itemValue);
-					}
-				
-				setValues(key, itemValue,form);
-				
-				
-				
-			}catch(e){
-				
-			}
-			
-        }
-    }
+	_("number_of_months").value = datajs['months'];
+	_("month_first").value = datajs['month_1st_sem'];
+	_("month_second").value = datajs['month_2nd_sem'];
+	
 	
 	addFancyPlaceholder();
 	
@@ -107,5 +92,19 @@ function cancelEditor(){
 }
 
 
+
+function calculateSecondSemMonth() {
+    const numMonths = parseInt(_("number_of_months").value) || 0;
+    const firstMonth = parseInt(_("month_first").value) || 0;
+
+    if (!numMonths || !firstMonth) return;
+
+    let secondMonth = firstMonth + numMonths;
+    if (secondMonth > 12) secondMonth = secondMonth - 12;
+
+    _("month_second").value = secondMonth;
+	
+	addFancyPlaceholder();
+}
 
 
