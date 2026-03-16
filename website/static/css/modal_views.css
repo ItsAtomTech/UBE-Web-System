@@ -109,3 +109,9 @@ textarea.form_display[readonly] {
     user-select: text;      /* allows text selection */
 }
 
+.no_backdrop{
+	background-color:transparent;
+	z-index:100;
+}
+
+

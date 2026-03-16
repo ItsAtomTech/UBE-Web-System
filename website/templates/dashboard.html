@@ -11,9 +11,14 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main_home_dash.css') }}">
 
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_formeditor.css') }}">
+
 <script src="{{ url_for('static', filename='js/charts/chart.js') }}"></script>
 <script src="{{ url_for('static', filename='js/charts/chartjs-plugin-datalabels.min.js') }}"></script>
 
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_fancylabel.css') }}">
 
 {% endblock %}
 
@@ -94,6 +99,8 @@
 
 
 
+
+
 <script>
 if(inIframe()){
 	postMessageToParent("goToParent:");
@@ -103,17 +110,28 @@ let current_role = "";
 
 	current_role = "{{ current_user.type }}";
 
+
+
+
+
 </script>
 <script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+
 <script defer src="{{ url_for('static', filename='js/request_builder.js') }}"> </script>
+
 <script defer src="{{ url_for('static', filename='js/chart_helper.js') }}"> </script>
+
 <script defer src="{{ url_for('static', filename='js/chart_generator.js') }}"> </script>
 
 
-
+<script defer src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"> </script>
 
 
 
 
 {% endblock %}
 
+
+{% block modals %}
+		{% include ('fragments/department_choice.html') %}
+{%endblock%}
