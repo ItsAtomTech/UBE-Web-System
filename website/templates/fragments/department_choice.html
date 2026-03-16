@@ -1,68 +1,132 @@
-<div class="modal_main_backdrop padded" id="department_modal" inert > 
-	<div class="modal_container_box">
-		<!-- Modal Header -->
-		<div class="top_header">
-			<div class="title_form_top"> Department Selector </div>
-			<div class="close_modal_tright" tabindex='1' onclick="closeModalContent('department_modal')"> &times; </div>
-		</div>
-		
-		<!-- Modal Contents Container -->
+<div class="modal_main_backdrop padded" id="department_modal" inert>
+  <div class="modal_container_box">
+    <!-- Modal Header -->
+    <div class="top_header">
+      <div class="title_form_top">Department Selector</div>
+      <div
+        class="close_modal_tright"
+        tabindex="1"
+        onclick="closeModalContent('department_modal')"
+      >
+        &times;
+      </div>
+    </div>
 
-		<div class="option_main_container">
-			<div class="centered small padded" tag=""> <span class="fa fa-info-circle"> </span> Checked Options will be the active filter entry.</div>
-			<br />
-										
-			
-			<div class="flexed padded"> 
-				
-				<div class="df_button_flat centered_flex flexed">
-					<span class="fa fa-search"> </span>
-				</div>
-				
-				<div class="cols_con_ padded_input full_width"><label class="df_label_con required_style_label placeholder_label" for="search_program">Type Name...</label>
-					<input id="search_program" value="" required="" class="fancy_form_df form_display" />
+    <!-- Modal Contents Container -->
 
-				</div>
+    <div class="option_main_container">
+      <div class="centered small padded" tag="">
+        <span class="fa fa-info-circle"> </span> Checked Options will be the
+        active filter entry.
+      </div>
+      <br />
 
-			</div>
-			
+      <div class="flexed padded">
+        <div class="df_button_flat centered_flex flexed">
+          <span class="fa fa-search"> </span>
+        </div>
 
+        <div class="cols_con_ padded_input full_width">
+          <label
+            class="df_label_con required_style_label placeholder_label"
+            for="search_program"
+            >Type Name...</label
+          >
+          <input
+            id="search_program"
+            value=""
+            required=""
+            class="fancy_form_df form_display"
+            oninput="searchProgramOptions(this.value)"
+          />
+        </div>
+      </div>
 
+      <div class="df_form_con" onclick="selectFormIndex(3)">
+        <div id="group_text_3_" class="check_container_two_cols">
+          <div class="check_options check_box_button">
+            <input
+              type="checkbox"
+              value="Check Item 1"
+              class="check_options_input custom_check_hidden"
+              id="check_all_"
+              oninput=""
+            />
+            <label for="check_all_" class="custom_check_button small"
+              >All</label
+            >
+          </div>
 
-			<div class="df_form_con" onclick="selectFormIndex(3)">
-				<div id="group_text_3_" class="check_container_two_cols">
+          {% for program in get_programs() %}
+          <div class="check_options check_box_button">
+            <input
+              type="checkbox"
+              value="{{ program.id }}"
+              class="check_options_input custom_check_hidden"
+              id="check_{{ program.id }}_"
+            />
+            <label
+              for="check_{{ program.id }}_"
+              class="custom_check_button small"
+              >{{ program.name }}</label
+            >
+          </div>
 
-					<div class="check_options check_box_button">
-						<input type="checkbox" value="Check Item 1" class="check_options_input custom_check_hidden" id="check_all_" oninput="">
-						<label for="check_all_" class="custom_check_button small">All</label>
-					</div>
-					
-			{% for program in get_programs() %}		
-					<div class="check_options check_box_button">
-						<input type="checkbox" value="{{ program.id }}" class="check_options_input custom_check_hidden" id="check_{{ program.id }}_">
-						<label for="check_{{ program.id }}_" class="custom_check_button small">{{ program.name }}</label>
-					</div>
-					
-			{% endfor %}
-					
-				</div>
-	
-				<div class="cols_con_">
-					<input type="hidden" id="text_3" onchange="hello()" onclick="hello()" class="fancy_form_df form_display" event_hidden="false">
-				</div>
-			</div>
+          {% endfor %}
+        </div>
 
-			
-			
-		</div>
-		
-		<div class="option_main_container_buttons">
-	
-			<button class="df_button secondary_background primary_color_invert small" onclick="saveItem()"> <span class="fa fa-save"> </span> Save </button>
-			
-		</div>
-	
+        <div class="cols_con_">
+          <input
+            type="hidden"
+            id="text_3"
+            onchange="hello()"
+            onclick="hello()"
+            class="fancy_form_df form_display"
+            event_hidden="false"
+          />
+        </div>
+      </div>
+    </div>
 
-
-	</div>
+    <div class="option_main_container_buttons">
+      <button
+        class="df_button secondary_background primary_color_invert small"
+        onclick="saveItem()"
+      >
+        <span class="fa fa-save"> </span> Save
+      </button>
+    </div>
+  </div>
 </div>
+
+<script>
+  function searchProgramOptions(searchText) {
+    var listContainer = document.getElementById("group_text_3_");
+    if (!listContainer) {
+      return;
+    }
+
+    var query = (searchText || "").toString().trim().toLowerCase();
+    var optionRows = listContainer.getElementsByClassName("check_options");
+
+    for (var i = 0; i < optionRows.length; i++) {
+      var row = optionRows[i];
+      var input = row.querySelector('input[type="checkbox"]');
+      var label = row.querySelector("label");
+
+      if (!input || !label) {
+        continue;
+      }
+
+      if (input.id === "check_all_") {
+        row.style.display = "";
+        continue;
+      }
+
+      var name = (label.textContent || label.innerText || "")
+        .trim()
+        .toLowerCase();
+      row.style.display = name.indexOf(query) !== -1 ? "" : "none";
+    }
+  }
+</script>
