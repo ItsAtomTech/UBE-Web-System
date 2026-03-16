@@ -237,6 +237,26 @@
 }
 
 
+.full_width{
+	max-width:unset;
+	width:100%;
+}
+
+
+.centered_flex{
+	justify-content:center;
+	align-items:center;
+	
+}
+
+
+.df_form_con{
+	box-shadow:none;
+}
+
+.df_form_con:hover{
+	box-shadow:none;
+}
 
 
 @media (max-width: 1000px) {
