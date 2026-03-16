@@ -401,7 +401,7 @@ def save_student():
         else:
             # Fallback: between semesters (e.g. June, July)
             current_semester = 1
-            sem_year = current_year
+            sem_year = current_year     
 
         new_student = StudentTable(
             student_name=student_name,
@@ -1058,7 +1058,7 @@ def get_dashboard_stats():
 
 
 # Graphs goes here
-@api_handles.route('/getsems_progdata', methods=['POST','GET'])
+@api_handles.route('/getsems_progdata', methods=['POST', 'GET'])
 def getsems_progdata():
     try:
         filters_raw = request.form.get("filters")
@@ -1073,56 +1073,67 @@ def getsems_progdata():
                 Department.name,
                 StudentTable.sem_year,
                 StudentTable.semester,
-                func.count(StudentTable.student_id).label('count')
+                func.count(StudentTable.student_id).label("count")
             )
             .join(Department, StudentTable.department_id == Department.id)
-            .filter(StudentTable.sem_year != None, StudentTable.semester != None)
+            .filter(StudentTable.sem_year.isnot(None), StudentTable.semester.isnot(None))
         )
 
         if department_filter != "all":
-            dept_list = [d.strip() for d in department_filter.split(",")]
-            query = query.filter(Department.name.in_(dept_list))
-
-        if year_range:
-            years = [y.strip() for y in year_range.split(",")]
-            if len(years) == 2:
-                year_from, year_to = int(years[0]), int(years[1])
-                query = query.filter(StudentTable.sem_year >= year_from, StudentTable.sem_year <= year_to)
+            dept_list = [d.strip() for d in department_filter.split(",") if d.strip()]
+            if dept_list:
+                query = query.filter(Department.name.in_(dept_list))
 
         if semester_filter != "all":
-            sem_list = [int(s.strip()) for s in semester_filter.split(",")]
-            query = query.filter(StudentTable.semester.in_(sem_list))
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                query = query.filter(StudentTable.semester.in_(sem_list))
 
-        results = (
+        raw_results = (
             query
             .group_by(Department.name, StudentTable.sem_year, StudentTable.semester)
             .order_by(StudentTable.sem_year, StudentTable.semester)
             .all()
         )
 
-        # Collect all unique (sem_year, semester) combos across all results
-        all_sem_keys = sorted(
-            set((sem_year, semester) for _, sem_year, semester, _ in results)
-        )
+        normalized_rows = []
+        for dept_name, sem_year, semester, count in raw_results:
+            sem_year = int(sem_year)
+            semester = int(semester)
+
+            academic_start_year = sem_year if semester == 1 else (sem_year - 1)
+            normalized_rows.append((dept_name, academic_start_year, semester, int(count)))
+
+        if year_range:
+            years = [y.strip() for y in year_range.split(",")]
+            if len(years) == 2 and years[0].isdigit() and years[1].isdigit():
+                year_from, year_to = int(years[0]), int(years[1])
+                normalized_rows = [
+                    row for row in normalized_rows
+                    if year_from <= row[1] <= year_to
+                ]
+
+        combined = {}
+        for dept_name, academic_start_year, semester, count in normalized_rows:
+            key = (dept_name, academic_start_year, semester)
+            combined[key] = combined.get(key, 0) + count
+
+        all_sem_keys = sorted({(yr, sem) for _, yr, sem in combined.keys()}, key=lambda x: (x[0], x[1]))
         all_sem_labels = [
-            (key, f"{key[0]} - {'1st' if key[1] == 1 else '2nd'} Sem")
-            for key in all_sem_keys
+            ((yr, sem), f"{yr}-{yr + 1} - {'1st' if sem == 1 else '2nd'} Sem")
+            for yr, sem in all_sem_keys
         ]
 
-        # Build per-department count lookup
         dept_count_map = {}
-        for dept_name, sem_year, semester, count in results:
+        for (dept_name, yr, sem), count in combined.items():
             if dept_name not in dept_count_map:
                 dept_count_map[dept_name] = {}
-            dept_count_map[dept_name][(sem_year, semester)] = count
+            dept_count_map[dept_name][(yr, sem)] = count
 
-        # Fill in 0 for missing sems per department
         output = []
-        for dept_name, sem_counts in dept_count_map.items():
-            data = [
-                [label, sem_counts.get(key, 0)]
-                for key, label in all_sem_labels
-            ]
+        for dept_name in sorted(dept_count_map.keys()):
+            sem_counts = dept_count_map[dept_name]
+            data = [[label, sem_counts.get(key, 0)] for key, label in all_sem_labels]
             output.append({"label": dept_name, "data": data})
 
         return {"type": "success", "data": output}
