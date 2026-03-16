@@ -1,137 +1,211 @@
-{% extends "base.html" %}
-
-{% block title%} Home {% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title%} Home {% endblock %} {% block
+extra_css %}
 
 <!-- <link id=' ' rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}"> -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}"
+/>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_buttons.css') }}">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/daimofuu_buttons.css') }}"
+/>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main_home_dash.css') }}">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/main_home_dash.css') }}"
+/>
 
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_formeditor.css') }}">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/daimofuu_formeditor.css') }}"
+/>
 
 <script src="{{ url_for('static', filename='js/charts/chart.js') }}"></script>
 <script src="{{ url_for('static', filename='js/charts/chartjs-plugin-datalabels.min.js') }}"></script>
 
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/daimofuu_fancylabel.css') }}"
+/>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_fancylabel.css') }}">
-
-{% endblock %}
-
-
-
-{% block contents %}
+{% endblock %} {% block contents %}
 <!-- Top Tool Bar -->
 
+{% if page == "preview" and not current_user.is_authenticated %}
 
+<div
+  class="df_titlebar_main_con third_background_faded primary_color_invert custom_pinned"
+>
+  <div class="title_text_big">
+    <div class="logo_title_con"></div>
+  </div>
 
-		{% if page == "preview" and not current_user.is_authenticated %}
-		
-		<div class="df_titlebar_main_con third_background_faded primary_color_invert custom_pinned">
-			<div class="title_text_big">
-				<div class="logo_title_con">
-				
-				</div>
+  <div class="nav_buttons_top">
+    <div class="nav_button_entry" onclick="go_to('login')">Login</div>
+    <div class="nav_button_entry active">Preview</div>
+    <div class="nav_button_entry" onclick="go_to('about')">About</div>
+  </div>
+</div>
 
-			</div>	 
+{% else %}
+<div
+  class="df_titlebar_main_con center third_background_faded primary_color_invert glass"
+  id="dash_title_top"
+>
+  <div class="title_container">
+    <div class="text_banner big">Dashboard</div>
+  </div>
+</div>
+{% endif %}
 
-			<div class="nav_buttons_top">
-				<div class="nav_button_entry" onclick="go_to('login');">
-					Login
-				</div>
-				<div class="nav_button_entry active">
-					Preview
-				</div>
-				<div class="nav_button_entry" onclick="go_to('about');">		
-					About
-				</div>
-			</div>
-		</div>
-
-		{% else %}
-		<div class="df_titlebar_main_con center third_background_faded primary_color_invert glass" id="dash_title_top">
-		<div class="title_container">
-		
-			<div class="text_banner big">Dashboard</div>					
-		</div>
-	</div>
-		{% endif %}
-		
-	
-	
 <div id="dash_contents" class="primary_color">
-	
-		{% include ('fragments/main_dash.html') %}
-		
-		{% include ('fragments/main_chart.html') %}
+  {% include ('fragments/main_dash.html') %} {% include
+  ('fragments/main_chart.html') %}
 
-
-
-	<div style="opacity:0.4;">
-
-	</div>
-
-
+  <div style="opacity: 0.4"></div>
 </div>
 
+<div class="modal_main_backdrop" id="modal_2" inert>
+  <div class="modal_container_box">
+    <!-- Modal Header -->
+    <div class="top_header">
+      <div class="title_form_top">In Progress</div>
+      <div
+        class="close_modal_tright"
+        tabindex="1"
+        onclick="closeModalContent('modal_2')"
+      >
+        &times;
+      </div>
+    </div>
 
-
-<div class="modal_main_backdrop" id="modal_2" inert > 
-	<div class="modal_container_box">
-		<!-- Modal Header -->
-		<div class="top_header">
-			<div class="title_form_top"> In Progress</div>
-			<div class="close_modal_tright" tabindex='1' onclick="closeModalContent('modal_2')"> &times; </div>
-		</div>
-		
-		<!-- Modal Contents Container -->
-		<div class="main_contents_box">
-				<p> This feature is coming soon... </p>
-
-		</div>
-	</div>
+    <!-- Modal Contents Container -->
+    <div class="main_contents_box">
+      <p>This feature is coming soon...</p>
+    </div>
+  </div>
 </div>
-
-
-
-
-
 
 <script>
-if(inIframe()){
-	postMessageToParent("goToParent:");
-	postMessageToParent("close");
-}
-let current_role = "";
+  if (inIframe()) {
+    postMessageToParent("goToParent:");
+    postMessageToParent("close");
+  }
+  let current_role = "";
 
-	current_role = "{{ current_user.type }}";
-
-
-
-
-
+  current_role = "{{ current_user.type }}";
 </script>
-<script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+<script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"></script>
 
-<script defer src="{{ url_for('static', filename='js/request_builder.js') }}"> </script>
+<script
+  defer
+  src="{{ url_for('static', filename='js/request_builder.js') }}"
+></script>
 
-<script defer src="{{ url_for('static', filename='js/chart_helper.js') }}"> </script>
+<script
+  defer
+  src="{{ url_for('static', filename='js/chart_helper.js') }}"
+></script>
 
-<script defer src="{{ url_for('static', filename='js/chart_generator.js') }}"> </script>
+<script
+  defer
+  src="{{ url_for('static', filename='js/chart_generator.js') }}"
+></script>
 
+<script
+  defer
+  src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"
+></script>
 
-<script defer src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"> </script>
+<script>
+  const PROGRAM_ACRONYM_MAP = {
+    "Bachelor of Arts in English Language": "BAEL",
+    "Bachelor of Arts in Communication": "BAComm",
+    "Bachelor of Science in Biology": "BSBio",
+    "Bachelor of Arts in Political Science": "BAPoS",
+    "Bachelor of Library and Information Science": "BLIS",
+    "Bachelor of Science in Information Technology": "BSIT",
+    "Bachelor of Science in Social Work": "BSSW",
+    "Bachelor of Music in Music Education": "BMME",
+    "Bachelor of Elementary Education": "BEEd",
+    "Bachelor of Special Needs Education": "BSNEd",
+    "Bachelor of Early Childhood Education": "BECEd",
+    "Bachelor of Physical Education": "BPEd",
+    "Bachelor of Technology and Livelihood Education": "BTLEd",
+    "Bachelor of Secondary Education - Major in Social Studies": "BSEd-SocStud",
+    "Bachelor of Secondary Education - Major in English": "BSEd-English",
+    "Bachelor of Secondary Education - Major in Filipino": "BSEd-Filipino",
+    "Bachelor of Secondary Education - Major in Mathematics": "BSEd-Math",
+    "Bachelor of Secondary Education - Major in Science": "BSEd-Science",
+    "Bachelor of Science in Hospitality Management": "BSHM",
+    "Bachelor of Science in Tourism Management": "BSTM",
+    "Bachelor of Science in Entrepreneurship": "BS Entrep",
+  };
 
+  function normalizeProgramKey(value) {
+    return String(value || "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+  }
 
+  const PROGRAM_ACRONYM_MAP_NORMALIZED = Object.fromEntries(
+    Object.entries(PROGRAM_ACRONYM_MAP).map(function (entry) {
+      return [normalizeProgramKey(entry[0]), entry[1]];
+    }),
+  );
 
+  function parseProgramName(programName) {
+    if (!programName) {
+      return "";
+    }
 
-{% endblock %}
+    const normalized = String(programName).trim();
+    const normalizedKey = normalizeProgramKey(normalized);
+    if (PROGRAM_ACRONYM_MAP_NORMALIZED[normalizedKey]) {
+      return PROGRAM_ACRONYM_MAP_NORMALIZED[normalizedKey];
+    }
 
+    const cleaned = normalized
+      .replace(/\s+-\s+Major in\s+/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
-{% block modals %}
-		{% include ('fragments/department_choice.html') %}
-{%endblock%}
+    const words = cleaned.split(" ");
+    const stopWords = new Set(["of", "in", "and", "the", "major"]);
+    let acronym = "";
+
+    for (const word of words) {
+      const lower = word.toLowerCase();
+      if (stopWords.has(lower)) {
+        continue;
+      }
+      if (/[a-zA-Z]/.test(word)) {
+        acronym += word[0].toUpperCase();
+      }
+    }
+
+    return acronym || normalized;
+  }
+
+  function parseProgramsInChart(chartResponse) {
+    if (!chartResponse || !Array.isArray(chartResponse.data)) {
+      return chartResponse;
+    }
+
+    return {
+      ...chartResponse,
+      data: chartResponse.data.map(function (item) {
+        return {
+          ...item,
+          label: parseProgramName(item.label),
+        };
+      }),
+    };
+  }
+</script>
+
+{% endblock %} {% block modals %} {% include
+('fragments/department_choice.html') %} {%endblock%}
