@@ -36,7 +36,8 @@ def dum():
     return {"type": "success", "message": "Message test" } 
     page = 'home'
     
-
+def manila_time():
+    return datetime.now(pytz.timezone("Asia/Manila"))
 
 # ================================
 # Users Section
@@ -368,39 +369,56 @@ def get_instructors():
 def save_student():
     try:
         student_data = request.form.get("student_data")
-
         if not student_data:
             return {"type": "error", "message": "Missing student_data"}
-
         data = json.loads(student_data)
-
         student_name = data.get("student_name")
         student_number = data.get("student_number")
         subject_id = data.get("subject_id")
         instructor_id = data.get("instructor_id")
         reason = data.get("reason")
         department_id = data.get("department_id")
-
         if not all([student_name, student_number, subject_id, instructor_id]):
             return {"type": "error", "message": "Incomplete student data"}
+
+        # Determine current semester and sem_year
+        now = manila_time()
+        current_month = now.month
+        current_year = now.year
+        month_1st = int(CONFIG_DATA['month_1st_sem'])  # 8 (August)
+        month_2nd = int(CONFIG_DATA['month_2nd_sem'])  # 1 (January)
+        duration = int(CONFIG_DATA['months'])           # 5
+
+        month_1st_end = month_1st + duration - 1       # 12 (December)
+        month_2nd_end = month_2nd + duration - 1       # 5 (May)
+
+        if month_1st <= current_month <= month_1st_end:
+            current_semester = 1
+            sem_year = current_year
+        elif month_2nd <= current_month <= month_2nd_end:
+            current_semester = 2
+            sem_year = current_year
+        else:
+            # Fallback: between semesters (e.g. June, July)
+            current_semester = 1
+            sem_year = current_year
 
         new_student = StudentTable(
             student_name=student_name,
             student_number=student_number,
             subject_id=subject_id,
             instructor_id=instructor_id,
-            user_id=current_user.user_id,  # Entry creator
+            user_id=current_user.user_id,
             progress="on_probation",
             reason=reason,
             status=" ",
-            department_id=department_id
+            department_id=department_id,
+            sem_year=sem_year,
+            semester=current_semester
         )
-
         db.session.add(new_student)
         db.session.commit()
-
         return {"type": "success", "message": "Student saved successfully"}
-
     except Exception as e:
         db.session.rollback()
         return {"type": "error", "message": str(e)}
@@ -1037,6 +1055,80 @@ def get_dashboard_stats():
     except Exception as e:
         return {"type": "error", "message": str(e)}
 
+
+
+# Graphs goes here
+@api_handles.route('/getsems_progdata', methods=['POST','GET'])
+def getsems_progdata():
+    try:
+        filters_raw = request.form.get("filters")
+        filters = json.loads(filters_raw) if filters_raw else {}
+
+        department_filter = filters.get("department_filter", "all")
+        year_range = filters.get("year_range", None)
+        semester_filter = filters.get("semester", "all")
+
+        query = (
+            db.session.query(
+                Department.name,
+                StudentTable.sem_year,
+                StudentTable.semester,
+                func.count(StudentTable.student_id).label('count')
+            )
+            .join(Department, StudentTable.department_id == Department.id)
+            .filter(StudentTable.sem_year != None, StudentTable.semester != None)
+        )
+
+        if department_filter != "all":
+            dept_list = [d.strip() for d in department_filter.split(",")]
+            query = query.filter(Department.name.in_(dept_list))
+
+        if year_range:
+            years = [y.strip() for y in year_range.split(",")]
+            if len(years) == 2:
+                year_from, year_to = int(years[0]), int(years[1])
+                query = query.filter(StudentTable.sem_year >= year_from, StudentTable.sem_year <= year_to)
+
+        if semester_filter != "all":
+            sem_list = [int(s.strip()) for s in semester_filter.split(",")]
+            query = query.filter(StudentTable.semester.in_(sem_list))
+
+        results = (
+            query
+            .group_by(Department.name, StudentTable.sem_year, StudentTable.semester)
+            .order_by(StudentTable.sem_year, StudentTable.semester)
+            .all()
+        )
+
+        # Collect all unique (sem_year, semester) combos across all results
+        all_sem_keys = sorted(
+            set((sem_year, semester) for _, sem_year, semester, _ in results)
+        )
+        all_sem_labels = [
+            (key, f"{key[0]} - {'1st' if key[1] == 1 else '2nd'} Sem")
+            for key in all_sem_keys
+        ]
+
+        # Build per-department count lookup
+        dept_count_map = {}
+        for dept_name, sem_year, semester, count in results:
+            if dept_name not in dept_count_map:
+                dept_count_map[dept_name] = {}
+            dept_count_map[dept_name][(sem_year, semester)] = count
+
+        # Fill in 0 for missing sems per department
+        output = []
+        for dept_name, sem_counts in dept_count_map.items():
+            data = [
+                [label, sem_counts.get(key, 0)]
+                for key, label in all_sem_labels
+            ]
+            output.append({"label": dept_name, "data": data})
+
+        return {"type": "success", "data": output}
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
 # ================================
 # Student Table End
 # ================================
@@ -1336,6 +1428,7 @@ def load_config():
         CONFIG_DATA = {}
         
     print(" [INFO] Config Loaded to Global")
+    print(CONFIG_DATA)
     
 load_config()
 

@@ -29,18 +29,26 @@
          <br />
          <div class="small"> <span class="fa fa-hashtag"> </span> Specify number of Months for each sem.
          </div>
+		 
+		 
          <div class="flexed padded_gap">
             <div class="cols_con_ padded_input"><label class="df_label_con required_style_label placeholder_label" for="number_of_months">Number of months</label>
-               <input id="number_of_months" required value="5" class="fancy_form_df form_display" />
+               <input type="number" id="number_of_months" required value="5" class="fancy_form_df form_display" onchange="calculateSecondSemMonth()"
+			   max=12
+			   min=1
+			   
+			   />
             </div>
          </div>
+		 
+		 
          <br>
          <div class="small bold"> <span class="fa fa-calendar"> </span> Choose the starting month for each semester.
          </div>
          <div class="flexed padded_gap">
             <div class="cols_con_ padded_input full_width">
                <label class="df_label_con required_style_label placeholder_label" for="month_first">1st Sem</label>
-               <select id="month_first" required class="fancy_form_df form_display">
+               <select id="month_first" required class="fancy_form_df form_display" onchange="calculateSecondSemMonth()">
                   <option value=""></option>
                   <option value="1">January</option>
                   <option value="2">February</option>
@@ -97,6 +105,10 @@ function updatesOn(elm){
 		hasChanges = true;
 	}
 }
+
+var formIdCollections = ["number_of_months","month_first","month_second"];
+
+
 </script>
 
 
@@ -104,6 +116,7 @@ function updatesOn(elm){
 <script src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
+<script defer src="{{ url_for('static', filename='js/config_editor_handles.js') }}"></script>
 
 <script defer src="{{ url_for('static', filename='js/modalizer.js') }}"></script>
 
