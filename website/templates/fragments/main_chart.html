@@ -57,6 +57,13 @@
     background: transparent;
     outline: none;
   }
+  
+  .padded_gap{
+	gap:10px;
+  }
+  
+  
+  
 </style>
 <div class="padded_container">
   <section class="chart_filter_bar">
@@ -66,17 +73,16 @@
       for="probation-filter-program"
       >Department (Program)</label
     >
-    <select
+    <input type="button"
+	class="df_button flexed full_width secondary_background primary_color_invert"
       id="probation-filter-program"
       class="chart_filter_select primary_color"
-    >
-      <option value="all">All Programs</option>
-      <option value="bsit">BSIT</option>
-      <option value="bsa">BSA</option>
-      <option value="bsba">BSBA</option>
-      <option value="beed">BEED</option>
-      <option value="bsed">BSED</option>
-    </select>
+	  value="Select Programs"
+	  
+	  onclick='showModalContent("department_modal");'
+    />
+
+
   </div>
 
   <div class="chart_filter_item ">
@@ -85,7 +91,7 @@
       for="probation-filter-year"
       >Year Range</label
     >
-    <div class="flexed">
+    <div class="flexed padded_gap">
       <input
       id="probation-filter-year"
       class="chart_filter_select primary_color"
