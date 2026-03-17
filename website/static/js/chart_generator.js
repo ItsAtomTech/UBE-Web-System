@@ -151,6 +151,10 @@ function saveSelection(){
 	
 	try{
 		getSemServerData();
+<<<<<<< HEAD
+=======
+		showSelectionOnButton();
+>>>>>>> 8b7eee1420bee068008b1d02ae944427579e4817
 	}catch(e){
 		//---
 	}
@@ -180,10 +184,24 @@ function loadSavedSelections(){
 	}else{
 		program_filter = JSON.parse(saves);
 		renderSelection();
+		
 	}
+	
+	showSelectionOnButton();
 }
 
 
+
+function showSelectionOnButton(){
+	let elm = _("probation-filter-program");
+	
+	if(program_filter == null || program_filter.length == 0 || (program_filter[0] == "all" && program_filter.length <= 1)){
+		elm.value = "Selected Programs (All)"
+	}else{
+		elm.value = "Selected Programs ("+program_filter.length+")"
+	}
+	
+}
 
 
 function randomizeLoadout(counts = 10) {
@@ -202,10 +220,21 @@ function randomizeLoadout(counts = 10) {
 
     selected.forEach(cb => cb.checked = true);
 }
-
-
 loadSavedSelections();
 
 
+<<<<<<< HEAD
+=======
+
+// ==================================
+//Section for year filtering:
+// ==================================
+_("year_filter_end").value = new Date().getFullYear();
+
+
+
+
+
+>>>>>>> 8b7eee1420bee068008b1d02ae944427579e4817
 getSemServerData();
 window.setInterval(getSemServerData, 2000);
