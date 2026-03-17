@@ -1082,7 +1082,7 @@ def getsems_progdata():
         if department_filter != "all":
             dept_list = [d.strip() for d in department_filter.split(",") if d.strip()]
             if dept_list:
-                query = query.filter(Department.name.in_(dept_list))
+                query = query.filter(StudentTable.department_id.in_(dept_list))
 
         if semester_filter != "all":
             sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]

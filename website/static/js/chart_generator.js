@@ -54,7 +54,7 @@ qBuilder.server_address = "_";
 
 
 function getSemServerData(){
-	
+	qBuilder.filters["department_filter"] = program_filter.join(",");
 	
 	let querys = qBuilder.sendQuery(renderToGraph,"getsems_progdata",[],undefined);
 	
@@ -76,8 +76,6 @@ function renderToGraph(data){
 }
 
 
-getSemServerData();
-window.setInterval(getSemServerData, 2000);
 
 
 
@@ -149,6 +147,15 @@ function saveSelection(){
 	
 	localStorage.setItem("savedSelections", JSON.stringify(program_filter));
 	
+	showToast("Selections Applied");
+	
+	try{
+		getSemServerData();
+	}catch(e){
+		//---
+	}
+	
+	
 	
 }
 
@@ -169,6 +176,7 @@ function loadSavedSelections(){
 	if(saves == null){
 		selectRandoms();	
 		saveSelection();		
+		
 	}else{
 		program_filter = JSON.parse(saves);
 		renderSelection();
@@ -198,3 +206,6 @@ function randomizeLoadout(counts = 10) {
 
 loadSavedSelections();
 
+
+getSemServerData();
+window.setInterval(getSemServerData, 2000);
