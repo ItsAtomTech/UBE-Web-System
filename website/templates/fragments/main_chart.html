@@ -1,71 +1,5 @@
-<style>
-  #probation_chart_con {
-    box-sizing: border-box;
-    border-radius: 12px;
-    padding: 18px 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
-    margin: 20px auto;
-    /* max-width: 900px; */
-  }
 
-  #probation_chart_con .chart_title {
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.85;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-
-  #probation_chart_con canvas {
-    max-height: 250px;
-  }
-
-  .padded_container {
-    padding: 20px;
-  }
-
-  .chart_filter_bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 0 20px 8px;
-    margin: 0 auto;
-    background-color: var(--primary_background);
-    padding: 18px 20px;
-    border-radius: 12px;
-  }
-
-  .chart_filter_item {
-    min-width: 190px;
-    flex: 1 1 220px;
-  }
-
-  .chart_filter_label {
-    display: block;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    opacity: 0.85;
-    font-family: "Gotham Rounded";
-  }
-
-  .chart_filter_select {
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    background: transparent;
-    outline: none;
-  }
-  
-  .padded_gap{
-	gap:10px;
-  }
-  
-  
-  
-</style>
-<div class="padded_container">
+<div class="padded_container filter_bar">
   <section class="chart_filter_bar">
   <div class="chart_filter_item">
     <label
@@ -88,13 +22,13 @@
   <div class="chart_filter_item ">
     <label
       class="chart_filter_label primary_color bold small"
-      for="probation-filter-year"
+      for="year_filter_start"
       >Year Range</label
     >
-    <div class="flexed padded_gap">
+    <div class="flexed padded_gap input_styles">
       <input
-      id="probation-filter-year"
-      class="chart_filter_select primary_color"
+      id="year_filter_start"
+      class="chart_filter_select primary_color "
       type="number"
       name="year"
       min="1900"
@@ -102,13 +36,17 @@
     >
 
     </input>
+	
+	
     <input
-      id="probation-filter-year"
+      id="year_filter_end"
       class="chart_filter_select primary_color"
       type="number"
       value="2000"
       name="year"
       min="1900"
+	  
+	  
     >
 
     </input>  
@@ -117,7 +55,7 @@
     
   </div>
   
-  <div class="chart_filter_item">
+  <div class="chart_filter_item input_styles">
     <label
       class="chart_filter_label primary_color bold small"
       for="probation-filter-semester"
@@ -130,7 +68,7 @@
       <option value="all">All Semesters</option>
       <option value="1">1st Semester</option>
       <option value="2">2nd Semester</option>
-      <option value="summer">Summer</option>
+      <option value="3">Summer</option>
     </select>
   </div>
 </section>

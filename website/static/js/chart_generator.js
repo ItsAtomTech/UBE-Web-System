@@ -54,7 +54,7 @@ qBuilder.server_address = "_";
 
 
 function getSemServerData(){
-	
+	qBuilder.filters["department_filter"] = program_filter.join(",");
 	
 	let querys = qBuilder.sendQuery(renderToGraph,"getsems_progdata",[],undefined);
 	
@@ -76,8 +76,6 @@ function renderToGraph(data){
 }
 
 
-getSemServerData();
-window.setInterval(getSemServerData, 2000);
 
 
 
@@ -149,6 +147,16 @@ function saveSelection(){
 	
 	localStorage.setItem("savedSelections", JSON.stringify(program_filter));
 	
+	showToast("Selections Applied");
+	
+	try{
+		getSemServerData();
+		showSelectionOnButton();
+	}catch(e){
+		//---
+	}
+	
+	
 	
 }
 
@@ -169,13 +177,28 @@ function loadSavedSelections(){
 	if(saves == null){
 		selectRandoms();	
 		saveSelection();		
+		
 	}else{
 		program_filter = JSON.parse(saves);
 		renderSelection();
+		
 	}
+	
+	showSelectionOnButton();
 }
 
 
+
+function showSelectionOnButton(){
+	let elm = _("probation-filter-program");
+	
+	if(program_filter == null || program_filter.length == 0 || (program_filter[0] == "all" && program_filter.length <= 1)){
+		elm.value = "Selected Programs (All)"
+	}else{
+		elm.value = "Selected Programs ("+program_filter.length+")"
+	}
+	
+}
 
 
 function randomizeLoadout(counts = 10) {
@@ -194,7 +217,18 @@ function randomizeLoadout(counts = 10) {
 
     selected.forEach(cb => cb.checked = true);
 }
-
-
 loadSavedSelections();
 
+
+
+// ==================================
+//Section for year filtering:
+// ==================================
+_("year_filter_end").value = new Date().getFullYear();
+
+
+
+
+
+getSemServerData();
+window.setInterval(getSemServerData, 2000);
