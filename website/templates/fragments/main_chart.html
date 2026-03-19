@@ -31,8 +31,9 @@
       class="chart_filter_select primary_color "
       type="number"
       name="year"
-      min="1900"
-      value="2000"
+      min="1921"
+      value="2001"
+	  onchange="applyFilterRange();"
     >
 
     </input>
@@ -45,8 +46,7 @@
       value="2000"
       name="year"
       min="1900"
-	  
-	  
+	  onchange="applyFilterRange();"
     >
 
     </input>  
@@ -62,8 +62,9 @@
       >Semester Range</label
     >
     <select
-      id="probation-filter-semester"
+      id="probation_filter_semester"
       class="chart_filter_select primary_color"
+	  onchange="getSemServerData();"
     >
       <option value="all">All Semesters</option>
       <option value="1">1st Semester</option>

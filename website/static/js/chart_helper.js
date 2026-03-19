@@ -466,13 +466,13 @@ function generateMultiLineChart(
     });
   });
 
-  // Build datasets array for Chart.js
+
   let chartDatasets = datasets.map((dataset, index) => {
     let dataValues = dataset.data.map((item) => item[1]);
     let color = colors[index % colors.length];
-
+	
     return {
-      label: dataset.label,
+      label: parseProgramName(dataset.label),
       data: dataValues,
       backgroundColor: color,
       borderColor: color,
@@ -491,6 +491,7 @@ function generateMultiLineChart(
     labels: allLabels,
     datasets: chartDatasets,
   };
+
 
   if (chartInstances[elementId]) {
     let shouldAnimate = false;
@@ -536,6 +537,11 @@ function generateMultiLineChart(
         plugins: {
           legend: {
             display: true,
+			labels: {
+				boxWidth: 10,
+				boxHeight: 10,
+				borderRadius: 5,
+			}
           },
           datalabels: {
             color: getCSSVar("--primary_color_invert"),

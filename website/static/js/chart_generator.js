@@ -55,10 +55,10 @@ qBuilder.server_address = "_";
 
 function getSemServerData(){
 	qBuilder.filters["department_filter"] = program_filter.join(",");
+	qBuilder.filters["year_range"] = year_range;
+	qBuilder.filters["semester"] = _("probation_filter_semester").value || "all";
 	
 	let querys = qBuilder.sendQuery(renderToGraph,"getsems_progdata",[],undefined);
-	
-	
 }
 
 
@@ -82,7 +82,7 @@ function renderToGraph(data){
 //Filters and Modal Pickers Function:
 
 let program_filter = [];
-
+let year_range = ""
 
 
  function searchProgramOptions(searchText) {
@@ -151,10 +151,9 @@ function saveSelection(){
 	
 	try{
 		getSemServerData();
-<<<<<<< HEAD
-=======
+
+    
 		showSelectionOnButton();
->>>>>>> 8b7eee1420bee068008b1d02ae944427579e4817
 	}catch(e){
 		//---
 	}
@@ -229,9 +228,41 @@ loadSavedSelections();
 // ==================================
 //Section for year filtering:
 // ==================================
-_("year_filter_end").value = new Date().getFullYear();
+let current_year_value = new Date().getFullYear();
+_("year_filter_end").value = current_year_value;
 
 
+function filterOnYears(){
+	let start = _("year_filter_start").value;
+	let end = _("year_filter_end").value;
+	
+	if (!start) {
+        let min = _("year_filter_start").getAttribute("min");
+        start = min ? min : current_year_value;
+    }
+
+    if (!end) {
+        end = current_year_value;
+    }
+
+    year_range = `${start},${end}`;	
+}
+
+function applyFilterRange(){
+	filterOnYears();
+	
+	if(utility.spammingJam()){
+		return false;
+	};
+	
+	try{
+		getSemServerData();
+	}catch(e){
+		//---
+	}
+	
+	
+}
 
 
 
