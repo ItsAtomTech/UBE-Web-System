@@ -385,12 +385,16 @@ def save_student():
         now = manila_time()
         current_month = now.month
         current_year = now.year
-        month_1st = int(CONFIG_DATA['month_1st_sem'])  # 8 (August)
-        month_2nd = int(CONFIG_DATA['month_2nd_sem'])  # 1 (January)
-        duration = int(CONFIG_DATA['months'])           # 5
+        month_1st = int(CONFIG_DATA['month_1st_sem'])
+        month_2nd = int(CONFIG_DATA['month_2nd_sem'])
+        duration = int(CONFIG_DATA['months'])
+        month_summer = int(CONFIG_DATA['month_summer'])
+        summer_count = int(CONFIG_DATA['summer_count'])
 
-        month_1st_end = month_1st + duration - 1       # 12 (December)
-        month_2nd_end = month_2nd + duration - 1       # 5 (May)
+        month_1st_end = month_1st + duration - 1
+        month_2nd_end = month_2nd + duration - 1
+        month_summer_end = month_summer + summer_count - 1
+
 
         if month_1st <= current_month <= month_1st_end:
             current_semester = 1
@@ -398,10 +402,13 @@ def save_student():
         elif month_2nd <= current_month <= month_2nd_end:
             current_semester = 2
             sem_year = current_year
+        elif month_summer <= current_month <= month_summer_end:
+            current_semester = 3  # Summer
+            sem_year = current_year
         else:
-            # Fallback: between semesters (e.g. June, July)
+            # Fallback: gap between semesters
             current_semester = 1
-            sem_year = current_year     
+            sem_year = current_year   
 
         new_student = StudentTable(
             student_name=student_name,
@@ -1097,11 +1104,16 @@ def getsems_progdata():
         )
 
         normalized_rows = []
+        # academic_start_year normalization
         for dept_name, sem_year, semester, count in raw_results:
             sem_year = int(sem_year)
             semester = int(semester)
-
-            academic_start_year = sem_year if semester == 1 else (sem_year - 1)
+            if semester == 1:
+                academic_start_year = sem_year
+            elif semester == 2:
+                academic_start_year = sem_year - 1
+            elif semester == 3:  # Summer follows 2nd sem
+                academic_start_year = sem_year - 1
             normalized_rows.append((dept_name, academic_start_year, semester, int(count)))
 
         if year_range:
@@ -1118,9 +1130,10 @@ def getsems_progdata():
             key = (dept_name, academic_start_year, semester)
             combined[key] = combined.get(key, 0) + count
 
+        # label generation - order by (year, semester) so Summer comes after 2nd sem
         all_sem_keys = sorted({(yr, sem) for _, yr, sem in combined.keys()}, key=lambda x: (x[0], x[1]))
         all_sem_labels = [
-            ((yr, sem), f"{yr}-{yr + 1} - {'1st' if sem == 1 else '2nd'} Sem")
+            ((yr, sem), f"{yr}-{yr + 1} - {sem_label(sem)} Sem")
             for yr, sem in all_sem_keys
         ]
 
@@ -1139,6 +1152,10 @@ def getsems_progdata():
         return {"type": "success", "data": output}
     except Exception as e:
         return {"type": "error", "message": str(e)}
+        
+        
+def sem_label(sem):
+    return {1: '1st', 2: '2nd', 3: 'Summer'}.get(sem, str(sem))
 
 # ================================
 # Student Table End
