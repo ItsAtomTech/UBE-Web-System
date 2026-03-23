@@ -151,8 +151,6 @@ function saveSelection(){
 	
 	try{
 		getSemServerData();
-
-    
 		showSelectionOnButton();
 	}catch(e){
 		//---
@@ -222,8 +220,6 @@ function randomizeLoadout(counts = 10) {
 loadSavedSelections();
 
 
-<<<<<<< HEAD
-=======
 
 // ==================================
 //Section for year filtering:
@@ -266,6 +262,5 @@ function applyFilterRange(){
 
 
 
->>>>>>> 8b7eee1420bee068008b1d02ae944427579e4817
 getSemServerData();
 window.setInterval(getSemServerData, 2000);
