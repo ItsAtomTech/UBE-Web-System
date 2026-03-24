@@ -406,6 +406,7 @@ function loadItemToView(id){
 			
 			tag('student_number',_('update_stat_1'))[0].innerText = res_data.student_number;	
 			
+			tag('sem_lapsed',_('update_stat_1'))[0].innerText = res_data.sems_passed;
 			
 			let subject_obj = findById(subjects, res_data.subject_id);
 			

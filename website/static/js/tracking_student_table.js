@@ -400,7 +400,9 @@ function loadItemToEdit(id){
 			
 			tag('subject',_('update_stat_1'))[0].innerText = subject_obj.subject;
 			
-			tag('date',_('update_stat_1'))[0].innerText = utility.formatDate(res_data.date);
+			tag('date',_('update_stat_1'))[0].innerText = utility.formatDate(res_data.date);	
+			
+			tag('sem_lapsed',_('update_stat_1'))[0].innerText = res_data.sems_passed;
 					
 			_("progress_option").value = res_data.progress;
 			_("status_input").value = res_data.status;
