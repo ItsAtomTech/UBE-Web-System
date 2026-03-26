@@ -175,7 +175,7 @@ function renderSelection() {
 function loadSavedSelections(){
 	let saves = localStorage.getItem("savedSelections");
 	if(saves == null){
-		selectRandoms();	
+		randomizeLoadout();	
 		saveSelection();		
 		
 	}else{
