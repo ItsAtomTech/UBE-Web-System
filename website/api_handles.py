@@ -433,12 +433,12 @@ def save_student():
 
 
 
-@api_handles.route('/get_student_by_id', methods=['POST'])
+@api_handles.route('/get_student_by_id', methods=['POST','GET'])
 @login_required
 def get_student_by_id():
 
     try:
-        student_id = request.form.get("student_id")
+        student_id = request.form.get("student_id") or request.args.get("student_id")
 
         if not student_id:
             return {"type": "error", "message": "Missing student_id"}
@@ -446,7 +446,43 @@ def get_student_by_id():
         student = StudentTable.query.get(int(student_id))
         if not student:
             return {"type": "error", "message": "Student not found"}
+        
+        #Count how much sem have passed since then
+        
+        now = manila_time()
+        current_month = now.month
+        current_year = now.year
+        month_1st = int(CONFIG_DATA['month_1st_sem'])
+        month_2nd = int(CONFIG_DATA['month_2nd_sem'])
+        duration = int(CONFIG_DATA['months'])
+        month_1st_end = month_1st + duration - 1
+        month_2nd_end = month_2nd + duration - 1
 
+        def get_sem_index(month, year):
+            if month_1st <= month <= month_1st_end:
+                return (year, 1)
+            elif month_2nd <= month <= month_2nd_end:
+                return (year, 2)
+            else:
+                return None
+
+        def count_sems_between(from_year, from_sem, to_year, to_sem):
+            sems = []
+            for y in range(from_year, to_year + 1):
+                for s in [1, 2]:
+                    sems.append((y, s))
+            try:
+                start_idx = sems.index((from_year, from_sem))
+                end_idx = sems.index((to_year, to_sem))
+                return max(end_idx - start_idx, 0)
+            except ValueError:
+                return 0
+
+        entry_sem = (int(student.sem_year), int(student.semester)) if student.sem_year and student.semester else None
+        current_sem = get_sem_index(current_month, current_year)
+        sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if entry_sem and current_sem else 0
+        
+        
         student_data = {
             "student_id": student.student_id,
             "subject_id": student.subject_id,
@@ -458,6 +494,7 @@ def get_student_by_id():
             "department_id": student.department_id,
             "status": student.status,
             "reason": student.reason,
+            "sems_passed": sems_passed,
             "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
         }
 
@@ -468,15 +505,14 @@ def get_student_by_id():
 
 
 
+
 @api_handles.route('/get_student_info_all', methods=['POST'])
 @login_required
 def get_student_info_all():
     try:
         student_id = request.form.get("student_id")
-
         if not student_id:
             return {"type": "error", "message": "Missing student_id"}
-
         result = db.session.query(
             StudentTable,
             Users.username.label("instructor_name")
@@ -485,11 +521,42 @@ def get_student_info_all():
         ).filter(
             StudentTable.student_id == int(student_id)
         ).first()
-
         if not result:
             return {"type": "error", "message": "Student not found"}
-
         student, instructor_name = result
+
+        now = manila_time()
+        current_month = now.month
+        current_year = now.year
+        month_1st = int(CONFIG_DATA['month_1st_sem'])
+        month_2nd = int(CONFIG_DATA['month_2nd_sem'])
+        duration = int(CONFIG_DATA['months'])
+        month_1st_end = month_1st + duration - 1
+        month_2nd_end = month_2nd + duration - 1
+
+        def get_sem_index(month, year):
+            if month_1st <= month <= month_1st_end:
+                return (year, 1)
+            elif month_2nd <= month <= month_2nd_end:
+                return (year, 2)
+            else:
+                return None
+
+        def count_sems_between(from_year, from_sem, to_year, to_sem):
+            sems = []
+            for y in range(from_year, to_year + 1):
+                for s in [1, 2]:
+                    sems.append((y, s))
+            try:
+                start_idx = sems.index((from_year, from_sem))
+                end_idx = sems.index((to_year, to_sem))
+                return max(end_idx - start_idx, 0)
+            except ValueError:
+                return 0
+
+        entry_sem = (int(student.sem_year), int(student.semester)) if student.sem_year and student.semester else None
+        current_sem = get_sem_index(current_month, current_year)
+        sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if entry_sem and current_sem else 0
 
         student_data = {
             "student_id": student.student_id,
@@ -502,11 +569,10 @@ def get_student_info_all():
             "progress": student.progress,
             "status": student.status,
             "reason": student.reason,
-            "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
+            "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None,
+            "sems_passed": sems_passed
         }
-
         return {"type": "success", "student": student_data}
-
     except Exception as e:
         return {"type": "error", "message": str(e)}
 
