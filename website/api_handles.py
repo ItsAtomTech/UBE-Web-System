@@ -680,7 +680,7 @@ def list_students():
         current_page = 1
 
     per_page = 40
-
+    
     query = db.session.query(
         StudentTable,
         SubjectCode.subject_name,
@@ -693,6 +693,8 @@ def list_students():
     ).outerjoin(
     Department, StudentTable.department_id == Department.id
     )
+    
+    query = query.filter(StudentTable.status != "passed") # Don't show passed students in the main list, only show on the final assessment list
     
     
     # Filters
@@ -708,6 +710,7 @@ def list_students():
                 
             if 'progress' in filters and filters['progress']:
                 query = query.filter(StudentTable.progress == filters['progress'])
+            
 
 
         except json.JSONDecodeError:
