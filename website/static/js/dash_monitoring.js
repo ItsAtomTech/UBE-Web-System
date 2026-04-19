@@ -60,13 +60,21 @@
   // ========================================
   let fetchDashboardStats = async function () {
     try {
+
+        
+       const params = new URLSearchParams({
+        filters: typeof(qBuilder) != 'undefined' ? JSON.stringify(qBuilder.filters) : undefined,
+      }); 
+        
       const response = await fetch('/dashboard_stats', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-        }
+        },
+        body: params.toString(),
       });
-
+        
+        
       const result = await response.json();
 
       if (result.type === 'success') {

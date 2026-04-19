@@ -59,6 +59,8 @@ function getSemServerData(){
 	qBuilder.filters["semester"] = _("probation_filter_semester").value || "all";
 	
 	let querys = qBuilder.sendQuery(renderToGraph,"getsems_progdata",[],undefined);
+
+	
 }
 
 
@@ -156,6 +158,12 @@ function saveSelection(){
 		//---
 	}
 	
+		
+	try{
+		fetchDashboardStats();
+	}catch(e){
+		//
+	}
 	
 	
 }
@@ -256,6 +264,14 @@ function applyFilterRange(){
 	}catch(e){
 		//---
 	}
+	
+		
+	try{
+		fetchDashboardStats();
+	}catch(e){
+		//
+	}
+	
 	
 	
 }
