@@ -1,11 +1,12 @@
 {% extends "base_headless.html" %}
 
-{% block title%}  User Management {% endblock %}
+{% block title%} Onprob Management {% endblock %}
 
 {% block extra_css %}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_formeditor.css') }}">
 
 <link id='' rel="stylesheet" href="{{ url_for('static', filename='css/table_page.css') }}">
+
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_titlebar.css') }}">
 
@@ -16,7 +17,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/extra_tablestyles.css') }}">
 
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashstyles.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daimofuu_fancylabel.css') }}">
+
 
 
 
@@ -70,7 +73,7 @@
 				<label class="small" for="status_filter"> Status: </label>
 				<select class="small primary_color_invert" oninput="delayedQuerry()" id="status_filter">
 					<option class="primary_color" value="" > All </option>
-					<option class="primary_color" value=" " > None </option>
+					<option class="primary_color" value=" " selected> None </option>
 					<option class="primary_color" value="passed" > Passed </option>
 					<option class="primary_color" value="failed" > Failed </option>
 				</select>
@@ -166,6 +169,8 @@
 
 
 
+{% include "fragments/view_record_modal.html" %}
+
 
 <script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
 <script src="{{ url_for('static', filename='js/foreignKeys.js') }}"></script>
@@ -175,7 +180,7 @@ qBuilder.server_address = "student_list";
 current_role = "admin";
 //qBuilder.filters.status = "active";
 let pageType = "{{ page }}";
-
+let subjects = [];
 
 let selectTypes = [];
 
@@ -186,6 +191,22 @@ if(pageType == "trash"){
 }else{
 	selectTypes = ["trash"];
 }
+
+
+function findById(arr, id) {
+    return arr.find(item => item.id == id) || null;
+}
+
+
+
+{% for subj in get_subjects() %}
+	subjects.push(
+		{
+			"id":"{{ subj.subject_id }}",
+			"subject": "{{ subj.subject_name }}",
+		}
+	);
+{% endfor %}
 
 
 
@@ -201,6 +222,13 @@ if(pageType == "trash"){
 <script src="{{ url_for('static', filename='js/student_table.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+
+<script src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"></script>
+
+
+<script> 
+
+</script>
 
 {% endblock %}
 

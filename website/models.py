@@ -39,6 +39,7 @@ class StudentTable(db.Model):
     progress = db.Column(db.String(100)) # possible values: currently_taking, completed, on_review
     status = db.Column(db.String(50)) # possible values: failed,passed,none 
     reason = db.Column(db.String(1000))
+    remarks = db.Column(db.String(1000))
     sem_year = db.Column(db.Integer) # Current Year, like 2026 etc.
     semester = db.Column(db.Integer) # Semester like 1, 2 etc.
     date = db.Column(db.DateTime(timezone=True), default=manila_time)

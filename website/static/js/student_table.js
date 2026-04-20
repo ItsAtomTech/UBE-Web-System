@@ -148,7 +148,7 @@ function tableLoader(data){
 	
 		
 	function generateTableDataRows(data, index = undefined){
-		let record_id = (data.user_id);
+		let record_id = (data.student_id);
 			let headTr = make("tr");
 				headTr.classList.add("padded_colms","clickable_row");
 				headTr.setAttribute("onclick","clickedOnRow("+record_id+")");
@@ -377,7 +377,7 @@ function clearAll(el){
 	
 }
 
-//Create User - 
+
 
 function loadItemToEdit(id){
 	if(inIframe()){
@@ -401,6 +401,59 @@ function addNewStudent(){
 }
 
 
+
+
+// View Detials Function
+//Open Edit View/Modal - 
+
+
+
+function loadItemToDetails(id){
+	let student_id = parseInt(id);	
+
+	let params = [{"name":"student_id", "value": student_id}];
+
+	
+
+	qBuilder.sendQuery(openModal,"/get_student_info_all",params);
+
+	
+
+	function openModal(data){
+		let res_data = (JSON.parse(data.responseText));
+		if(res_data.type == "success"){
+			console.log(res_data);
+			showModalContent('view_stat_1');
+			
+			res_data = res_data.student;
+			selectedItemId = student_id;
+			
+			tag('student_name',_('view_stat_1'))[0].innerHTML = obfuscateText(res_data.student_name);
+			
+			tag('student_number',_('view_stat_1'))[0].innerText = res_data.student_number;	
+			
+			let subject_obj = findById(subjects, res_data.subject_id);
+			
+			tag('subject',_('view_stat_1'))[0].innerText = subject_obj.subject;
+			
+			
+			tag('instructor_name',_('view_stat_1'))[0].innerText = res_data.instructor_name;
+			
+			tag('date',_('view_stat_1'))[0].innerText = utility.formatDate(res_data.date);	
+			
+			tag('sem_lapsed',_('view_stat_1'))[0].innerText = res_data.sems_passed;
+			
+			_("progress_option").value = res_data.progress;
+			_("status_input").value = res_data.status;
+			_("reason_input").value = res_data.reason;
+			_("remarks_input").value = res_data.remarks;
+			
+			addFancyPlaceholder();
+		}else{
+			createDialogue("error", res_data.message);
+		}
+	}
+}
 
 
 //Pagination Function Helpers ===
@@ -660,14 +713,16 @@ function toggleSelectOption(visible=false){
 // Misc Functions ====
 function clickedOnRow(){
 	let ev = event;
-	
+	let ids;
 	let parent_attrib = (ev.target.parentNode);
 	
-	if(!parent_attrib.getAttribute('code_id')){
+	if(!parent_attrib.getAttribute('data_id')){
 		return;
 	};
 	
-
+	ids = parent_attrib.getAttribute('data_id');
+	loadItemToDetails(ids);
+	console.log(ids);
 	
 }
 

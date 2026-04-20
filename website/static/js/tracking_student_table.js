@@ -370,7 +370,7 @@ function clearAll(el){
 }
 
 //Open Edit View/Modal - 
-
+let prev_status_temp;
 function loadItemToEdit(id){
 	
 	let student_id = parseInt(id);	
@@ -407,9 +407,10 @@ function loadItemToEdit(id){
 			_("progress_option").value = res_data.progress;
 			_("status_input").value = res_data.status;
 			_("reason_input").value = res_data.reason;
+			_("remarks_input").value = res_data.remarks;
 					
-					
-			
+			prev_status_temp = _("progress_option").value;
+			handleStatusChanges(_("status_input"))
 			addFancyPlaceholder();
 			
 			
@@ -439,6 +440,11 @@ function updateItemStatus(){
 		"name": "reason",
 		"value": _("reason_input").value,
 		
+		
+	},
+	{
+		"name": "remarks",
+		"value": _("remarks_input").value,
 		
 	}];
 	
@@ -655,7 +661,34 @@ function clickedOnRow(){
 	if(!parent_attrib.getAttribute('code_id')){
 		return;
 	};
+}
 
+
+
+function handleStatusChanges(elm){
+	let values = elm.value ? elm.value : undefined;
+	//console.log(values);
+	try{
+		if(values.toLowerCase() == "passed" || values.toLowerCase() == "failed" ){
+			_("progress_option").value = "completed";
+		}else{
+			_("progress_option").value = prev_status_temp;
+		}
+	}catch(e){
+		// --
+	}
+	
+	try{
+		let acad_input = _("remarks_input").parentNode;
+		if(values.toLowerCase() == "failed" ){
+			acad_input.classList.remove("hidden")
+		}else{
+			acad_input.classList.add("hidden");
+		}
+		// console.log(acad_input);
+	}catch(e){
+		//--
+	}
 	
 }
 

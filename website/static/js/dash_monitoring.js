@@ -60,21 +60,33 @@
   // ========================================
   let fetchDashboardStats = async function () {
     try {
+
+        
+       const params = new URLSearchParams({
+        filters: typeof(qBuilder) != 'undefined' ? JSON.stringify(qBuilder.filters) : undefined,
+      }); 
+        
       const response = await fetch('/dashboard_stats', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-        }
+        },
+        body: params.toString(),
       });
-
+        
+        
       const result = await response.json();
-
+		
+		console.log(result);
+		
       if (result.type === 'success') {
         // Update stat numbers with animation
         updateStatNumber('stat_probation', result.stats.probation);
         updateStatNumber('stat_tracking', result.stats.tracking);
         updateStatNumber('stat_failed', result.stats.failed);
         updateStatNumber('stat_passed', result.stats.passed);
+        updateStatNumber('stat_shift', result.stats.advised_shift);
+        updateStatNumber('stat_transfer', result.stats.advised_transfer);
       } else {
         console.error('Failed to fetch stats:', result.message);
         // Show error state
@@ -82,6 +94,8 @@
         _('stat_tracking').textContent = '--';
         _('stat_failed').textContent = '--';
         _('stat_passed').textContent = '--';
+        _('stat_shift').textContent = '--';
+        _('stat_transfer').textContent = '--';
       }
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);

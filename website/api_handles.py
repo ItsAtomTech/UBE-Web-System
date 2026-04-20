@@ -494,6 +494,7 @@ def get_student_by_id():
             "department_id": student.department_id,
             "status": student.status,
             "reason": student.reason,
+            "remarks": student.remarks,
             "sems_passed": sems_passed,
             "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
         }
@@ -568,6 +569,7 @@ def get_student_info_all():
             "student_number": student.student_number,
             "progress": student.progress,
             "status": student.status,
+            "remarks": student.remarks,
             "reason": student.reason,
             "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None,
             "sems_passed": sems_passed
@@ -694,7 +696,6 @@ def list_students():
     Department, StudentTable.department_id == Department.id
     )
     
-    query = query.filter(StudentTable.status != "passed") # Don't show passed students in the main list, only show on the final assessment list
     
     
     # Filters
@@ -810,9 +811,9 @@ def final_assessment_list():
         Users, StudentTable.instructor_id == Users.user_id
     )
     
-    # Only show students ready for final assessment, don't display done/completed status
+
     query = query.filter(
-        StudentTable.progress.in_(["on_review", "currently_taking"]),
+        StudentTable.progress.in_(["on_review", "currently_taking","completed"]),
         StudentTable.progress.isnot(None),
         StudentTable.progress != ""
     )
@@ -1035,6 +1036,7 @@ def update_student_status():
         progress = request.form.get("progress")
         status = request.form.get("status")
         reason = request.form.get("reason")
+        remarks = request.form.get("remarks")
 
         if not student_id:
             return {"type": "error", "message": "Missing student_id"}
@@ -1055,8 +1057,14 @@ def update_student_status():
             student.status = status
 
         if reason is not None:
-            student.reason = reason
-
+            student.reason = reason        
+        
+        if remarks is not None:
+            student.remarks = remarks
+        
+        if status == "none" or status == " " or status == "passed":
+            student.remarks = None
+        
         db.session.commit()
 
         return {"type": "success", "message": "Student status updated successfully!"}
@@ -1069,27 +1077,56 @@ def update_student_status():
 # ================================
 # Dashboard Statistics
 # ================================
-
 @api_handles.route('/dashboard_stats', methods=['GET', 'POST'])
 def get_dashboard_stats():
     try:
+        filters_raw = request.form.get("filters")
+        if filters_raw:
+            try:
+                filters = json.loads(filters_raw)
+                if not isinstance(filters, dict):
+                    filters = {}
+            except (json.JSONDecodeError, ValueError):
+                filters = {}
+        else:
+            filters = {}
+
+        department_filter = filters.get("department_filter", "all")
+        year_range = filters.get("year_range", None)
+        semester_filter = filters.get("semester", "all")
+
         base_query = StudentTable.query
+
+        # Department filter (CSV of IDs)
+        if department_filter != "all":
+            dept_list = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
+            if dept_list:
+                base_query = base_query.filter(StudentTable.department_id.in_(dept_list))
+
+        # Year range filter on sem_year
+        if year_range:
+            try:
+                year_from, year_to = map(int, year_range.split(","))
+                base_query = base_query.filter(
+                    StudentTable.sem_year >= year_from,
+                    StudentTable.sem_year <= year_to
+                )
+            except (ValueError, AttributeError):
+                pass
+
+        # Semester filter (CSV of ints)
+        if semester_filter != "all":
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                base_query = base_query.filter(StudentTable.semester.in_(sem_list))
+
         # Counts
-        probation_count = base_query.filter(
-            StudentTable.progress == 'on_probation'
-        ).count()
-
-        tracking_count = base_query.filter(
-            StudentTable.progress == 'currently_taking'
-        ).count()
-
-        failed_count = base_query.filter(
-            StudentTable.status == 'failed'
-        ).count()
-
-        passed_count = base_query.filter(
-            StudentTable.status == 'passed'
-        ).count()
+        probation_count = base_query.filter(StudentTable.progress == 'on_probation').count()
+        tracking_count = base_query.filter(StudentTable.progress == 'currently_taking').count()
+        failed_count = base_query.filter(StudentTable.status == 'failed').count()
+        passed_count = base_query.filter(StudentTable.status == 'passed').count()
+        advised_transfer_count = base_query.filter(StudentTable.remarks == 'Advised to Transfer (Other University)').count()
+        advised_shift_count = base_query.filter(StudentTable.remarks == 'Advised to Shift').count()
 
         # Recent probation list
         probation_query = db.session.query(
@@ -1103,10 +1140,27 @@ def get_dashboard_stats():
             StudentTable.progress == 'on_probation'
         )
 
-        recent_probation = probation_query.order_by(
-            StudentTable.date.desc()
-        ).limit(5).all()
+        if department_filter != "all":
+            dept_list = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
+            if dept_list:
+                probation_query = probation_query.filter(StudentTable.department_id.in_(dept_list))
 
+        if year_range:
+            try:
+                year_from, year_to = map(int, year_range.split(","))
+                probation_query = probation_query.filter(
+                    StudentTable.sem_year >= year_from,
+                    StudentTable.sem_year <= year_to
+                )
+            except (ValueError, AttributeError):
+                pass
+
+        if semester_filter != "all":
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                probation_query = probation_query.filter(StudentTable.semester.in_(sem_list))
+
+        recent_probation = probation_query.order_by(StudentTable.date.desc()).limit(5).all()
         recent_probation_list = [
             {
                 "student_name": r[0],
@@ -1123,14 +1177,14 @@ def get_dashboard_stats():
                 "probation": probation_count,
                 "tracking": tracking_count,
                 "failed": failed_count,
-                "passed": passed_count
+                "passed": passed_count,
+                "advised_transfer": advised_transfer_count,
+                "advised_shift": advised_shift_count
             },
             "recent_probation": recent_probation_list
         }
-
     except Exception as e:
         return {"type": "error", "message": str(e)}
-
 
 
 # Graphs goes here

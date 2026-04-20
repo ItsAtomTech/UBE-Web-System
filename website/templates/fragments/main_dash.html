@@ -22,7 +22,6 @@
 
   /* Make stat cards clickable */
   .dash_stat_card {
-    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
@@ -224,6 +223,60 @@
         </span>
       </div>
     </div>
+	
+	
+    <!-- Shift Card -->
+    <div class="dash_stat_card primary_background">
+      <div class="dash_stat_label primary_color small">Adviced to Shift</div>
+      <div class="dash_stat_body">
+        <span class="dash_stat_icon dash_stat_icon_success">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+		  <!-- Door frame -->
+		  <path d="M19 3H5v18h14V3zm-2 16H7V5h10v14z"/>
+		  <!-- Door knob -->
+		  <circle cx="14" cy="12" r="2"/>
+		</svg>
+        </span>
+        <span class="dash_stat_number primary_color" id="stat_shift">
+          <span class="loader-spinner"></span>
+        </span>
+      </div>
+    </div>	
+	
+	
+    <!-- Shift Card -->
+    <div class="dash_stat_card primary_background">
+      <div class="dash_stat_label primary_color small">Transfer to Another School</div>
+      <div class="dash_stat_body">
+        <span class="dash_stat_icon secondary_color">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+		  <!-- Building with arched door cutout -->
+		  <path fill-rule="evenodd" clip-rule="evenodd"
+			d="M12 3L2 9h2v12h16V9h2L12 3z
+			   M14 21v-6a2 2 0 0 0-4 0v6h4z"/>
+
+		  <!-- Left pillar -->
+		  <rect x="5" y="10" width="2" height="11" rx="0.5"/>
+
+		  <!-- Right pillar -->
+		  <rect x="17" y="10" width="2" height="11" rx="0.5"/>
+
+		  <!-- Pillar caps (top) -->
+		  <rect x="4.5" y="9.5" width="3" height="1" rx="0.3"/>
+		  <rect x="16.5" y="9.5" width="3" height="1" rx="0.3"/>
+
+		  <!-- Windows above pillars -->
+		  <rect x="5.5" y="11.5" width="1" height="2" rx="0.3" opacity="0.3"/>
+		  <rect x="17.5" y="11.5" width="1" height="2" rx="0.3" opacity="0.3"/>
+		</svg>
+        </span>
+        <span class="dash_stat_number primary_color" id="stat_transfer">
+          <span class="loader-spinner"></span>
+        </span>
+      </div>
+    </div>
+	
+	
   </div>
 </div>
 

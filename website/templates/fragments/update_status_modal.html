@@ -41,7 +41,8 @@
 			<div class="cols_con_ padded_input full_width"><label class="df_label_con placeholder_label {% if current_user.type == 1 %} infocus {% endif %} >" for="status_input"
 		
 			>Status</label>
-				<select id="status_input" value="" required="false" class="fancy_form_df form_display" 			
+				<select id="status_input" value="" required="false" class="fancy_form_df form_display" 
+				onchange="handleStatusChanges(this);"
 				
 			{% if current_user.type == 1 %}
 				disabled
@@ -74,6 +75,18 @@
 				</select>
 			</div>
 
+
+
+			<div class="cols_con_ full_width padded_input"><label class="df_label_con required_style_label placeholder_label" for="remarks_input">Academic Status</label>
+			
+				<select id="remarks_input" value="" required="" class="fancy_form_df form_display">
+
+					<option value="" disabled selected>  </option>
+					<option value="none"> None </option>
+					<option value= "Advised to Shift"> Advised to Shift </option>
+					<option value="Advised to Transfer (Other University)"> Advised to Transfer (Other University) </option>
+				</select>
+			</div>
 		
 
 		</div>
