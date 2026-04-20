@@ -1279,9 +1279,80 @@ def getsems_progdata():
         
 def sem_label(sem):
     return {1: '1st', 2: '2nd', 3: 'Summer'}.get(sem, str(sem))
+    
+    
+    
+    
+@api_handles.route('/get_student_history', methods=['POST','GET'])
+@login_required
+def get_student_history():
+    try:
+        student_number = request.form.get("student_number") or request.args.get("student_number")
+        if not student_number:
+            return {"type": "error", "message": "Missing student_number"}
+
+        # Fetch all records for this student
+        results = db.session.query(
+            StudentTable,
+            SubjectCode.subject_name,
+            SubjectCode.subject_code,
+            Users.username.label("instructor_name")
+        ).join(
+            SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
+        ).join(
+            Users, StudentTable.instructor_id == Users.user_id
+        ).filter(
+            StudentTable.student_number == int(student_number)
+        ).order_by(
+            StudentTable.sem_year.asc(),
+            StudentTable.semester.asc()
+        ).all()
+
+        if not results:
+            return {"type": "error", "message": "No records found for this student"}
+
+        # Summary counts
+        probation_count = sum(1 for r in results if r[0].progress == 'on_probation')
+        failed_count = sum(1 for r in results if r[0].status == 'failed')
+        passed_count = sum(1 for r in results if r[0].status == 'passed')
+
+        # Build history table
+        history = []
+        for student, subject_name, subject_code, instructor_name in results:
+            history.append({
+                "student_id": student.student_id,
+                "subject_name": subject_name,
+                "subject_code": subject_code,
+                "instructor_name": instructor_name,
+                "progress": student.progress,
+                "status": student.status,
+                "reason": student.reason,
+                "remarks": student.remarks,
+                "sem_year": student.sem_year,
+                "semester": student.semester,
+                "date": student.date.strftime("%Y-%m-%d %H:%M:%S") if student.date else None
+            })
+
+        # Grab student name from first record
+        first = results[0][0]
+
+        return {
+            "type": "success",
+            "student_number": int(student_number),
+            "student_name": first.student_name,
+            "summary": {
+                "probation_count": probation_count,
+                "failed_count": failed_count,
+                "passed_count": passed_count
+            },
+            "history": history
+        }
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+    
 
 # ================================
-# Student Table End
+# Stats Table End
 # ================================
 
 
