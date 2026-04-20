@@ -1090,37 +1090,43 @@ def get_dashboard_stats():
                 filters = {}
         else:
             filters = {}
-        
+
         department_filter = filters.get("department_filter", "all")
         year_range = filters.get("year_range", None)
         semester_filter = filters.get("semester", "all")
 
         base_query = StudentTable.query
 
-        # Apply department filter
+        # Department filter (CSV of IDs)
         if department_filter != "all":
-            base_query = base_query.filter(StudentTable.department == department_filter)
+            dept_list = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
+            if dept_list:
+                base_query = base_query.filter(StudentTable.department_id.in_(dept_list))
 
-        # Apply year range filter
+        # Year range filter on sem_year
         if year_range:
             try:
                 year_from, year_to = map(int, year_range.split(","))
                 base_query = base_query.filter(
-                    db.extract('year', StudentTable.date) >= year_from,
-                    db.extract('year', StudentTable.date) <= year_to
+                    StudentTable.sem_year >= year_from,
+                    StudentTable.sem_year <= year_to
                 )
             except (ValueError, AttributeError):
-                pass  # If malformed, just skip the filter
+                pass
 
-        # Apply semester filter
+        # Semester filter (CSV of ints)
         if semester_filter != "all":
-            base_query = base_query.filter(StudentTable.semester == semester_filter)
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                base_query = base_query.filter(StudentTable.semester.in_(sem_list))
 
         # Counts
         probation_count = base_query.filter(StudentTable.progress == 'on_probation').count()
         tracking_count = base_query.filter(StudentTable.progress == 'currently_taking').count()
         failed_count = base_query.filter(StudentTable.status == 'failed').count()
         passed_count = base_query.filter(StudentTable.status == 'passed').count()
+        advised_transfer_count = base_query.filter(StudentTable.remarks == 'Advised to Transfer (Other University)').count()
+        advised_shift_count = base_query.filter(StudentTable.remarks == 'Advised to Shift').count()
 
         # Recent probation list
         probation_query = db.session.query(
@@ -1134,22 +1140,25 @@ def get_dashboard_stats():
             StudentTable.progress == 'on_probation'
         )
 
-        # Apply same filters to probation query
         if department_filter != "all":
-            probation_query = probation_query.filter(StudentTable.department == department_filter)
+            dept_list = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
+            if dept_list:
+                probation_query = probation_query.filter(StudentTable.department_id.in_(dept_list))
 
         if year_range:
             try:
                 year_from, year_to = map(int, year_range.split(","))
                 probation_query = probation_query.filter(
-                    db.extract('year', StudentTable.date) >= year_from,
-                    db.extract('year', StudentTable.date) <= year_to
+                    StudentTable.sem_year >= year_from,
+                    StudentTable.sem_year <= year_to
                 )
             except (ValueError, AttributeError):
                 pass
 
         if semester_filter != "all":
-            probation_query = probation_query.filter(StudentTable.semester == semester_filter)
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                probation_query = probation_query.filter(StudentTable.semester.in_(sem_list))
 
         recent_probation = probation_query.order_by(StudentTable.date.desc()).limit(5).all()
         recent_probation_list = [
@@ -1168,13 +1177,14 @@ def get_dashboard_stats():
                 "probation": probation_count,
                 "tracking": tracking_count,
                 "failed": failed_count,
-                "passed": passed_count
+                "passed": passed_count,
+                "advised_transfer": advised_transfer_count,
+                "advised_shift": advised_shift_count
             },
             "recent_probation": recent_probation_list
         }
     except Exception as e:
         return {"type": "error", "message": str(e)}
-
 
 
 # Graphs goes here

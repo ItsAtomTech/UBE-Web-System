@@ -685,7 +685,7 @@ function handleStatusChanges(elm){
 		}else{
 			acad_input.classList.add("hidden");
 		}
-		console.log(acad_input);
+		// console.log(acad_input);
 	}catch(e){
 		//--
 	}
