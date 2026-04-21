@@ -533,7 +533,8 @@ th.sortable::after {
 
 .option_main_container{
 	padding:10px;
-	
+	overflow:auto;
+	max-height:90vh;
 }
 
 
@@ -563,6 +564,14 @@ th.sortable::after {
 }
 
 
+.mini_table{
+	height:auto !important;
+	min-height:50px !important;
+}
+
+.mini_table:not(:has(.padded_colms)) {
+    display: none;
+}
 
 
 @media (max-width:600px){

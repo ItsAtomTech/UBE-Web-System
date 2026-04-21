@@ -103,7 +103,7 @@ textarea.form_display[readonly] {
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: none;
-	min-height:250px !important;
+	min-height:150px !important;
 	padding:5px;
     pointer-events: none;   /* prevents dropdown */
     user-select: text;      /* allows text selection */
