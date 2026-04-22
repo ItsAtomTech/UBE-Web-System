@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 from . import db
 from datetime import datetime, timedelta
-from .models import Users, StudentTable, SubjectCode, Department
+from .models import Users, StudentTable, SubjectCode, Department, College
 
 
 plt = ""  # empty this var when on live website
@@ -516,16 +516,25 @@ def get_student_info_all():
             return {"type": "error", "message": "Missing student_id"}
         result = db.session.query(
             StudentTable,
-            Users.username.label("instructor_name")
+            Users.username.label("instructor_name"),
+            Department.name.label("department_name"),
+            College.name.label("college_name"),
+            SubjectCode.subject_name.label("subject_name"),
+            SubjectCode.subject_code.label("subject_code")
         ).join(
             Users, StudentTable.instructor_id == Users.user_id
+        ).join(
+            Department, StudentTable.department_id == Department.id
+        ).join(
+            College, Department.college_id == College.id
+        ).join(
+            SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
         ).filter(
             StudentTable.student_id == int(student_id)
         ).first()
-        if not result:
-            return {"type": "error", "message": "Student not found"}
-        student, instructor_name = result
 
+        student, instructor_name, department_name, college_name, subject_name, subject_code = result
+        
         now = manila_time()
         current_month = now.month
         current_year = now.year
@@ -534,7 +543,6 @@ def get_student_info_all():
         duration = int(CONFIG_DATA['months'])
         month_1st_end = month_1st + duration - 1
         month_2nd_end = month_2nd + duration - 1
-
         def get_sem_index(month, year):
             if month_1st <= month <= month_1st_end:
                 return (year, 1)
@@ -542,7 +550,6 @@ def get_student_info_all():
                 return (year, 2)
             else:
                 return None
-
         def count_sems_between(from_year, from_sem, to_year, to_sem):
             sems = []
             for y in range(from_year, to_year + 1):
@@ -554,11 +561,9 @@ def get_student_info_all():
                 return max(end_idx - start_idx, 0)
             except ValueError:
                 return 0
-
         entry_sem = (int(student.sem_year), int(student.semester)) if student.sem_year and student.semester else None
         current_sem = get_sem_index(current_month, current_year)
         sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if entry_sem and current_sem else 0
-
         student_data = {
             "student_id": student.student_id,
             "subject_id": student.subject_id,
@@ -567,6 +572,10 @@ def get_student_info_all():
             "instructor_name": instructor_name,
             "student_name": student.student_name,
             "student_number": student.student_number,
+            "department_id": student.department_id,
+            "department_name": department_name,
+            "subject_code": subject_code,
+            "college_name": college_name,
             "progress": student.progress,
             "status": student.status,
             "remarks": student.remarks,

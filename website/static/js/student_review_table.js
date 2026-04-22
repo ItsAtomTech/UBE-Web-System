@@ -383,11 +383,12 @@ function clearAll(el){
 //Open Edit View/Modal - 
 
 
-
 // ===================
 // History and View Section Start 
 // ===================
 
+let ALL_INFO;
+let HISTORY_INFO;
 
 function loadItemToDetails(id){
 	let student_id = parseInt(id);	
@@ -407,6 +408,8 @@ function loadItemToDetails(id){
 			
 			res_data = res_data.student;
 			selectedItemId = student_id;
+			ALL_INFO = res_data;
+			
 			
 			tag('student_name',_('view_stat_1'))[0].innerHTML = obfuscateText(res_data.student_name);
 			
@@ -456,6 +459,7 @@ function getHistoryOnProbation(data){
 
 	function openModal(data){
 		let res_data = (JSON.parse(data.responseText));
+		HISTORY_INFO = res_data;
 		if(res_data.type == "success"){
 			
 			tag('probation_count',_('view_stat_1'))[0].innerText = res_data.summary.probation_count;
@@ -500,6 +504,8 @@ function getHistoryOnProbation(data){
 	
 	
 }
+
+
 
 
 // ===================
@@ -640,7 +646,6 @@ function moveToTrashHelper(id,silent=false){
 		silentlyMovetoRemove(id);
 		return;
 	}
-	
 	moveToTrash();
 }
 
@@ -651,7 +656,6 @@ function restoreItemHelper(id,silent=false){
 		silentlyRestoreItem(id);
 		return;
 	}
-	
 	restoreItem();
 }
 
@@ -703,9 +707,7 @@ function moveToTrashMulti(confirmed = undefined){
 		return;
 	}
 	
-	
 	let table_data = _("data_generative").getElementsByClassName("check_input");
-	
 	showToast("Removing Selected Users ...");
 	
 	for(each of table_data){
@@ -725,11 +727,9 @@ function categoryParse(id){
 
 //parsing status data 
 function parseStatus(data){
-
 	if(data == ""){
 		return "None"
 	};
-	
 	return parseStatusText(data);
 	
 }
@@ -749,9 +749,10 @@ function selectAllHandle(){
 	for(each of table_data){
 		each.checked = checkedStatus;
 	}
-	toggleSelectOption(checkedStatus);
-	
+	toggleSelectOption(checkedStatus);	
 }
+
+
 
 function selectHandle(){
 	let hasChecks = false;
@@ -771,22 +772,18 @@ function selectHandle(){
 function toggleSelectOption(visible=false){
 	let options = _("selection_options").getElementsByClassName("df_button_flat");
 	
-	for(each of options){
-		
+	for(each of options){	
 		let tag = each.getAttribute("tag");
 		if(visible && selectTypes.indexOf(tag) >= 0){
 			each.classList.remove("hidden_op");
 		}else{
 			each.classList.add("hidden_op");
 		}
-		
 	}
 }
 
 
 //Check Functions End
-
-
 // Misc Functions ====
 function clickedOnRow(){
 	let ev = event;
@@ -798,8 +795,6 @@ function clickedOnRow(){
 		return;
 	};
 	
-	
-	// alert("You clicked on a row: "+ parent_attrib.getAttribute('data_id') );
 	
 	loadItemToDetails(selected_id);
 }
@@ -813,7 +808,6 @@ function itemNotifyUpdate(data){
 	}
 	
 	data = JSON.parse(data.responseText);
-	
 	showToast(data.message);
 	// closeModalContent("modal_1");
 	
