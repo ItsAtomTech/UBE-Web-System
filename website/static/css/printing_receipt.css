@@ -10,6 +10,16 @@
   min-height: 100vh;
   padding: 32px 16px;
   box-sizing: border-box;
+  -webkit-filter:blur(0px);
+  filter:blur(0px);
+  opacity:1;
+  transition:0.4s;
+}
+
+.blur_docs{
+	-webkit-filter:blur(5px);
+	filter:blur(5px);
+	opacity:0.3;
 }
 
 .receipt-page {

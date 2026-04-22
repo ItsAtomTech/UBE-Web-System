@@ -5,9 +5,10 @@ endblock %} {% block extra_css %}
   rel="stylesheet"
   href="{{ url_for('static', filename='css/printing_receipt.css') }}"
 />
-{% endblock %} {% block contents %}
+{% endblock %}
+ {% block contents %}
 
-<div class="receipt-wrapper">
+<div class="receipt-wrapper blur_docs" id="wrapper_doc">
   <div class="receipt-page">
     <!-- Header -->
     <div class="receipt-header">
@@ -23,7 +24,7 @@ endblock %} {% block extra_css %}
         </div>
       </div>
       <div class="header-right">
-        <span class="print-date" id="print_date">Date of printing: 01/01/2026</span>
+        <span class="print-date" >Date of printing: <span id="print_date">01/01/2026</span> </span>
       </div>
     </div>
 
@@ -32,19 +33,18 @@ endblock %} {% block extra_css %}
     <!-- Student Info -->
     <div class="student-info">
       <p class="info-line">
-        <span class="info-label" id="student_id">ID No:</span> 20203013&nbsp;&nbsp;&nbsp;<span
+        <span class="info-label">ID No:</span> <span id="student_id">12345678 </span>&nbsp;&nbsp;&nbsp;<span
           class="info-label"
-          id="student_name" 
+           
           >Name:</span
-        >
-        DELA CRUZ, TEST A.
+        ><span id="student_name">DELA CRUZ, TEST A.</span>
+        
       </p>
       <p class="info-line">
-        <span class="info-label" id="student_college">College:</span> College of Arts and Science
+        <span class="info-label" >College:</span> <span id="college_name">College of XXXXXXXXX XXXXXXx </span>
       </p>
       <p class="info-line">
-        <span class="info-label" id="student_course">Course:</span> Bachelor of Science in
-        Information Technology
+        <span class="info-label" >Course:</span> <span id="department_name">XXXX XXX XX XX XXXXX </span  >
       </p>
     </div>
 
@@ -64,9 +64,9 @@ endblock %} {% block extra_css %}
         </thead>
         <tbody>
           <tr >
-            <td id="subject_code">IT-101</td>
+            <td id="subject_code">XX-XXXX</td>
             <td id="subject_name">Accounting Principle</td>
-            <td id="assigned_instructor">Test Teacher</td>
+            <td id="instructor_name">Test Teacher</td>
             <td id="reason">Incured 4.0</td>
             <td id="progress">Currently Taking</td>
             <td id="status">NONE</td>
@@ -90,16 +90,16 @@ endblock %} {% block extra_css %}
 
       <div class="probation-counts">
         <div class="count-row">
-          <span class="count-label" id="num_probation">Number of Probation:</span
-          ><span class="count-value">01</span>
+          <span class="count-label" >Number of Probation:</span
+          ><span class="count-value" id="probation_count">01</span>
         </div>
         <div class="count-row">
-          <span class="count-label" id="num_passed">Number of Passed:</span
-          ><span class="count-value">01</span>
+          <span class="count-label">Number of Passed:</span
+          ><span class="count-value" id="passed_count">01</span>
         </div>
         <div class="count-row">
-          <span class="count-label" id="num_failed">Number of Failed:</span
-          ><span class="count-value">01</span>
+          <span class="count-label">Number of Failed:</span
+          ><span class="count-value" id="failed_count">01</span>
         </div>
       </div>
 
@@ -113,7 +113,7 @@ endblock %} {% block extra_css %}
             <th>Date</th>
           </tr>
         </thead>
-        <tbody id = "probation_history">
+        <tbody id = "table_history">
           <tr>
             <td>Accounting Principle</td>
             <td>Test Teacher</td>
@@ -121,27 +121,7 @@ endblock %} {% block extra_css %}
             <td>Incured 4.0</td>
             <td>01/01/2026</td>
           </tr>
-          <tr>
-            <td>Accounting Principle</td>
-            <td>Test Teacher</td>
-            <td>FAILED</td>
-            <td>Incured 4.0</td>
-            <td>01/01/2026</td>
-          </tr>
-          <tr>
-            <td>Accounting Principle</td>
-            <td>Test Teacher</td>
-            <td>FAILED</td>
-            <td>Incured 4.0</td>
-            <td>01/01/2026</td>
-          </tr>
-          <tr>
-            <td>Accounting Principle</td>
-            <td>Test Teacher</td>
-            <td>FAILED</td>
-            <td>Incured 4.0</td>
-            <td>01/01/2026</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -182,5 +162,37 @@ endblock %} {% block extra_css %}
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<template id="table_columns">
+          <tr>
+			<td tag="subject"> AAA </td>
+			<td tag="assigned Teacher"> BBB </td>
+			<td tag="status"> CCC </td>
+			<td tag="reason" > DDD </td>
+			<td tag="date"> EEE </td>
+          </tr>
+</template>
+
+
+
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/printing_handles.js') }}"></script>
 
 {% endblock %}

@@ -409,7 +409,8 @@ function addNewStudent(){
 // ===================
 // History and View Section Start 
 // ===================
-
+let ALL_INFO;
+let HISTORY_INFO;
 
 function loadItemToDetails(id){
 	let student_id = parseInt(id);	
@@ -429,6 +430,8 @@ function loadItemToDetails(id){
 			
 			res_data = res_data.student;
 			selectedItemId = student_id;
+			ALL_INFO = res_data;
+			
 			
 			tag('student_name',_('view_stat_1'))[0].innerHTML = obfuscateText(res_data.student_name);
 			
@@ -478,6 +481,7 @@ function getHistoryOnProbation(data){
 
 	function openModal(data){
 		let res_data = (JSON.parse(data.responseText));
+		HISTORY_INFO = res_data;
 		if(res_data.type == "success"){
 			
 			tag('probation_count',_('view_stat_1'))[0].innerText = res_data.summary.probation_count;

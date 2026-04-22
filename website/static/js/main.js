@@ -1333,3 +1333,52 @@ function monitorAlerts(fadeTime = 5000, removeDelay = 500) {
     }, fadeTime);
   });
 }
+
+
+
+
+
+// Extra Functions used for passing params to printing doc/receipt
+function extract_datas_for_docs(elm=undefined){
+	if(elm == undefined){
+		 console.error("There is no elm specified to extract data from");return false;
+	}
+	
+	
+	let currentAll = decople(ALL_INFO);
+	let currentHistory = decople(HISTORY_INFO);
+	
+	//Apply Parsed Data ====
+	let prog = _("progress_option").selectedOptions[0] ? _("progress_option").selectedOptions[0].innerText : "N/A";	
+	let stat = _("status_input").selectedOptions[0] ? _("status_input").selectedOptions[0].innerText : "N/A";	
+	let stu_name = (tag("student_name",elm)[0].innerText);
+	
+	
+	currentAll.progress = prog;
+	currentAll.status = stat;
+	currentAll.student_name = stu_name;
+	
+	currentAll.subject_name = tag("subject",elm)[0].innerText;	
+	
+	currentAll.subject_name = tag("subject",elm)[0].innerText;
+	
+	
+	let printableData = {currentAll, currentHistory};
+	
+	localStorage.setItem("printFile", JSON.stringify(printableData))
+	return true;
+}
+
+
+async function printDocReceipt(){
+	if(!extract_datas_for_docs(_("view_stat_1"))){
+		return;
+	};
+	
+	showToast("Preparing Document ... ");
+	await sleep(1200);
+	
+	window.open('/print_receipt', 'printRe');
+	
+	
+}
