@@ -167,8 +167,7 @@ function tableLoader(data){
 				coln.classList.add("tiny","auto_width_col");
 			// headTr.appendChild(coln);
 		}
-			
-			
+						
 		
 		
 			for(each of tableFormat){
@@ -407,6 +406,10 @@ function addNewStudent(){
 //Open Edit View/Modal - 
 
 
+// ===================
+// History and View Section Start 
+// ===================
+
 
 function loadItemToDetails(id){
 	let student_id = parseInt(id);	
@@ -422,7 +425,6 @@ function loadItemToDetails(id){
 	function openModal(data){
 		let res_data = (JSON.parse(data.responseText));
 		if(res_data.type == "success"){
-			console.log(res_data);
 			showModalContent('view_stat_1');
 			
 			res_data = res_data.student;
@@ -448,12 +450,84 @@ function loadItemToDetails(id){
 			_("reason_input").value = res_data.reason;
 			_("remarks_input").value = res_data.remarks;
 			
+			try{
+				getHistoryOnProbation(res_data);
+			}catch(e){
+				//--
+			}
+			
+			
 			addFancyPlaceholder();
 		}else{
 			createDialogue("error", res_data.message);
 		}
 	}
 }
+
+
+//For gettinge the Data of On-Probation history
+function getHistoryOnProbation(data){
+	let student_number = data.student_number;
+	
+	
+	let params = [{"name":"student_number", "value": student_number}];
+
+	qBuilder.sendQuery(openModal,"/get_student_history",params);
+	
+		
+
+	function openModal(data){
+		let res_data = (JSON.parse(data.responseText));
+		if(res_data.type == "success"){
+			
+			tag('probation_count',_('view_stat_1'))[0].innerText = res_data.summary.probation_count;
+			
+			tag('passed_count',_('view_stat_1'))[0].innerText = res_data.summary.passed_count;
+			
+			tag('failed_count',_('view_stat_1'))[0].innerText = res_data.summary.failed_count;
+			
+			
+			populateHistoryTable(res_data);
+			
+			addFancyPlaceholder();
+		}else{
+			createDialogue("error", res_data.message);
+		}
+	}
+	
+		
+	function populateHistoryTable(rdata){
+		let history = rdata.history;
+		
+		_("table_history").innerHTML = "";
+		selectedItemId;
+		for(each of history){
+			
+			if(each.student_id == selectedItemId){
+				continue;
+			}
+			
+			let clone = document.importNode(_("table_columns").content, true);
+			
+			tag('subject', clone)[0].innerText = each.subject_name + " (" + each.subject_code + ")";
+			tag('assigned Teacher', clone)[0].innerText = each.instructor_name;
+			tag('status', clone)[0].innerHTML = parseStatus(each.status.trim()) || "N/A";
+			tag('reason', clone)[0].innerText = each.reason || "N/A";
+			tag('date', clone)[0].innerText = each.date;
+			
+			_("table_history").appendChild(clone);
+		}
+	}
+		
+	
+	
+}
+
+
+// ===================
+// History Section End 
+// ===================
+
 
 
 //Pagination Function Helpers ===

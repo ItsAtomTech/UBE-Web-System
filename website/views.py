@@ -191,6 +191,12 @@ def assess_student_table():
 # =======================
 # Other Section Start
 # =======================
+@views.route('/print_receipt', methods=['GET', 'POST'])
+@login_required
+def print_receipt():
+    page = 'receipt'
+    return render_template("print_receipt.html", user=current_user, page=page)
+
 @views.route('/subject_table', methods=['GET', 'POST'])
 @login_required
 def subject_table():

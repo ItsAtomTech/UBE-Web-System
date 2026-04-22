@@ -71,8 +71,57 @@
 				</select>
 			</div>
 
+			
+			<hr class="line_2"> 
 		
+			<div class="medium bold info_items centered"> <span class="fa fa-table"> </span>
+				On Probation History
+			</div>
+			
+						
+			<div class="normal info_items"><span class="fa fa-clock-o">  </span> Number of On Probation :  <span class="bold" tag="probation_count"> -- </span>
+			</div>
+								
+			<div class="normal info_items"><span class="fa fa-check">  </span> Number of Passed :  <span class="bold" tag="passed_count"> -- </span>
+			</div>
+								
+			<div class="normal info_items"><span class="fa fa-exclamation-triangle">  </span> Number of Failed :  <span class="bold" tag="failed_count"> -- </span>
+			</div>
+		
+			
+			<div class="medium bold info_items centered main_table_container  mini_table">
+				<table id="summary_table" class="">
+					<thead>
+						<tr class="small sticky_header padded_header primary_color_invert secondary_background">
+							<th class="minimum_width">Subject</th>
+							<th class="minimum_width">Assigned Teacher</th>
+							<th>Status</th>
+							<th>Reason</th>
+							<th class="sticky_column_right secondary_background">Date</th>
+						</tr>
+					</thead>
+					
+					<tbody id="table_history">
+						
+						<tr class="padded_colms small">
+							<td tag="subject"> AAA </td>
+							<td tag="assigned Teacher"> BBB </td>
+							<td tag="status"> CCC </td>
+							<td tag="reason" > DDD </td>
+							<td tag="date "> EEE </td>
+						
+						</tr>						
 
+					
+					
+					</tbody>
+					
+				</table>
+				
+				
+			</div>
+			
+			
 			
 		</div>
 		
@@ -81,3 +130,20 @@
 
 	</div>
 </div>
+
+
+
+
+
+
+<template id="table_columns">
+
+	<tr class="padded_colms small">
+		<td class="tiny " tag="subject"> AAA </td>
+		<td class="tiny " tag="assigned Teacher"> BBB </td>
+		<td class="tiny " tag="status"> CCC </td>
+		<td class="tiny " tag="reason" > DDD </td>
+		<td class="tiny sticky_column_right primary_background" tag="date"> EEE </td>
+	</tr>		
+
+</template>

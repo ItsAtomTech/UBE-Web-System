@@ -1,0 +1,186 @@
+{% extends "base_headless.html" %} {% block title%} On Probation Receipt {%
+endblock %} {% block extra_css %}
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/printing_receipt.css') }}"
+/>
+{% endblock %} {% block contents %}
+
+<div class="receipt-wrapper">
+  <div class="receipt-page">
+    <!-- Header -->
+    <div class="receipt-header">
+      <div class="header-left">
+        <img
+          src="{{ url_for('static', filename='images/lnu_logo.png') }}"
+          alt="LNU Logo"
+          class="lnu-logo"
+        />
+        <div class="header-text">
+          <span class="university-name">LEYTE NORMAL UNIVERSITY</span>
+          <span class="university-address">Tacloban City, Leyte</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="print-date" id="print_date">Date of printing: 01/01/2026</span>
+      </div>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <!-- Student Info -->
+    <div class="student-info">
+      <p class="info-line">
+        <span class="info-label" id="student_id">ID No:</span> 20203013&nbsp;&nbsp;&nbsp;<span
+          class="info-label"
+          id="student_name" 
+          >Name:</span
+        >
+        DELA CRUZ, TEST A.
+      </p>
+      <p class="info-line">
+        <span class="info-label" id="student_college">College:</span> College of Arts and Science
+      </p>
+      <p class="info-line">
+        <span class="info-label" id="student_course">Course:</span> Bachelor of Science in
+        Information Technology
+      </p>
+    </div>
+
+    <!-- Subject Table -->
+    <div class="table-section">
+      <table class="subject-table">
+        <thead>
+          <tr>
+            <th >Subject Code</th>
+            <th>Subject Name</th>
+            <th>Assigned Instructor</th>
+            <th>Reason</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr >
+            <td id="subject_code">IT-101</td>
+            <td id="subject_name">Accounting Principle</td>
+            <td id="assigned_instructor">Test Teacher</td>
+            <td id="reason">Incured 4.0</td>
+            <td id="progress">Currently Taking</td>
+            <td id="status">NONE</td>
+            <td id="probation_date">01/01/2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Probation History -->
+    <div class="probation-section">
+      <div class="probation-history-header">
+        <span class="prob-title">On Probation History</span>
+        <div class="academic-status-block">
+          <span class="academic-status-label">ACADAMIC STATUS</span>
+          <span class="academic-status-value" id="academic_status">ADVISED TO SHIFT</span>
+        </div>
+      </div>
+
+      <div class="probation-counts">
+        <div class="count-row">
+          <span class="count-label" id="num_probation">Number of Probation:</span
+          ><span class="count-value">01</span>
+        </div>
+        <div class="count-row">
+          <span class="count-label" id="num_passed">Number of Passed:</span
+          ><span class="count-value">01</span>
+        </div>
+        <div class="count-row">
+          <span class="count-label" id="num_failed">Number of Failed:</span
+          ><span class="count-value">01</span>
+        </div>
+      </div>
+
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Subject Name</th>
+            <th>Assigned Instructor</th>
+            <th>Status</th>
+            <th>Reason</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id = "probation_history">
+          <tr>
+            <td>Accounting Principle</td>
+            <td>Test Teacher</td>
+            <td>FAILED</td>
+            <td>Incured 4.0</td>
+            <td>01/01/2026</td>
+          </tr>
+          <tr>
+            <td>Accounting Principle</td>
+            <td>Test Teacher</td>
+            <td>FAILED</td>
+            <td>Incured 4.0</td>
+            <td>01/01/2026</td>
+          </tr>
+          <tr>
+            <td>Accounting Principle</td>
+            <td>Test Teacher</td>
+            <td>FAILED</td>
+            <td>Incured 4.0</td>
+            <td>01/01/2026</td>
+          </tr>
+          <tr>
+            <td>Accounting Principle</td>
+            <td>Test Teacher</td>
+            <td>FAILED</td>
+            <td>Incured 4.0</td>
+            <td>01/01/2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Probation Details -->
+    <div class="details-section">
+      <p class="details-title"><strong>Probation Details</strong></p>
+      <p class="details-text">
+        &nbsp;&nbsp;&nbsp;&nbsp;For those placed under "On Probation" status,
+        you are advised to <strong>retake and pass/complete/remove</strong> the
+        deficiencies within two semester from the time the aforementioned
+        deficiencies were incurred. You should refrain from incurring other
+        deficiencies in the succeeding to remain in the program or in the
+        University
+      </p>
+      <p class="details-text">
+        &nbsp;&nbsp;&nbsp;&nbsp;Students with Academic Status of
+        <span class="red-text">"ADVISED TO SHIFT/TRANSFER UNIVERSITY"</span> are
+        encourage to comply during the duration of the current semester
+      </p>
+    </div>
+
+    <!-- Signatures -->
+    <div class="signatures-section">
+      <div class="signature-block">
+        <p class="sig-title"><strong>Evaluated by:</strong></p>
+        <div class="sig-line"></div>
+        <p class="sig-label">Signature over Printed Name of Dean</p>
+      </div>
+
+      <div class="signature-block">
+        <p class="sig-title"><strong>Conforme:</strong></p>
+        <div class="sig-line"></div>
+        <p class="sig-label">Signature over Printed Name of Student</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
