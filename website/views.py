@@ -197,6 +197,12 @@ def print_receipt():
     page = 'receipt'
     return render_template("print_receipt.html", user=current_user, page=page)
 
+@views.route('/print_report', methods=['GET', 'POST'])
+@login_required
+def print_report():
+    page = 'report'
+    return render_template("print_report.html", user=current_user, page=page)
+
 @views.route('/subject_table', methods=['GET', 'POST'])
 @login_required
 def subject_table():

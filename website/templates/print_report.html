@@ -1,0 +1,161 @@
+{% extends "base_headless.html" %} {% block title%} Print Report {% endblock %}
+{% block extra_css %}
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/print_report.css') }}"
+/>
+{% endblock %} {% block contents %}
+
+<div class="report-wrapper">
+  <div class="report-page">
+    <!-- Header -->
+    <div class="report-header">
+      <div class="header-left">
+        <img
+          src="{{ url_for('static', filename='images/LNU_Logo.png') }}"
+          alt="LNU Logo"
+          class="lnu-logo"
+        />
+        <div class="header-text">
+          <span class="university-name">LEYTE NORMAL UNIVERSITY</span>
+          <span class="university-address">Tacloban City, Leyte</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="print-date"
+          >Date of printing: <span id="print_date">01/01/2026</span></span
+        >
+      </div>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <!-- Filter Info -->
+    <div class="filter-info">
+      <p class="filter-line">
+        <span class="filter-label">College:</span>
+        <span id="college"
+          >College of Arts and Science, College of Education</span
+        >
+      </p>
+      <p class="filter-line">
+        <span class="filter-label">Program:</span>
+        <span id="program"
+          >Bachelor of Science in Information Technology, Bachelor of Education
+          in Mathematics,</span
+        >
+      </p>
+      <p class="filter-line">
+        <span class="filter-label">Semester:</span> From
+        <span id="from_semester">2025</span> To
+        <span id="to_semester">2026</span>
+      </p>
+    </div>
+
+    <!-- Summary Table -->
+    <div class="summary-table-section">
+      <table class="summary-table">
+        <thead>
+          <tr id="selected_filter">
+            <th>Program</th>
+            <th>On Probation</th>
+            <th>On Tracking</th>
+            <th>Total Failed</th>
+            <th>Total Passed</th>
+            <th>Advised to Shift</th>
+            <th>Advised to Transfer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="program_name">CAS BSIT</td>
+            <td id="on_probation">9999</td>
+            <td id="on_tracking">9999</td>
+            <td id="total_failed">9999</td>
+            <td id="total_passed">9999</td>
+            <td id="advised_to_shift">9999</td>
+            <td id="advised_to_transfer">9999</td>
+          </tr>
+          <tr>
+            <td id="program_name_2">BaEd MATH</td>
+            <td id="on_probation_2">9999</td>
+            <td id="on_tracking_2">9999</td>
+            <td id="total_failed_2">9999</td>
+            <td id="total_passed_2">9999</td>
+            <td id="advised_to_shift_2">9999</td>
+            <td id="advised_to_transfer_2">9999</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Chart Tabs Section -->
+    <div class="charts-section">
+      <!-- On Probation Tab -->
+      <div class="chart-tab">
+        <div class="chart-tab-label">On Probation</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- On Tracking Tab -->
+      <div class="chart-tab">
+        <div class="chart-tab-label">On Tracking</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Failed Tab -->
+      <div class="chart-tab">
+        <div class="chart-tab-label">Total Failed</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Passed Tab -->
+      <div class="chart-tab">
+        <div class="chart-tab-label">Total Passed</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Advised to Shift Tab -->
+      <div class="chart-tab">
+        <div class="chart-tab-label">Advised to Shift</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Advised to Transfer Tab -->
+      <div class="chart-tab">
+        <div class="chart-tab-label">Advised to Transfer</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end charts-section -->
+  </div>
+</div>
+
+{% endblock %}
