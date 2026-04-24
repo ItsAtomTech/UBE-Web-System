@@ -427,7 +427,6 @@ select > option{
 
 .title_form_top{
 	padding-left:30px;
-
 }
 
 
@@ -704,8 +703,6 @@ select > option{
 
 .faded{
 	opacity:0.7;
-	
-	
 }
 
 
@@ -960,3 +957,17 @@ select > option{
 
 
 
+/* ====================
+Project Specific Styles
+======================= */
+
+
+.fgroup.occupied{
+	padding-top:2px !important;
+	padding-bottom:2px !important;
+}
+
+.df_form_con.seamless{
+	padding-left: 4px  !important;
+    padding-right: 4px !important;
+}
