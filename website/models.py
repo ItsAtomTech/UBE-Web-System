@@ -31,6 +31,7 @@ class UserType(db.Model):
 class StudentTable(db.Model):
     student_id = db.Column(db.Integer, primary_key=True)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject_code.subject_id'))
+    subject_type = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id')) # Entry Creator
     instructor_id = db.Column(db.Integer, db.ForeignKey('users.user_id')) # Assigned Instructor
     student_name = db.Column(db.String(50))
