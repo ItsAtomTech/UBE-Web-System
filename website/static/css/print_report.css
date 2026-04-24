@@ -208,4 +208,8 @@
   .chart-placeholder {
     background: #ebebeb;
   }
+  .chart-tab {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
