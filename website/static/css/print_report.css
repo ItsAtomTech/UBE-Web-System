@@ -203,12 +203,18 @@
   .chart-tab-content {
     border: 1px solid #bbb;
     background: #fff;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .chart-placeholder {
     background: #ebebeb;
   }
   .chart-tab {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+   .summary-table {
     break-inside: avoid;
     page-break-inside: avoid;
   }
