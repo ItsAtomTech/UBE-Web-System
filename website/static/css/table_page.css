@@ -559,8 +559,7 @@ th.sortable::after {
 	padding:5px;
 	background-color:var(--failed_color_faded);
 	color:var(--primary_color_invert);
-	border-radius:5px;
-	
+	border-radius:5px;	
 }
 
 
@@ -573,6 +572,10 @@ th.sortable::after {
     display: none;
 }
 
+
+.larger_modal_width{
+	max-width:1200px;
+}
 
 @media (max-width:600px){
 	.top_toolbar_con {
