@@ -150,3 +150,88 @@
   
   // Refresh stats every 5 seconds
   window.setInterval(fetchDashboardStats, 5000);
+  
+  
+  
+  // Other interactive functions:
+  
+function setupLongPress(element, duration = 1000) {
+    let pressTimer = null;
+
+    element.addEventListener("mousedown", () => {
+      element.classList.add("add_hover_effect");
+            addSelectionStat(element);
+      pressTimer = setTimeout(() => {
+        activateCardSelect();
+      }, duration);
+    });
+
+    element.addEventListener("mouseup", () => {
+       element.classList.remove("add_hover_effect");
+      clearTimeout(pressTimer);
+    });
+
+    element.addEventListener("mouseleave", () => {
+       element.classList.remove("add_hover_effect");
+      clearTimeout(pressTimer);
+    });
+
+    // For mobile touch support too, Noshi-sama~
+    element.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+            addSelectionStat(element);
+      pressTimer = setTimeout(() => {
+        activateCardSelect();
+      }, duration);
+    });
+
+    element.addEventListener("click", () => {
+      clearTimeout(pressTimer);
+    });
+    
+    element.addEventListener("touchend", () => {
+     
+      clearTimeout(pressTimer);
+    });
+}
+
+// Attach it to your card element like so~
+let card = document.querySelectorAll(".dash_stat_card.primary_background");
+for(each of card){
+    setupLongPress(each);
+}
+card = undefined;
+
+
+function activateCardSelect(){
+    let stats = _("stat_grid");
+    stats.classList.add("selection_started");
+    
+}
+
+
+function addSelectionStat(elm){
+    let parentElm = elm.parentElement;
+    if(!parentElm.classList.contains("selection_started") || elm.classList.contains("action_done")){
+        return;
+    };
+    let tog = elm.classList.toggle("de_selected_card");
+    
+    if(tog){
+        elm.setAttribute("title","This Category would be excluded during printing of report...");
+    }else{
+        elm.setAttribute("title","");
+    }
+    
+}
+
+
+function endSelectionCards(elm){
+        let stats = _("stat_grid");
+    stats.classList.remove("selection_started");
+}
+
+//setupLongPress(card);
+  
+  
+  

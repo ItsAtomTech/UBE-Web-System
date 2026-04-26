@@ -1,8 +1,22 @@
 /* Styles for the the Main Dashboard Fragment */
+@-webkit-keyframes pulse {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.6; }
+}
+
+@keyframes pulse {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.6; }
+}
+
 
 /* =====================================================
    Main Home Dashboard Styles
    ===================================================== */
+
+
 
 .dash_contents_con {
 	box-sizing: border-box;
@@ -143,6 +157,7 @@
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
 	-webkit-transition: transform 0.2s ease, box-shadow 0.2s ease;
 	min-height: 130px;
+	user-select:none;
 }
 
 .dash_stat_card:hover {
@@ -335,6 +350,51 @@ gap:10px;
 	min-height:40px;
 }
 
+
+/* Animations */
+.add_hover_effect:not(.action_done){
+	transform:scale(0.9,0.9) !important;
+	transition:0.6s !important;
+	transition-delay:0.2s !important;
+	opacity:0.5;
+	cursor:pointer;
+}
+
+.selection_started > .dash_stat_card{
+	-webkit-animation: pulse 1s ease-in-out infinite;
+	animation:pulse 1s ease-in-out infinite;
+	cursor:pointer;
+}
+
+
+.dash_stat_card.action_done{
+	justify-content:center;
+	align-items:center;
+	user-select:none;
+	pointer-events:none;
+	opacity:0;	
+}
+
+
+.selection_started > .dash_stat_card.action_done{
+	justify-content:center;
+	align-items:center;
+	pointer-events:all;
+	animation:none;
+	opacity:1;	
+}
+
+
+
+.de_selected_card{
+	opacity:0.95 !important;
+	animation:none !important;
+	border:dashed 2px gray;
+	-webkit-transform:scale(0.98,0.98) !important;
+	transform:scale(0.98,0.98) !important;
+	cursor:help;
+	
+}
 
 
 @media (max-width: 1000px) {
