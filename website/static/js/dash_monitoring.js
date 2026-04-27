@@ -195,7 +195,7 @@ function setupLongPress(element, duration = 1000) {
     });
 }
 
-// Attach it to your card element like so~
+// Attach it to the card element
 let card = document.querySelectorAll(".dash_stat_card.primary_background");
 for(each of card){
     setupLongPress(each);
@@ -232,6 +232,40 @@ function endSelectionCards(elm){
 }
 
 //setupLongPress(card);
+
+// returns the tag of active selected dash cards
+function getActiveTagsCard() {
+  let grid = document.getElementById('stat_grid');
+  let cards = grid.querySelectorAll('.dash_stat_card:not(.de_selected_card)');
   
+  const tags = [];
+  cards.forEach(card => {
+    const tag = card.getAttribute('tag');
+    if (tag) tags.push(tag);
+  });
   
+  return tags;
+}
+
+
   
+async function initPrintReport(elm){
+	let currentFilters = decople(qBuilder.filters);
+	let stat_filters = getActiveTagsCard();
+	
+	
+	let combined_filters = {
+		currentFilters,
+		stat_filters,
+	}
+	
+	localStorage.setItem("reportFile",JSON.stringify(combined_filters));
+	showToast("Preparing Data for printing...");
+	await sleep(1000);
+	
+	window.open('/print_report', 'printReport');
+	
+	
+}
+
+

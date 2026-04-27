@@ -81,7 +81,8 @@
     <div class="bg_banner"></div>
   </div>
 <div class=" filter_bar">
-  <section class="chart_filter_bar">
+
+<section class="chart_filter_bar">
   <div class="chart_filter_item">
     <label
       class="chart_filter_label primary_color bold small "
@@ -96,7 +97,9 @@
 	  
 	  onclick='showModalContent("department_modal");'
     />
-
+	
+	
+	
 
   </div>
 
@@ -142,17 +145,30 @@
       for="probation-filter-semester"
       >Semester Range</label
     >
-    <select
-      id="probation_filter_semester"
-      class="chart_filter_select primary_color"
-	  onchange="getSemServerData();"
-    >
-      <option value="all">All Semesters</option>
-      <option value="1">1st Semester</option>
-      <option value="2">2nd Semester</option>
-      <option value="3">Summer</option>
-    </select>
+	
+	
+	<div class="flexed padded_gap input_styles">
+	
+		<select
+		  id="probation_filter_semester"
+		  class="chart_filter_select primary_color"
+		  onchange="getSemServerData();"
+		>
+		  <option value="all">All Semesters</option>
+		  <option value="1">1st Semester</option>
+		  <option value="2">2nd Semester</option>
+		  <option value="3">Summer</option>
+		</select>
+		
+		<div class="df_button_flat primary_color flexed medium center_all" tooltip="Print Reports" > 
+			<span class="fa fa-print" onclick="initPrintReport(this)" > </span>
+		</div>
+	
+	</div>
+
+	
   </div>
+  
 </section>
 
 </div>
@@ -162,7 +178,7 @@
   <!-- Stat Cards -->
   <div class="dash_cards_grid" id="stat_grid">
     <!-- Probation Card -->
-    <div class="dash_stat_card primary_background ">
+    <div class="dash_stat_card primary_background " tag="on_probation">
       <div class="dash_stat_label primary_color small">
         Currently on Probation
       </div>
@@ -180,7 +196,7 @@
     
 
     <!-- Tracking Card -->
-    <div class="dash_stat_card primary_background">
+    <div class="dash_stat_card primary_background" tag="on_tracking">
       <div class="dash_stat_label primary_color small">On Tracking</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon secondary_color">
@@ -195,7 +211,7 @@
     </div>
 
     <!-- Failed Card -->
-    <div class="dash_stat_card primary_background">
+    <div class="dash_stat_card primary_background" tag="total_failed">
       <div class="dash_stat_label primary_color small">Total Failed</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon dash_stat_icon_warn">
@@ -210,7 +226,7 @@
     </div>
 
     <!-- Passed Card -->
-    <div class="dash_stat_card primary_background">
+    <div class="dash_stat_card primary_background" tag="total_passed">
       <div class="dash_stat_label primary_color small">Total Passed</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon dash_stat_icon_success">
@@ -226,7 +242,7 @@
 	
 	
     <!-- Shift Card -->
-    <div class="dash_stat_card primary_background">
+    <div class="dash_stat_card primary_background" tag="to_shift">
       <div class="dash_stat_label primary_color small">Adviced to Shift</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon dash_stat_icon_success">
@@ -245,7 +261,7 @@
 	
 	
     <!-- Shift Card -->
-    <div class="dash_stat_card primary_background">
+    <div class="dash_stat_card primary_background" tag="to_transfer">
       <div class="dash_stat_label primary_color small">Transfer to Another School</div>
       <div class="dash_stat_body">
         <span class="dash_stat_icon secondary_color">
@@ -280,15 +296,12 @@
     <div class="dash_stat_card primary_background action_done" onclick="endSelectionCards(this)">
     
     <span class="medium"><span class="fa fa-check"> </span> Done </span>
-    
     </div>
     
 	
 	
   </div>
 </div>
-
-
 
 
 

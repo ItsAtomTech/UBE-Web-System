@@ -375,6 +375,7 @@ def save_student():
         student_name = data.get("student_name")
         student_number = data.get("student_number")
         subject_id = data.get("subject_id")
+        subject_type = data.get("subject_type")
         instructor_id = data.get("instructor_id")
         reason = data.get("reason")
         department_id = data.get("department_id")
@@ -414,6 +415,7 @@ def save_student():
             student_name=student_name,
             student_number=student_number,
             subject_id=subject_id,
+            subject_type=subject_type,
             instructor_id=instructor_id,
             user_id=current_user.user_id,
             progress="on_probation",
@@ -486,6 +488,7 @@ def get_student_by_id():
         student_data = {
             "student_id": student.student_id,
             "subject_id": student.subject_id,
+            "subject_type": student.subject_type,
             "user_id": student.user_id,
             "instructor_id": student.instructor_id,
             "student_name": student.student_name,
@@ -567,6 +570,7 @@ def get_student_info_all():
         student_data = {
             "student_id": student.student_id,
             "subject_id": student.subject_id,
+            "subject_type": student.subject_type,
             "user_id": student.user_id,
             "instructor_id": student.instructor_id,
             "instructor_name": instructor_name,
@@ -627,7 +631,10 @@ def save_student_update():
             student.instructor_id = data["instructor_id"]
 
         if data.get("subject_id"):
-            student.subject_id = data["subject_id"]
+            student.subject_id = data["subject_id"]        
+            
+        if data.get("subject_type"):
+            student.subject_type = data["subject_type"]
             
         if data.get("reason"):
             student.reason = data["reason"]
@@ -1359,6 +1366,165 @@ def get_student_history():
     except Exception as e:
         return {"type": "error", "message": str(e)}
     
+
+
+
+@api_handles.route('/get_data_per_stat', methods=['POST'])
+def get_data_per_stat():
+    """Muku weaves statistics across the tapestry of time."""
+    try:
+        current_filters_raw = request.form.get("currentFilters")
+        stat_filters_raw = request.form.get("stat_filters")
+
+        try:
+            current_filters = json.loads(current_filters_raw) if current_filters_raw else {}
+        except (json.JSONDecodeError, ValueError, TypeError):
+            current_filters = {}
+
+        try:
+            stat_filters = json.loads(stat_filters_raw) if stat_filters_raw else []
+        except (json.JSONDecodeError, ValueError, TypeError):
+            stat_filters = []
+
+        department_filter = current_filters.get("department_filter", "all")
+        year_range = current_filters.get("year_range", None)
+        semester_filter = current_filters.get("semester", "all")
+
+        # 1. Identify valid constellations (Departments)
+        dept_query = Department.query
+        dept_ids = []
+        if department_filter != "all":
+            dept_ids = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
+            if dept_ids:
+                dept_query = dept_query.filter(Department.id.in_(dept_ids))
+        
+        # Muku stores the names to ensure even empty departments are returned for the chart
+        departments = [d.name for d in dept_query.all()]
+
+        # 2. Gather raw temporal records from the void
+        query = (
+            db.session.query(
+                Department.name,
+                StudentTable.sem_year,
+                StudentTable.semester,
+                StudentTable.progress,
+                StudentTable.status,
+                StudentTable.remarks
+            )
+            .join(Department, StudentTable.department_id == Department.id)
+            .filter(StudentTable.sem_year.isnot(None), StudentTable.semester.isnot(None))
+        )
+
+        if dept_ids:
+            query = query.filter(StudentTable.department_id.in_(dept_ids))
+
+        if semester_filter != "all":
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                query = query.filter(StudentTable.semester.in_(sem_list))
+
+        raw_results = query.all()
+
+        # 3. Normalize the timeline (Academic Start Year)
+        normalized_rows = []
+        all_time_keys = set()
+
+        for dept_name, sem_year, semester, progress, status, remarks in raw_results:
+            sem_year = int(sem_year)
+            semester = int(semester)
+            
+            if semester == 1:
+                academic_start_year = sem_year
+            elif semester in (2, 3):
+                academic_start_year = sem_year - 1
+            else:
+                academic_start_year = sem_year
+
+            normalized_rows.append({
+                "dept_name": dept_name,
+                "yr": academic_start_year,
+                "sem": semester,
+                "progress": progress,
+                "status": status,
+                "remarks": remarks
+            })
+
+        # 4. Filter by the boundaries of time (Year Range)
+        if year_range:
+            years = [y.strip() for y in year_range.split(",")]
+            if len(years) == 2 and years[0].isdigit() and years[1].isdigit():
+                year_from, year_to = int(years[0]), int(years[1])
+                normalized_rows = [
+                    row for row in normalized_rows
+                    if year_from <= row["yr"] <= year_to
+                ]
+
+        # Record all valid time keys after the filter to build the X-axis labels
+        for row in normalized_rows:
+            all_time_keys.add((row["yr"], row["sem"]))
+
+        # 5. Prepare the vessels and organize time labels
+        sorted_time_keys = sorted(all_time_keys, key=lambda x: (x[0], x[1]))
+        all_sem_labels = [
+            ((yr, sem), f"{yr}-{yr + 1} - {sem_label(sem)} Sem")
+            for yr, sem in sorted_time_keys
+        ]
+
+        # stat_name -> dept_name -> (yr, sem) -> count
+        stats_data = {stat: {dept: {} for dept in departments} for stat in stat_filters}
+
+        # 6. Distribute the souls into their respective statistical vessels
+        for row in normalized_rows:
+            dept = row["dept_name"]
+            time_key = (row["yr"], row["sem"])
+            
+            # The conditions defined by Noshi-sama
+            conditions = {
+                "on_probation": row["progress"] == 'on_probation',
+                "on_tracking": row["progress"] == 'currently_taking',
+                "total_failed": row["status"] == 'failed',
+                "total_passed": row["status"] == 'passed',
+                "to_shift": row["remarks"] == 'Advised to Shift',
+                "to_transfer": row["remarks"] == 'Advised to Transfer (Other University)'
+            }
+
+            for stat in stat_filters:
+                if stat in conditions and conditions[stat]:
+                    # Ensure the department exists in our dictionary to prevent voids
+                    if dept in stats_data[stat]:
+                        stats_data[stat][dept][time_key] = stats_data[stat][dept].get(time_key, 0) + 1
+
+        # 7. Transmute into the exact Chart.js format
+        final_data_per_stat = []
+        for stat in stat_filters:
+            dept_array = []
+            
+            for dept in sorted(departments):
+                dept_counts = stats_data[stat].get(dept, {})
+                
+                # Match every point in time, defaulting to 0 if no record exists
+                data_points = [
+                    [label, dept_counts.get(time_key, 0)] 
+                    for time_key, label in all_sem_labels
+                ]
+                
+                dept_array.append({
+                    "label": dept,
+                    "data": data_points
+                })
+                
+            final_data_per_stat.append({
+                "stat_name": stat,
+                "departments": dept_array
+            })
+
+        return jsonify({
+            "type": "success",
+            "data_per_stat": final_data_per_stat
+        })
+
+    except Exception as e:
+        return jsonify({"type": "error", "message": str(e)})
 
 # ================================
 # Stats Table End
