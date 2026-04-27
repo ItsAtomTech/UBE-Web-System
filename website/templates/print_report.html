@@ -5,9 +5,16 @@
   rel="stylesheet"
   href="{{ url_for('static', filename='css/print_report.css') }}"
 />
-{% endblock %} {% block contents %}
 
-<div class="report-wrapper">
+
+<script src="{{ url_for('static', filename='js/charts/chart.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts/chartjs-plugin-datalabels.min.js') }}"></script>
+{% endblock %} 
+
+
+{% block contents %}
+
+<div class="report-wrapper" id="wrapper_doc">
   <div class="report-page">
     <!-- Header -->
     <div class="report-header">
@@ -93,16 +100,26 @@
     <div class="section-divider"></div>
 
     <!-- Chart Tabs Section -->
-    <div class="charts-section">
+    <div class="charts-section" id="charts_section">
       <!-- On Probation Tab -->
       <div class="chart-tab">
-        <div class="chart-tab-label">On Probation</div>
+        <div class="chart-tab-label" tag="stat_title">On Probation</div>
         <div class="chart-tab-content">
           <div class="chart-placeholder">
             <!-- Chart will be rendered here -->
+			
+			<canvas id="" tag="chartCanvas">
+			
+			
+			</canvas>
+			
           </div>
         </div>
       </div>
+
+	
+
+
 
       <!-- On Tracking Tab -->
       <div class="chart-tab">
@@ -157,5 +174,139 @@
     <!-- end charts-section -->
   </div>
 </div>
+
+
+
+
+
+
+<template id="stat_chart_section">
+
+      <div class="chart-tab">
+        <div class="chart-tab-label" tag="stat_title">On Probation</div>
+        <div class="chart-tab-content">
+          <div class="chart-placeholder">
+            <!-- Chart will be rendered here -->
+			
+			<canvas id="" tag="chartCanvas">
+			
+			
+			</canvas>
+			
+          </div>
+        </div>
+      </div>
+	  
+</template>	  
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+{% block extra_js %}
+<script>
+  const PROGRAM_ACRONYM_MAP = {
+    "Bachelor of Arts in English Language": "BAEL",
+    "Bachelor of Arts in Communication": "BAComm",
+    "Bachelor of Science in Biology": "BSBio",
+    "Bachelor of Arts in Political Science": "BAPoS",
+    "Bachelor of Library and Information Science": "BLIS",
+    "Bachelor of Science in Information Technology": "BSIT",
+    "Bachelor of Science in Social Work": "BSSW",
+    "Bachelor of Music in Music Education": "BMME",
+    "Bachelor of Elementary Education": "BEEd",
+    "Bachelor of Special Needs Education": "BSNEd",
+    "Bachelor of Early Childhood Education": "BECEd",
+    "Bachelor of Physical Education": "BPEd",
+    "Bachelor of Technology and Livelihood Education": "BTLEd",
+    "Bachelor of Secondary Education - Major in Social Studies": "BSEd-SocStud",
+    "Bachelor of Secondary Education - Major in English": "BSEd-English",
+    "Bachelor of Secondary Education - Major in Filipino": "BSEd-Filipino",
+    "Bachelor of Secondary Education - Major in Mathematics": "BSEd-Math",
+    "Bachelor of Secondary Education - Major in Science": "BSEd-Science",
+    "Bachelor of Science in Hospitality Management": "BSHM",
+    "Bachelor of Science in Tourism Management": "BSTM",
+    "Bachelor of Science in Entrepreneurship": "BS Entrep",
+  };
+
+  function normalizeProgramKey(value) {
+    return String(value || "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+  }
+
+  const PROGRAM_ACRONYM_MAP_NORMALIZED = Object.fromEntries(
+    Object.entries(PROGRAM_ACRONYM_MAP).map(function (entry) {
+      return [normalizeProgramKey(entry[0]), entry[1]];
+    }),
+  );
+
+  function parseProgramName(programName) {
+    if (!programName) {
+      return "";
+    }
+
+    const normalized = String(programName).trim();
+    const normalizedKey = normalizeProgramKey(normalized);
+    if (PROGRAM_ACRONYM_MAP_NORMALIZED[normalizedKey]) {
+      return PROGRAM_ACRONYM_MAP_NORMALIZED[normalizedKey];
+    }
+
+    const cleaned = normalized
+      .replace(/\s+-\s+Major in\s+/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const words = cleaned.split(" ");
+    const stopWords = new Set(["of", "in", "and", "the", "major"]);
+    let acronym = "";
+
+    for (const word of words) {
+      const lower = word.toLowerCase();
+      if (stopWords.has(lower)) {
+        continue;
+      }
+      if (/[a-zA-Z]/.test(word)) {
+        acronym += word[0].toUpperCase();
+      }
+    }
+
+    return acronym || normalized;
+  }
+
+  function parseProgramsInChart(chartResponse) {
+    if (!chartResponse || !Array.isArray(chartResponse.data)) {
+      return chartResponse;
+    }
+
+    return {
+      ...chartResponse,
+      data: chartResponse.data.map(function (item) {
+        return {
+          ...item,
+          label: parseProgramName(item.label),
+        };
+      }),
+    };
+  }
+</script>
+
+
+<script
+  defer
+  src="{{ url_for('static', filename='js/chart_helper.js') }}"
+></script>
+
+
+<script src="{{ url_for('static', filename='js/printing_report_handles.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
 
 {% endblock %}

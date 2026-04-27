@@ -87,6 +87,7 @@ let acadStatsForm = {
             "col_span": null,
             "span_column": false,
             "id": "subject_type",
+			"list": "type_list",
             "index": 7
         },
         {

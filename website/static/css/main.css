@@ -971,3 +971,14 @@ Project Specific Styles
 	padding-left: 4px  !important;
     padding-right: 4px !important;
 }
+
+
+.smaller_filter{
+	min-width:40px !important;
+}
+
+.center_all{
+	text-align: center !important;
+    align-items: center;
+	justify-content:center;
+}
