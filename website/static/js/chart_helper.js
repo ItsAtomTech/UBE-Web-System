@@ -563,6 +563,123 @@ function generateMultiLineChart(
   }
 }
 
+
+function generateMultiBarChart(
+  datasets,
+  elementId = "myGraph",
+  asPercentage = false,
+  colors = materialColors,
+) {
+  // Extract all unique labels from all datasets
+  let allLabels = [];
+  datasets.forEach((dataset) => {
+    dataset.data.forEach((item) => {
+      if (!allLabels.includes(item[0])) {
+        allLabels.push(item[0]);
+      }
+    });
+  });
+
+
+  let chartDatasets = datasets.map((dataset, index) => {
+    let dataValues = dataset.data.map((item) => item[1]);
+    let color = colors[index % colors.length];
+	
+    return {
+      label: parseProgramName(dataset.label),
+      data: dataValues,
+      backgroundColor: color,
+      borderColor: color,
+      borderWidth: 2,
+      fill: false,
+      pointBackgroundColor: color,
+      pointBorderColor: "#fff",
+      pointBorderWidth: 2,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      tension: 0.4,
+    };
+  });
+
+  let chartData = {
+    labels: allLabels,
+    datasets: chartDatasets,
+  };
+
+
+  if (chartInstances[elementId]) {
+    let shouldAnimate = false;
+
+    // Check if any dataset has changed
+    if (
+      chartInstances[elementId].data.datasets.length !== chartDatasets.length
+    ) {
+      shouldAnimate = true;
+    } else {
+      for (let i = 0; i < chartDatasets.length; i++) {
+        let currentData = chartInstances[elementId].data.datasets[i].data;
+        let newData = chartDatasets[i].data;
+        if (isDataDifferent(currentData, newData)) {
+          shouldAnimate = true;
+          break;
+        }
+      }
+    }
+
+    chartInstances[elementId].options.animation = shouldAnimate
+      ? undefined
+      : false;
+    chartInstances[elementId].data = chartData;
+    chartInstances[elementId].update();
+    chartInstances[elementId].options.animation = true;
+  } else {
+    let ctx = document.getElementById(elementId).getContext("2d");
+    chartInstances[elementId] = new Chart(ctx, {
+      type: "bar",
+      data: chartData,
+      options: {
+        responsive: true,
+        animation: {},
+        scales: {
+          y: {
+            beginAtZero: true,
+			stacked: true,
+          },
+          x: {
+            display: true,
+			beginAtZero: true,
+			stacked: true,
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+			labels: {
+				boxWidth: 10,
+				boxHeight: 10,
+				borderRadius: 5,
+			}
+          },
+          datalabels: {
+            color: getCSSVar("--primary_color_invert"),
+            formatter: (value, ctx) => {
+              if (asPercentage) {
+                let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                let percentage = ((value * 100) / sum).toFixed(2) + "%";
+                return percentage;
+              } else {
+                return abbreviateNumber(value).abbreviated;
+              }
+            },
+            anchor: "center",
+            align: "center",
+          },
+        },
+      },
+    });
+  }
+}
+
 try {
   Chart.register(ChartDataLabels);
 } catch (e) {

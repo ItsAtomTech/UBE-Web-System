@@ -1,4 +1,21 @@
 selectedItemId = null;
+let statNames = {
+	"on_probation":	"On Probation",
+	"on_tracking": "On Tracking",
+	"total_failed":	"Total Failed",
+	"total_passed":	"Total Passed",
+	"to_shift":"Advised to Shift",
+	"to_transfer": "Advised to Transfer"
+}
+
+
+let semName = {
+	"1": "1st Sem",
+	"2": "2nd Sem",
+	"3": "Summer", 
+	"all": "All",
+	
+}
 
 async function getPrintableData(){
 	qBuilder.server_address = "_";
@@ -9,17 +26,15 @@ async function getPrintableData(){
 	if(data){
 		data = JSON.parse(data);
 	}
-	
 
 	getInformationData(data);
-
 	_("print_date").innerText = getCurrentDate();
 	
 	
-	// await sleep(200);
-	// _("wrapper_doc").classList.remove("blur_docs");
-	// await sleep(500);
-	// print();
+	await sleep(200);
+	_("wrapper_doc").classList.remove("blur_docs");
+	await sleep(500);
+	print();
 }
 
 
@@ -33,9 +48,10 @@ function getCurrentDate() {
 }
 
 
-
+let currentFilter;
 function getInformationData(data){
-		console.log(data);
+		// console.log(data);
+		currentFilter = data.currentFilters;
 		
 		let params =  [
 			{ 
@@ -55,11 +71,33 @@ function getInformationData(data){
 let canvasIds = {};
 
 
-function generateDataTables(dataraw){
+async function generateDataTables(dataraw){
 	let data = (JSON.parse(dataraw.responseText));
 	_("charts_section").innerHTML = "";
 	let stats = data.data_per_stat;
 		canvasIds = {};
+	
+
+	
+	
+	_("program").innerHTML = "";
+	_("college").innerHTML = "";
+	let departments = [];
+	let college = [];
+	
+	for(each of data.data_per_department){
+		departments.push(parseProgramName(each.department_name));
+		
+		addUniqueString(college,parseProgramName(each.college_name));
+	}
+	
+	_("program").innerText = departments.join(", ");
+	_("college").innerText = college.join(", ");
+	
+	
+	//Generate Table Data 	
+	
+	generateTableData(data);
 	
 	
 	//Generate Canvas Elements before putting data into them
@@ -72,20 +110,113 @@ function generateDataTables(dataraw){
 		
 		canvasIds[each.stat_name] = "c_"+ each.stat_name;
 		canvas.setAttribute("id", "c_"+ each.stat_name);
-		title.innerText = each.stat_name;
+		title.innerText = statNames[each.stat_name];
 		
-		console.log(each);
+		// console.log(each);
 		
 		_("charts_section").appendChild(clone);
 	}
 	
+	
+	for(each of stats){
+		
+		let canvas_elm = canvasIds[each.stat_name];
+			if(!canvas_elm) continue;
+		
+		
+		generateMultiBarChart(
+		  removeZeroSemData(each.departments),
+		  canvas_elm,
+		  false  // asPercentage = false for raw numbers
+		);
 
-	
-	
+		
+		
+	}
+}
+
+function removeZeroSemData(datasets) {
+  return datasets
+    .map((dataset) => ({
+      ...dataset,
+      data: dataset.data.filter((item) => item[1] !== 0),
+    }))
+    .filter((dataset) => dataset.data.length > 0);
+}
+
+
+/**
+ * Adds a string to an array only if it does not already exist within it.
+ *
+ * @param {Array<string>} targetArray - The array to evaluate and modify.
+ * @param {string} newString - The string to potentially add to the array.
+ * @returns {Array<string>} The updated array.
+ */
+function addUniqueString(targetArray, newString) {
+    // Check if the array does NOT already contain the string
+    if (!targetArray.includes(newString)) {
+        targetArray.push(newString);
+    }
+    return targetArray;
 }
 
 
 
+
+function generateTableData(data){
+	let table_data = data.stat;	
+	
+	let elm = _("selected_filter");
+	elm.innerHTML = "";
+	
+	
+	_("year_range").innerText = currentFilter.year_range.length ? currentFilter.year_range : "All";
+	
+	
+	_("semester").innerText = currentFilter.semester.length ? semName[currentFilter.semester] : "All";
+	
+	
+	let progh = make("th");
+		progh.innerText = "Program";
+		elm.appendChild(progh);
+	
+
+	//Gen Headers
+	for(each of data.data_per_stat){
+		let th_elm = make("th");
+			th_elm.innerText = statNames[each.stat_name];
+			elm.appendChild(th_elm);
+	}
+	
+	let tableRows = _("table_tr_row");
+	
+	// Gen Data Rows
+	for(each of data.data_per_department){
+		
+		let row = make("tr");
+			
+		let progs = make("td");
+			progs.innerText = parseProgramName(each.college_name) + " " + parseProgramName(each.department_name);
+			progs.classList.add("bold");
+			
+			row.appendChild(progs);
+			
+			for(rows of each.stats){
+				let datarow = make("td");
+					datarow.innerText = (rows.count);
+					
+				row.appendChild(datarow);
+					
+			}
+			
+		tableRows.appendChild(row);	
+	}	
+}
+
+
+
+	
+	
 
 //Calls this function when the page is done loading
 window.onload = () => getPrintableData();

@@ -42,21 +42,25 @@
     <div class="filter-info">
       <p class="filter-line">
         <span class="filter-label">College:</span>
-        <span id="college"
+        <span id="college" class="bold"
           >College of Arts and Science, College of Education</span
         >
       </p>
       <p class="filter-line">
         <span class="filter-label">Program:</span>
-        <span id="program"
-          >Bachelor of Science in Information Technology, Bachelor of Education
-          in Mathematics,</span
+        <span id="program" class="bold"
+          > </span
         >
       </p>
       <p class="filter-line">
-        <span class="filter-label">Semester:</span> From
-        <span id="from_semester">2025</span> To
-        <span id="to_semester">2026</span>
+        <span class="filter-label">Year Range:
+		
+		<span id="year_range"  class="bold"> YYYY YYYY</span>
+		
+		</span> Semester: 
+		
+        <span id="semester" class="bold">  </span>
+		
       </p>
     </div>
 
@@ -74,24 +78,12 @@
             <th>Advised to Transfer</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="table_tr_row">
           <tr>
-            <td id="program_name">CAS BSIT</td>
-            <td id="on_probation">9999</td>
-            <td id="on_tracking">9999</td>
-            <td id="total_failed">9999</td>
-            <td id="total_passed">9999</td>
-            <td id="advised_to_shift">9999</td>
-            <td id="advised_to_transfer">9999</td>
+
           </tr>
           <tr>
-            <td id="program_name_2">BaEd MATH</td>
-            <td id="on_probation_2">9999</td>
-            <td id="on_tracking_2">9999</td>
-            <td id="total_failed_2">9999</td>
-            <td id="total_passed_2">9999</td>
-            <td id="advised_to_shift_2">9999</td>
-            <td id="advised_to_transfer_2">9999</td>
+
           </tr>
         </tbody>
       </table>
@@ -106,12 +98,9 @@
         <div class="chart-tab-label" tag="stat_title">On Probation</div>
         <div class="chart-tab-content">
           <div class="chart-placeholder">
+          <div class="chart-placeholder">
             <!-- Chart will be rendered here -->
-			
-			<canvas id="" tag="chartCanvas">
-			
-			
-			</canvas>
+          </div>
 			
           </div>
         </div>
@@ -188,9 +177,8 @@
           <div class="chart-placeholder">
             <!-- Chart will be rendered here -->
 			
-			<canvas id="" tag="chartCanvas">
-			
-			
+			<canvas id="" class="chart_canvas_onreport" tag="chartCanvas">
+		
 			</canvas>
 			
           </div>
@@ -233,6 +221,9 @@
     "Bachelor of Science in Hospitality Management": "BSHM",
     "Bachelor of Science in Tourism Management": "BSTM",
     "Bachelor of Science in Entrepreneurship": "BS Entrep",
+	
+	
+    "COLLEGE OF EDUCATION": "COE",
   };
 
   function normalizeProgramKey(value) {

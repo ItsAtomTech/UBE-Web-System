@@ -10,6 +10,16 @@
   min-height: 100vh;
   padding: 32px 16px;
   box-sizing: border-box;
+   -webkit-filter:blur(0px);
+  filter:blur(0px);
+  opacity:1;
+  transition:0.4s;
+}
+
+.blur_docs{
+	-webkit-filter:blur(5px);
+	filter:blur(5px);
+	opacity:0.3;
 }
 
 .report-page {
@@ -161,13 +171,15 @@
   background: #fafafa;
   padding: 12px;
   box-sizing: border-box;
+  overflow:hidden;
+  
 }
 
 .chart-placeholder {
   width: 100%;
-  height: 220px;
+  height: 290px;
   background: #f0f0f0;
-  border-radius: 3px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,9 +189,13 @@
   letter-spacing: 0.5px;
 }
 
-.chart-placeholder::after {
-  /* content: "Chart goes here"; */
+
+.chart_canvas_onreport{
+	max-height:280px;
 }
+
+
+
 
 /* ---- Print Media ---- */
 @media print {
