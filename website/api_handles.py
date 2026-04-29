@@ -35,9 +35,11 @@ load_dotenv()
 def dum():
     return {"type": "success", "message": "Message test" } 
     page = 'home'
+
     
 def manila_time():
     return datetime.now(pytz.timezone("Asia/Manila"))
+
 
 # ================================
 # Users Section
@@ -1339,6 +1341,7 @@ def get_student_history():
                 "student_id": student.student_id,
                 "subject_name": subject_name,
                 "subject_code": subject_code,
+                "subject_type": student.subject_type,
                 "instructor_name": instructor_name,
                 "progress": student.progress,
                 "status": student.status,
@@ -1371,8 +1374,12 @@ def get_student_history():
 
 @api_handles.route('/get_data_per_stat', methods=['POST'])
 def get_data_per_stat():
-    """Muku weaves statistics across the tapestry of time."""
+    """
+    Retrieves statistical data for students, formatted for both 
+    time-series charts and overall departmental summaries.
+    """
     try:
+        # 1. Parse incoming request filters safely
         current_filters_raw = request.form.get("currentFilters")
         stat_filters_raw = request.form.get("stat_filters")
 
@@ -1390,7 +1397,7 @@ def get_data_per_stat():
         year_range = current_filters.get("year_range", None)
         semester_filter = current_filters.get("semester", "all")
 
-        # 1. Identify valid constellations (Departments)
+        # 2. Query Departments and establish Department-to-College mapping
         dept_query = Department.query
         dept_ids = []
         if department_filter != "all":
@@ -1398,10 +1405,16 @@ def get_data_per_stat():
             if dept_ids:
                 dept_query = dept_query.filter(Department.id.in_(dept_ids))
         
-        # Muku stores the names to ensure even empty departments are returned for the chart
-        departments = [d.name for d in dept_query.all()]
+        # Map department names to their respective college names.
+        # Adjust 'd.college.name' based on your actual SQLAlchemy model relationships.
+        departments_info = {}
+        for d in dept_query.all():
+            college_name = d.college.name if hasattr(d, 'college') and d.college else "Unknown College"
+            departments_info[d.name] = college_name
 
-        # 2. Gather raw temporal records from the void
+        departments = list(departments_info.keys())
+
+        # 3. Build the core query for student records
         query = (
             db.session.query(
                 Department.name,
@@ -1425,7 +1438,7 @@ def get_data_per_stat():
 
         raw_results = query.all()
 
-        # 3. Normalize the timeline (Academic Start Year)
+        # 4. Normalize the academic timeline
         normalized_rows = []
         all_time_keys = set()
 
@@ -1433,6 +1446,7 @@ def get_data_per_stat():
             sem_year = int(sem_year)
             semester = int(semester)
             
+            # Adjust the starting year based on the semester to group academic years accurately
             if semester == 1:
                 academic_start_year = sem_year
             elif semester in (2, 3):
@@ -1449,7 +1463,7 @@ def get_data_per_stat():
                 "remarks": remarks
             })
 
-        # 4. Filter by the boundaries of time (Year Range)
+        # 5. Apply year range filters if provided
         if year_range:
             years = [y.strip() for y in year_range.split(",")]
             if len(years) == 2 and years[0].isdigit() and years[1].isdigit():
@@ -1459,26 +1473,28 @@ def get_data_per_stat():
                     if year_from <= row["yr"] <= year_to
                 ]
 
-        # Record all valid time keys after the filter to build the X-axis labels
+        # Collect all valid unique time keys to generate uniform X-axis labels for the charts
         for row in normalized_rows:
             all_time_keys.add((row["yr"], row["sem"]))
 
-        # 5. Prepare the vessels and organize time labels
         sorted_time_keys = sorted(all_time_keys, key=lambda x: (x[0], x[1]))
         all_sem_labels = [
             ((yr, sem), f"{yr}-{yr + 1} - {sem_label(sem)} Sem")
             for yr, sem in sorted_time_keys
         ]
 
-        # stat_name -> dept_name -> (yr, sem) -> count
+        # 6. Initialize data structures to hold the aggregated metrics
+        # stats_data organizes data for the time-series charts
         stats_data = {stat: {dept: {} for dept in departments} for stat in stat_filters}
+        # dept_overall_stats organizes data for the overall department summaries
+        dept_overall_stats = {dept: {stat: 0 for stat in stat_filters} for dept in departments}
 
-        # 6. Distribute the souls into their respective statistical vessels
+        # 7. Iterate through normalized records and aggregate counts
         for row in normalized_rows:
             dept = row["dept_name"]
             time_key = (row["yr"], row["sem"])
             
-            # The conditions defined by Noshi-sama
+            # Map database values to requested statistic filters
             conditions = {
                 "on_probation": row["progress"] == 'on_probation',
                 "on_tracking": row["progress"] == 'currently_taking',
@@ -1490,37 +1506,52 @@ def get_data_per_stat():
 
             for stat in stat_filters:
                 if stat in conditions and conditions[stat]:
-                    # Ensure the department exists in our dictionary to prevent voids
                     if dept in stats_data[stat]:
+                        # Increment chart metric
                         stats_data[stat][dept][time_key] = stats_data[stat][dept].get(time_key, 0) + 1
+                        # Increment overall department metric
+                        dept_overall_stats[dept][stat] += 1
 
-        # 7. Transmute into the exact Chart.js format
+        # 8. Construct final payload for the charts (data_per_stat)
         final_data_per_stat = []
         for stat in stat_filters:
             dept_array = []
-            
             for dept in sorted(departments):
                 dept_counts = stats_data[stat].get(dept, {})
-                
-                # Match every point in time, defaulting to 0 if no record exists
                 data_points = [
                     [label, dept_counts.get(time_key, 0)] 
                     for time_key, label in all_sem_labels
                 ]
-                
                 dept_array.append({
                     "label": dept,
                     "data": data_points
                 })
-                
             final_data_per_stat.append({
                 "stat_name": stat,
                 "departments": dept_array
             })
 
+        # 9. Construct final payload for the department totals (data_per_department)
+        final_data_per_department = []
+        for dept in sorted(departments):
+            stat_array = []
+            for stat in stat_filters:
+                stat_array.append({
+                    "stat_name": stat,
+                    "count": dept_overall_stats[dept][stat]
+                })
+            
+            # Inject both the department name and its associated college name
+            final_data_per_department.append({
+                "department_name": dept,
+                "college_name": departments_info[dept],
+                "stats": stat_array
+            })
+
         return jsonify({
             "type": "success",
-            "data_per_stat": final_data_per_stat
+            "data_per_stat": final_data_per_stat,
+            "data_per_department": final_data_per_department
         })
 
     except Exception as e:

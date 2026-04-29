@@ -58,7 +58,7 @@ function putInformationData(data){
 	
 	
 	_("department_name").innerText = data.department_name;
-	_("subject_code").innerText = data.subject_code;
+	_("subject_code").innerText = data.subject_code + parseSubjectTypeCode(data.subject_type);
 	_("subject_name").innerText = data.subject_name;
 	_("instructor_name").innerText = data.instructor_name;
 	_("reason").innerText = data.reason;
@@ -98,7 +98,12 @@ function putDataHistory(data){
 			
 			let clone = document.importNode(_("table_columns").content, true);
 			
-			tag('subject', clone)[0].innerText = each.subject_name + " (" + each.subject_code + ")";
+			tag('subject', clone)[0].innerText = each.subject_name + 
+			
+			((each.subject_type >= 2) ? " (" + parseSubjectType(each.subject_type) + ")" : "") +
+    " (" + each.subject_code + parseSubjectTypeCode(each.subject_type) + ")";
+			
+			
 			tag('assigned Teacher', clone)[0].innerText = each.instructor_name;
 			tag('status', clone)[0].innerHTML = each.status.trim().toUpperCase() || "N/A";
 			tag('reason', clone)[0].innerText = each.reason || "N/A";
