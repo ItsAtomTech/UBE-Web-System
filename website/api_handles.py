@@ -35,9 +35,11 @@ load_dotenv()
 def dum():
     return {"type": "success", "message": "Message test" } 
     page = 'home'
+
     
 def manila_time():
     return datetime.now(pytz.timezone("Asia/Manila"))
+
 
 # ================================
 # Users Section
@@ -1339,6 +1341,7 @@ def get_student_history():
                 "student_id": student.student_id,
                 "subject_name": subject_name,
                 "subject_code": subject_code,
+                "subject_type": student.subject_type,
                 "instructor_name": instructor_name,
                 "progress": student.progress,
                 "status": student.status,

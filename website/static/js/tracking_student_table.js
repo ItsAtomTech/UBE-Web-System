@@ -385,7 +385,6 @@ function loadItemToEdit(id){
 			
 		if(res_data.type == "success"){
 			
-			// console.log(res_data.student);
 			showModalContent('update_stat_1');
 			
 			res_data = res_data.student;
@@ -402,7 +401,16 @@ function loadItemToEdit(id){
 			
 			tag('date',_('update_stat_1'))[0].innerText = utility.formatDate(res_data.date);	
 			
-			tag('sem_lapsed',_('update_stat_1'))[0].innerText = res_data.sems_passed;
+			tag('sem_lapsed',_('update_stat_1'))[0].innerText = res_data.sems_passed;	
+
+			
+			if(res_data.subject_type <= 1 || res_data.subject_type == null){
+				tag('subject_type',_('update_stat_1'))[0].innerText = "";
+			}else{
+							
+				tag('subject_type',_('update_stat_1'))[0].innerText = "(" + parseSubjectType(res_data.subject_type) + ")";
+			}
+
 					
 			_("progress_option").value = res_data.progress;
 			_("status_input").value = res_data.status;

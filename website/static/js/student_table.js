@@ -448,6 +448,14 @@ function loadItemToDetails(id){
 			
 			tag('sem_lapsed',_('view_stat_1'))[0].innerText = res_data.sems_passed;
 			
+			
+			if(res_data.subject_type <= 1 || res_data.subject_type == null){
+				tag('subject_type',_('view_stat_1'))[0].innerText = "";
+			}else{
+									
+				tag('subject_type',_('view_stat_1'))[0].innerText = "(" + parseSubjectType(res_data.subject_type) + ")";
+			}
+			
 			_("progress_option").value = res_data.progress;
 			_("status_input").value = res_data.status;
 			_("reason_input").value = res_data.reason;
@@ -513,7 +521,13 @@ function getHistoryOnProbation(data){
 			
 			let clone = document.importNode(_("table_columns").content, true);
 			
-			tag('subject', clone)[0].innerText = each.subject_name + " (" + each.subject_code + ")";
+			
+	tag('subject', clone)[0].innerText = each.subject_name +
+
+    ((each.subject_type >= 2) ? " (" + parseSubjectType(each.subject_type) + ")" : "") +
+    " (" + each.subject_code + parseSubjectTypeCode(each.subject_type) + ")";
+			
+			
 			tag('assigned Teacher', clone)[0].innerText = each.instructor_name;
 			tag('status', clone)[0].innerHTML = parseStatus(each.status.trim()) || "N/A";
 			tag('reason', clone)[0].innerText = each.reason || "N/A";
@@ -800,6 +814,9 @@ function clickedOnRow(){
 	
 	ids = parent_attrib.getAttribute('data_id');
 	loadItemToDetails(ids);
+	
+	
+	
 	console.log(ids);
 	
 }

@@ -283,6 +283,9 @@ const utility = {
 };
 
 
+
+
+
 //Returns ellipsed string based on limit value
 function charLimit(str, limit){
 	if(str.length > limit){
@@ -385,6 +388,28 @@ function parseStatusText(text){
 	}
 	
 	return sp.outerHTML;
+	
+}
+
+
+
+function parseSubjectType(data){
+	let params = ["","","Laboratory", "Lecture/Lab"];
+	
+	if(data <= 1 || data == undefined){
+		return "";
+	}
+	return params[data];
+	
+}
+
+function parseSubjectTypeCode(data){
+	let params = ["","","L", "/L"];
+	
+	if(data <= 1 || data == undefined){
+		return "";
+	}
+	return params[data];
 	
 }
 

@@ -144,3 +144,9 @@ textarea.form_display[readonly] {
 	-webkit-transform:scale(0.9);
 	transform:scale(0.9);
 }
+
+
+.larger_{
+	max-width:1024px !important;
+	
+}
