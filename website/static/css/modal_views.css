@@ -131,6 +131,7 @@ textarea.form_display[readonly] {
 	text-align:center;
 	display:flex;
 	align-items:center;
+	z-index:3;
 	justify-content:center;
 	aspect-ratio:1/1;
 	-webkit-transition:0.2s;
