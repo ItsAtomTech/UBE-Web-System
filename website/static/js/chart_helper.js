@@ -1,6 +1,11 @@
 if (typeof abbreviateNumber == "undefined") {
-  window.abbreviateNumber = function (number, html = undefined) {
-    const SI_SYMBOL = ["", "K", "M", "B", "T"];
+  window.abbreviateNumber = function (number, html = undefined,ignore_zero=false) {
+    
+	if(number <= 0 && ignore_zero){
+		return { abbreviated: "" };
+	}
+	
+	const SI_SYMBOL = ["", "K", "M", "B", "T"];
     const tier = (Math.log10(Math.abs(number)) / 3) | 0;
     // If we transcend trillion, let's just leave it as it is.
     if (tier >= SI_SYMBOL.length) {
@@ -583,6 +588,8 @@ function generateMultiBarChart(
 
   let chartDatasets = datasets.map((dataset, index) => {
     let dataValues = dataset.data.map((item) => item[1]);
+	
+	
     let color = colors[index % colors.length];
 	
     return {
@@ -606,7 +613,7 @@ function generateMultiBarChart(
     datasets: chartDatasets,
   };
 
-
+	
   if (chartInstances[elementId]) {
     let shouldAnimate = false;
 
@@ -668,7 +675,7 @@ function generateMultiBarChart(
                 let percentage = ((value * 100) / sum).toFixed(2) + "%";
                 return percentage;
               } else {
-                return abbreviateNumber(value).abbreviated;
+                return abbreviateNumber(value,false,true).abbreviated;
               }
             },
             anchor: "center",
@@ -730,7 +737,7 @@ function applyChartTheme() {
   Chart.defaults.plugins.tooltip.bodyColor = textColor;
   Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
 
-  // === 🩷 Data Labels styling ===
+  // ===  Data Labels styling ===
   Chart.defaults.plugins.datalabels ??= {};
   Chart.defaults.plugins.datalabels.color = labelColor;
   Chart.defaults.plugins.datalabels.font = {

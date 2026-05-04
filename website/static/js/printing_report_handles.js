@@ -135,13 +135,12 @@ async function generateDataTables(dataraw){
 	}
 }
 
+
+
 function removeZeroSemData(datasets) {
-  return datasets
-    .map((dataset) => ({
-      ...dataset,
-      data: dataset.data.filter((item) => item[1] !== 0),
-    }))
-    .filter((dataset) => dataset.data.length > 0);
+  return datasets.filter((dataset) =>
+    dataset.data.some(([sem, val]) => val !== 0)
+  );
 }
 
 
