@@ -115,6 +115,12 @@
   margin: 20px 0 16px 0;
 }
 
+.above_border{
+	border-top: 1px solid #aaaaaab9;
+	
+}
+
+
 /* ---- Filter Info ---- */
 .filter-info {
   margin-bottom: 18px;
