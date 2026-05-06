@@ -80,6 +80,27 @@
 .print-date {
   font-size: 13px;
 }
+.signature-block {
+  margin-top: 30px;
+}
+
+.sig-title {
+  font-size: 13.5px;
+  margin: 0 0 24px 0;
+}
+
+.sig-line {
+  width: 200px;
+  border-top: 1px solid #111;
+  margin-bottom: 4px;
+}
+
+.sig-label {
+  font-size: 11.5px;
+  color: #333;
+  margin: 0;
+  font-weight: bold;
+}
 
 /* ---- Dividers ---- */
 .header-divider {
@@ -193,6 +214,7 @@
 .chart_canvas_onreport{
 	max-height:280px;
 }
+
 
 
 

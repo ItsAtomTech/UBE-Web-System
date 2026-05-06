@@ -6,13 +6,9 @@
   href="{{ url_for('static', filename='css/print_report.css') }}"
 />
 
-
 <script src="{{ url_for('static', filename='js/charts/chart.js') }}"></script>
 <script src="{{ url_for('static', filename='js/charts/chartjs-plugin-datalabels.min.js') }}"></script>
-{% endblock %} 
-
-
-{% block contents %}
+{% endblock %} {% block contents %}
 
 <div class="report-wrapper" id="wrapper_doc">
   <div class="report-page">
@@ -48,19 +44,17 @@
       </p>
       <p class="filter-line">
         <span class="filter-label">Program:</span>
-        <span id="program" class="bold"
-          > </span
-        >
+        <span id="program" class="bold"> </span>
       </p>
       <p class="filter-line">
-        <span class="filter-label">Year Range:
-		
-		<span id="year_range"  class="bold"> YYYY YYYY</span>
-		
-		</span> Semester: 
-		
-        <span id="semester" class="bold">  </span>
-		
+        <span class="filter-label"
+          >Year Range:
+
+          <span id="year_range" class="bold"> YYYY YYYY</span>
+        </span>
+        Semester:
+
+        <span id="semester" class="bold"> </span>
       </p>
     </div>
 
@@ -79,12 +73,8 @@
           </tr>
         </thead>
         <tbody id="table_tr_row">
-          <tr>
-
-          </tr>
-          <tr>
-
-          </tr>
+          <tr></tr>
+          <tr></tr>
         </tbody>
       </table>
     </div>
@@ -98,17 +88,12 @@
         <div class="chart-tab-label" tag="stat_title">On Probation</div>
         <div class="chart-tab-content">
           <div class="chart-placeholder">
-          <div class="chart-placeholder">
-            <!-- Chart will be rendered here -->
-          </div>
-			
+            <div class="chart-placeholder">
+              <!-- Chart will be rendered here -->
+            </div>
           </div>
         </div>
       </div>
-
-	
-
-
 
       <!-- On Tracking Tab -->
       <div class="chart-tab">
@@ -161,43 +146,29 @@
       </div>
     </div>
     <!-- end charts-section -->
+    <div class="signature-block">
+        <div id="currentUserName" class="sig-label">{{ current_user.username }}</div>
+        <div class="sig-line"></div>
+        <p class="sig-label">Prepared By</p>
+      </div>
+
   </div>
 </div>
 
-
-
-
-
-
 <template id="stat_chart_section">
+  <div class="chart-tab">
+    <div class="chart-tab-label" tag="stat_title">On Probation</div>
+    <div class="chart-tab-content">
+      <div class="chart-placeholder">
+        <!-- Chart will be rendered here -->
 
-      <div class="chart-tab">
-        <div class="chart-tab-label" tag="stat_title">On Probation</div>
-        <div class="chart-tab-content">
-          <div class="chart-placeholder">
-            <!-- Chart will be rendered here -->
-			
-			<canvas id="" class="chart_canvas_onreport" tag="chartCanvas">
-		
-			</canvas>
-			
-          </div>
-        </div>
+        <canvas id="" class="chart_canvas_onreport" tag="chartCanvas"> </canvas>
       </div>
-	  
-</template>	  
+    </div>
+  </div>
+</template>
 
-
-
-
-
-{% endblock %}
-
-
-
-
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
   const PROGRAM_ACRONYM_MAP = {
     "Bachelor of Arts in English Language": "BAEL",
@@ -221,8 +192,7 @@
     "Bachelor of Science in Hospitality Management": "BSHM",
     "Bachelor of Science in Tourism Management": "BSTM",
     "Bachelor of Science in Entrepreneurship": "BS Entrep",
-	
-	
+
     "COLLEGE OF EDUCATION": "COE",
   };
 
@@ -289,21 +259,17 @@
   }
 </script>
 
-
 <script
   defer
   src="{{ url_for('static', filename='js/chart_helper.js') }}"
 ></script>
 
-
 <script src="{{ url_for('static', filename='js/printing_report_handles.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
 
-
 <script>
-let currentUserName = "{{ current_user.username }}";
-
+  let currentUserName = "{{ current_user.username }}";
 </script>
 
 {% endblock %}
