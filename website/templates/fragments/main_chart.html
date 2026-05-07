@@ -1,9 +1,170 @@
+<style>
+  /* Hide extra charts by default; reveal with `.show` */
+  #more_charts {
+    display: none;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 360ms ease;
+  }
+  #more_charts.show {
+    display: block;
+    opacity: 1;
+    max-height: 4000px;
+  }
 
+  /* Floating reveal arrow */
+  #revealArrow {
+    position: absolute;
+    left: 60%;
+    transform: translateX(-50%);
+    bottom: 15px;
+    background: var(--primary-color, #ffffff);
+    color: #000;
+    width: 48px;
+    height: 20px;
+    border-radius: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    z-index: 1200;
+  }
+  #revealArrow.show {
+    display: flex;
+  }
+  #revealArrow .arrow {
+    transform: translateY(0);
+    transition: transform 220ms ease;
+  }
+  #revealArrow:hover .arrow {
+    transform: translateY(2px);
+  }
+
+  /* Small helper to hide arrow after reveal if desired */
+  #revealArrow.hidden {
+    display: none !important;
+  }
+  /* Shared chart container style so all charts have same design */
+  .chart_container {
+    position: relative;
+  }
+</style>
+
+<!-- Always-visible first chart (unchanged) -->
 <section class="padded_container">
-  <div class="primary_background" id="probation_chart_con">
+  <div class="primary_background chart_container" id="probation_chart_con">
     <div class="primary_color normal chart_title bold big centered">
-      Students on Probation by Semester
+      Overall Data by Semester
     </div>
     <canvas id="probationLineChart"></canvas>
   </div>
 </section>
+
+<!-- Floating reveal arrow (appears when user scrolls) - placed just outside the first chart -->
+<div id="revealArrow" title="Show more charts" aria-hidden="true">
+  <svg
+    class="arrow"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 16L6 10H18L12 16Z" fill="currentColor" />
+  </svg>
+</div>
+
+<div id="more_charts">
+  <section class="padded_container">
+    <div class="primary_background chart_container" id="probation_chart_con">
+      <div class="primary_color normal chart_title bold big centered">
+        Students on Probation by Semester
+      </div>
+      <canvas tag="breakdown_charts" id="probationLineChart_probation"></canvas>
+    </div>
+  </section>
+
+  <section class="padded_container">
+    <div class="primary_background chart_container probation_chart_con">
+      <div class="primary_color normal chart_title bold big centered">
+        Students on Tracking by Semester
+      </div>
+      <canvas tag="breakdown_charts" id="probationLineChart_tracking"></canvas>
+    </div>
+  </section>
+
+  <section class="padded_container">
+    <div class="primary_background chart_container probation_chart_con">
+      <div class="primary_color normal chart_title bold big centered">
+        Overall Failed by Semester
+      </div>
+      <canvas tag="breakdown_charts" id="probationLineChart_failed"></canvas>
+    </div>
+  </section>
+
+  <section class="padded_container">
+    <div class="primary_background chart_container probation_chart_con">
+      <div class="primary_color normal chart_title bold big centered">
+        Overall Passed by Semester
+      </div>
+      <canvas tag="breakdown_charts" id="probationLineChart_passed"></canvas>
+    </div>
+  </section>
+
+  <section class="padded_container">
+    <div class="primary_background chart_container probation_chart_con">
+      <div class="primary_color normal chart_title bold big centered">
+        Overall Advised to shift by Semester
+      </div>
+      <canvas tag="breakdown_charts" id="probationLineChart_shift"></canvas>
+    </div>
+  </section>
+
+  <section class="padded_container">
+    <div class="primary_background chart_container probation_chart_con">
+      <div class="primary_color normal chart_title bold big centered">
+        Overall Advised to Transfer by Semester
+      </div>
+      <canvas tag="breakdown_charts" id="probationLineChart_transfer"></canvas>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function () {
+    function el(id) {
+      return document.getElementById(id);
+    }
+    var more = el("more_charts");
+    var arrow = el("revealArrow");
+
+    // Show arrow when user scrolls down far enough
+    function onScroll() {
+      if (window.scrollY > 120) {
+        arrow.classList.add("show");
+      } else {
+        arrow.classList.remove("show");
+      }
+    }
+
+    function reveal() {
+      more.classList.add("show");
+      arrow.classList.remove("show");
+
+      setTimeout(function () {
+        more.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+
+      arrow.classList.add("hidden");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      window.addEventListener("scroll", onScroll, { passive: true });
+      arrow.addEventListener("click", reveal);
+
+      onScroll();
+    });
+  })();
+</script>

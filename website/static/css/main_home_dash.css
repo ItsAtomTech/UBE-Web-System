@@ -296,6 +296,27 @@ text-align: center;
 max-height: 350px;
 }
 
+.probation_chart_con {
+box-sizing: border-box;
+border-radius: 12px;
+padding: 18px 20px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+margin: 20px auto;
+/* max-width: 900px; */
+}
+
+.probation_chart_con .chart_title {
+text-transform: uppercase;
+letter-spacing: 0.5px;
+opacity: 0.85;
+margin-bottom: 16px;
+text-align: center;
+}
+
+.probation_chart_con canvas {
+max-height: 350px;
+}
+
 .padded_container {
 padding: 20px;
 }
