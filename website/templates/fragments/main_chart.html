@@ -1,56 +1,3 @@
-<style>
-  /* Hide extra charts by default; reveal with `.show` */
-  #more_charts {
-    display: none;
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 360ms ease;
-  }
-  #more_charts.show {
-    display: block;
-    opacity: 1;
-    max-height: 4000px;
-  }
-
-  /* Floating reveal arrow */
-  #revealArrow {
-    position: absolute;
-    left: 60%;
-    transform: translateX(-50%);
-    bottom: 15px;
-    background: var(--primary-color, #ffffff);
-    color: #000;
-    width: 48px;
-    height: 20px;
-    border-radius: 10px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-    cursor: pointer;
-    z-index: 1200;
-  }
-  #revealArrow.show {
-    display: flex;
-  }
-  #revealArrow .arrow {
-    transform: translateY(0);
-    transition: transform 220ms ease;
-  }
-  #revealArrow:hover .arrow {
-    transform: translateY(2px);
-  }
-
-  /* Small helper to hide arrow after reveal if desired */
-  #revealArrow.hidden {
-    display: none !important;
-  }
-  /* Shared chart container style so all charts have same design */
-  .chart_container {
-    position: relative;
-  }
-</style>
 
 <!-- Always-visible first chart (unchanged) -->
 <section class="padded_container">
@@ -63,18 +10,24 @@
 </section>
 
 <!-- Floating reveal arrow (appears when user scrolls) - placed just outside the first chart -->
-<div id="revealArrow" title="Show more charts" aria-hidden="true">
-  <svg
-    class="arrow"
-    width="22"
-    height="22"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 16L6 10H18L12 16Z" fill="currentColor" />
-  </svg>
+
+<div class="flexed centered padded">
+
+	<div id="revealArrow" title="Show more charts" aria-hidden="true">
+	  <svg
+		class="arrow"
+		width="22"
+		height="22"
+		viewBox="0 0 24 24"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	  >
+		<path d="M12 16L6 10H18L12 16Z" fill="currentColor" />
+	  </svg>
+	</div>
+
 </div>
+
 
 <div id="more_charts">
   <section class="padded_container">

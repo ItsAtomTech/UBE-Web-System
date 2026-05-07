@@ -269,3 +269,80 @@ async function initPrintReport(elm){
 }
 
 
+
+
+
+
+
+//=== Extented Dashboard Charts Breakdown Logic ===
+async function getExpandedReport(elm){
+	let currentFilters = decople(qBuilder.filters);
+	let stat_filters = getActiveTagsCard();
+	
+	
+	let combined_filters = {
+		currentFilters,
+		stat_filters,
+	}
+	
+	
+	
+	let params =  [
+		{ 
+			"name":"currentFilters",
+			"value": JSON.stringify(currentFilters),
+		},
+		{ 
+			"name":"stat_filters",
+			"value": JSON.stringify(stat_filters),
+		}
+	];
+	
+	qBuilder.sendQuery(processData,'get_data_per_stat',params);	
+	
+	
+	function processData(dataraw){
+		let data = (JSON.parse(dataraw.responseText));
+		let stats = data.data_per_stat;
+	
+	let charts = tag("breakdown_charts",_("more_charts"));
+		
+	for(each of stats){
+		
+		
+		
+		// generateMultiBarChart(
+		  // removeZeroSemData(each.departments),
+		  // canvas_elm,
+		  // false  
+		// );
+
+		
+		
+	}
+		
+		
+		console.log(data);	
+	}
+	
+	
+	
+	function removeZeroSemData(datasets) {
+		return datasets.filter((dataset) =>
+		dataset.data.some(([sem, val]) => val !== 0)
+		);
+	}
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+

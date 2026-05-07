@@ -423,6 +423,65 @@ gap:10px;
 }
 
 
+  /* Hide extra charts by default; reveal with `.show` */
+  #more_charts {
+    display: none;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 360ms ease;
+  }
+  #more_charts.show {
+    display: block;
+    opacity: 1;
+    max-height: 4000px;
+  }
+
+  /* Floating reveal arrow */
+  #revealArrow {
+    position: absolute;
+    /* left: 60%; */
+    /* transform: translateX(-50%); */
+    bottom: 15px;
+    background: var(--primary-color, #ffffff);
+    color: #000;
+    width: 48px;
+    height: 20px;
+    border-radius: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    z-index: 120;
+  }
+  #revealArrow.show {
+    display: flex;
+  }
+  #revealArrow .arrow {
+    transform: translateY(0);
+    transition: transform 220ms ease;
+  }
+  #revealArrow:hover .arrow {
+    transform: translateY(2px);
+  }
+
+  /* Small helper to hide arrow after reveal if desired */
+  #revealArrow.hidden {
+    display: none !important;
+  }
+  /* Shared chart container style so all charts have same design */
+  .chart_container {
+    position: relative;
+  }
+
+.centered{
+	align-items:center;
+	justify-content:center;
+
+}
+
+
 @media (max-width: 1000px) {
 	.dash_cards_grid {
 		grid-template-columns: repeat(2, 1fr);
