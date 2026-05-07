@@ -34,7 +34,7 @@ async function getPrintableData(){
 	await sleep(200);
 	_("wrapper_doc").classList.remove("blur_docs");
 	await sleep(500);
-	print();
+	// print();
 }
 
 
@@ -77,13 +77,12 @@ async function generateDataTables(dataraw){
 	let stats = data.data_per_stat;
 		canvasIds = {};
 	
-
-	
 	
 	_("program").innerHTML = "";
 	_("college").innerHTML = "";
 	let departments = [];
 	let college = [];
+	
 	
 	for(each of data.data_per_department){
 		departments.push(parseProgramName(each.department_name));
@@ -92,6 +91,14 @@ async function generateDataTables(dataraw){
 	}
 	
 	_("program").innerText = departments.join(", ");
+	
+	if(currentFilter.department_filter == "all"){
+		_("program").innerText = "All Programs";
+	}else{
+		_("program").innerText = departments.join(", ");
+
+	}
+	
 	_("college").innerText = college.join(", ");
 	
 	
@@ -174,12 +181,18 @@ function generateTableData(data){
 	
 	_("semester").innerText = currentFilter.semester.length ? semName[currentFilter.semester] : "All";
 	
-	
+		
+	let collh = make("th");
+		collh.innerText = "College";
+		elm.appendChild(collh);	
+		
 	let progh = make("th");
 		progh.innerText = "Program";
-		elm.appendChild(progh);
+		elm.appendChild(progh);	
+			
 	
-
+	let sorted = sortDataByCollege(data.data_per_department);
+	
 	//Gen Headers
 	for(each of data.data_per_stat){
 		let th_elm = make("th");
@@ -189,13 +202,32 @@ function generateTableData(data){
 	
 	let tableRows = _("table_tr_row");
 	
+	
+	
 	// Gen Data Rows
-	for(each of data.data_per_department){
+	
+	let printedCollege = [];
+	for(each of sorted){
 		
 		let row = make("tr");
 			
+			
+			if(printedCollege.indexOf(each.college_name) >= 0){
+				each.college_name = "";
+			}else{
+				printedCollege.push(each.college_name);
+				
+				row.classList.add("above_border");
+			}
+			
+		let coll = make("td");
+			coll.innerText = parseProgramName(each.college_name);
+			coll.classList.add("bold");
+			
+			row.appendChild(coll);
+			
 		let progs = make("td");
-			progs.innerText = parseProgramName(each.college_name) + " " + parseProgramName(each.department_name);
+			progs.innerText = parseProgramName(each.department_name);
 			progs.classList.add("bold");
 			
 			row.appendChild(progs);
@@ -210,6 +242,21 @@ function generateTableData(data){
 			
 		tableRows.appendChild(row);	
 	}	
+	
+	function sortDataByCollege(data) {
+		return data.sort((a, b) => {
+			let collegeA = a.college_name.toUpperCase();
+			let collegeB = b.college_name.toUpperCase();
+
+			if (collegeA < collegeB) {
+				return -1;
+			}
+			if (collegeA > collegeB) {
+				return 1;
+			}
+			return 0;
+		});
+	}
 }
 
 
