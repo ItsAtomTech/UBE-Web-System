@@ -298,6 +298,7 @@ async function getExpandedReport(elm){
 		}
 	];
 	
+	
 	qBuilder.sendQuery(processData,'get_data_per_stat',params);	
 	
 	
@@ -307,24 +308,24 @@ async function getExpandedReport(elm){
 	
 	let charts = tag("breakdown_charts",_("more_charts"));
 		
-	for(each of stats){
-		
-		
-		
-		// generateMultiBarChart(
-		  // removeZeroSemData(each.departments),
-		  // canvas_elm,
-		  // false  
-		// );
 
-		
-		
+	for(each of charts){
+		each.parentNode.classList.add("hide_chart");
 	}
 		
 		
-		console.log(data);	
+	for(each of stats){
+			
+			_("breakdown_"+each.stat_name).parentNode.classList.remove("hide_chart");
+			
+			generateMultiBarChart(
+			  removeZeroSemData(each.departments),
+			  "breakdown_"+each.stat_name,
+			  false  
+			);
+		
+		}
 	}
-	
 	
 	
 	function removeZeroSemData(datasets) {
@@ -337,7 +338,52 @@ async function getExpandedReport(elm){
 }
 
 
+function proccessExpandedCharts(){
+	showToast("Generating Results...");
+	getExpandedReport();
+	
+	
+	
+	
+};
 
+
+
+// expanded Chart Button  
+
+(function () {
+    var more = _("more_charts");
+    var arrow = _("revealArrow");
+
+    // Show arrow when user scrolls down far enough
+    function onScroll() {
+      if (window.scrollY > 120) {
+        arrow.classList.add("show");
+      } else {
+        arrow.classList.remove("show");
+      }
+    }
+
+    function reveal() {
+      more.classList.add("show");
+      arrow.classList.remove("show");
+	
+		proccessExpandedCharts();
+			
+      setTimeout(function () {
+        more.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+
+      arrow.classList.add("hidden");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      window.addEventListener("scroll", onScroll, { passive: true });
+      arrow.addEventListener("click", reveal);
+
+      onScroll();
+    });
+  })();
 
 
 
