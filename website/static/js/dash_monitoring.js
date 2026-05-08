@@ -342,11 +342,14 @@ function proccessExpandedCharts(){
 	showToast("Generating Results...");
 	getExpandedReport();
 	
-	
-	
-	
 };
 
+
+function changeLayout(){
+	_("more_charts").classList.toggle("grid_layout_expanded");
+	
+	
+}
 
 
 // expanded Chart Button  
@@ -371,8 +374,7 @@ function proccessExpandedCharts(){
 		proccessExpandedCharts();
 			
       setTimeout(function () {
-        more.scrollIntoView({ behavior: "smooth" });
-      }, 50);
+        utility.smoothScroll(_("more_charts"), "start")}, 50);
 
       arrow.classList.add("hidden");
     }

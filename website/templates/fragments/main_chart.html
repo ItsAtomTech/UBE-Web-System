@@ -29,70 +29,84 @@
 </div>
 
 
-<div id="more_charts">
-  <section class="padded_container">
-    <div class="primary_background chart_container probation_chart_con">
+
+<div id="more_charts" class="">
+
+	<div class="flexed padded_container less_padding_top gap action_button">
+		<button class="df_button_flat primary_background primary_color" onclick="proccessExpandedCharts()" tooltip="Refresh the Expanded Chart Views">
+			<span class="fa fa-refresh"> <span/>
+		</button>	
+		
+		<button class="df_button_flat primary_background primary_color" onclick="changeLayout()" tooltip="Toggle layout">
+			<span class="fa fa-columns"> <span/>
+		</button>
+		
+	</div>
+
+
+  <div class="padded_container less_padding_top">
+    <div class="primary_background chart_container probation_chart_con ">
       <div class="primary_color normal chart_title bold big centered">
         Students on Probation by Semester
       </div>
       <canvas tag="breakdown_charts" id="breakdown_on_probation"></canvas>
     </div>
-  </section>
+  </div>
 
 
 
-  <section class="padded_container">
+  <div class="padded_container less_padding_top">
     <div class="primary_background chart_container probation_chart_con">
       <div class="primary_color normal chart_title bold big centered">
         Students on Tracking by Semester
       </div>
       <canvas tag="breakdown_charts" id="breakdown_on_tracking"></canvas>
     </div>
-  </section>
+  </div>
 
 
 
-  <section class="padded_container">
+  <div class="padded_container less_padding_top">
     <div class="primary_background chart_container probation_chart_con">
       <div class="primary_color normal chart_title bold big centered">
         Overall Failed by Semester
       </div>
       <canvas tag="breakdown_charts" id="breakdown_total_failed"></canvas>
     </div>
-  </section>
+  </div>
 
 
 
-  <section class="padded_container">
+  <div class="padded_container less_padding_top">
     <div class="primary_background chart_container probation_chart_con">
       <div class="primary_color normal chart_title bold big centered">
         Overall Passed by Semester
       </div>
       <canvas tag="breakdown_charts" id="breakdown_total_passed"></canvas>
     </div>
-  </section>
+  </div>
 
 
 
-  <section class="padded_container">
+  <div class="padded_container less_padding_top">
     <div class="primary_background chart_container probation_chart_con">
       <div class="primary_color normal chart_title bold big centered">
         Overall Advised to shift by Semester
       </div>
       <canvas tag="breakdown_charts" id="breakdown_to_shift"></canvas>
     </div>
-  </section>
+  </div>
 
 
 
-  <section class="padded_container">
+  <div class="padded_container less_padding_top">
     <div class="primary_background chart_container probation_chart_con">
       <div class="primary_color normal chart_title bold big centered">
         Overall Advised to Transfer by Semester
       </div>
       <canvas tag="breakdown_charts" id="breakdown_to_transfer"></canvas>
     </div>
-  </section>
+  </div>
 </div>
 
 <script>
