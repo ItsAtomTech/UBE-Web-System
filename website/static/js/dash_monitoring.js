@@ -310,13 +310,13 @@ async function getExpandedReport(elm){
 		
 
 	for(each of charts){
-		each.parentNode.classList.add("hide_chart");
+		each.parentNode.parentNode.classList.add("hide_chart");
 	}
 		
 		
 	for(each of stats){
 			
-			_("breakdown_"+each.stat_name).parentNode.classList.remove("hide_chart");
+			_("breakdown_"+each.stat_name).parentNode.parentNode.classList.remove("hide_chart");
 			
 			generateMultiBarChart(
 			  removeZeroSemData(each.departments),
