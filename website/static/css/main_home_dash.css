@@ -64,24 +64,24 @@
 }
 
 
+.dash_greeting_banner.nobanner_art{
+	background-image:unset;
+}
+
 .dash_greeting_banner > .bg_banner{
 	
 	position:absolute;
 	width:100%;
 	left:0px;
 	height:100%;
-	background:rgba(20,20,20, 0.04);
+	background:rgba(20,20,20, 0.07);
 	z-index:1;
 	
 }
 
 
 
-
-
-
 /* ---- Greeting Banner End ---- */
-
 
 
 

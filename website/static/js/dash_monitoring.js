@@ -1,6 +1,8 @@
   // ========================================
   // UPDATE GREETING AND SEMESTER
   // ========================================
+  let isBannerArtOn = false;
+  
   let updateGreeting = function () {
     const today = new Date();
     const formatted =
@@ -36,7 +38,15 @@
       greetingEl.textContent = greeting;
     }
 
+	
     const bannerEl = _("dash_greeting_banner");
+	
+	if(!isBannerArtOn){
+		 bannerEl.classList.add("nobanner_art");
+	}else{
+		 bannerEl.classList.remove("nobanner_art");
+	}
+	
     if (bannerEl && timeClass) {
       bannerEl.classList.remove("morning", "afternoon", "evening", "night");
       bannerEl.classList.add(timeClass);
@@ -389,8 +399,19 @@ function changeLayout(){
 
 
 
+function getArtParam() {
+    const hash = window.location.hash;
+
+    if (hash === '#art') return 'art';
+    if (hash === '#noart') return 'noart';
+    return null;
+}
 
 
-
+if (getArtParam() === 'art') {
+    isBannerArtOn = true;
+}else{
+   isBannerArtOn = false;
+}
 
 
