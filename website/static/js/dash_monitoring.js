@@ -2,6 +2,17 @@
   // UPDATE GREETING AND SEMESTER
   // ========================================
   let isBannerArtOn = false;
+ 
+ 
+ function getArtParam() {
+    const hash = window.location.hash;
+
+    if (hash == '#art') return 'art';
+    if (hash == '#noart') return 'noart';
+    return null;
+}
+
+
   
   let updateGreeting = function () {
     const today = new Date();
@@ -18,6 +29,13 @@
     const hours = new Date().getHours();
     let greeting = "Hello";
     let timeClass = "";
+
+	if (getArtParam() == 'art') {
+		isBannerArtOn = true;
+	}else{
+	   isBannerArtOn = false;
+	}
+
 
     if (hours >= 5 && hours < 12) {
       greeting = "Morning";
@@ -37,7 +55,10 @@
     if (greetingEl) {
       greetingEl.textContent = greeting;
     }
+	
 
+	
+	
 	
     const bannerEl = _("dash_greeting_banner");
 	
@@ -399,19 +420,6 @@ function changeLayout(){
 
 
 
-function getArtParam() {
-    const hash = window.location.hash;
 
-    if (hash === '#art') return 'art';
-    if (hash === '#noart') return 'noart';
-    return null;
-}
-
-
-if (getArtParam() === 'art') {
-    isBannerArtOn = true;
-}else{
-   isBannerArtOn = false;
-}
 
 
