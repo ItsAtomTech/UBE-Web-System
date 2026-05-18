@@ -1,5 +1,18 @@
 from flask import render_template, Flask
 from flask_mail import Mail, Message
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+test_env = (os.getenv("test"))
+if not test_env == "testcode":
+    print("Failed to Load env file!")
+else:
+    print(" * Env file loaded")
+    
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 
 
 def mailing(mseg, type, rcpt):
@@ -7,8 +20,8 @@ def mailing(mseg, type, rcpt):
     app = Flask('__main__')
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USERNAME'] = "smptmailsender@gmail.com"
-    app.config['MAIL_PASSWORD'] = 'ooxwjlqqvinyzccx'
+    app.config['MAIL_USERNAME'] = MAIL_USERNAME
+    app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
 
