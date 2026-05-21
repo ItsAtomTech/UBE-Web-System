@@ -498,6 +498,11 @@ gap:10px;
 	gap:10px;
 }
 
+.hide_main_con > .show.grid_layout_expanded{
+	display:none !important;
+	
+}
+
 
 /* Layout Options and Views */
 .grid_layout_expanded {
