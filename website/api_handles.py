@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 from . import db
 from datetime import datetime, timedelta
-from .models import Users, StudentTable, SubjectCode, Department, College
+from .models import Users, StudentTable, SubjectCode, Department, College, Notification
 
 
 plt = ""  # empty this var when on live website
@@ -1788,6 +1788,161 @@ def remove_subject():
 # ================================
 
 
+
+# =============================
+# Notifications Section Start ===
+# =============================
+@api_handles.route('/notification_list', methods=['GET', 'POST'])
+@login_required
+def get_my_notifications_():
+    page = request.form.get('page', 1, type=int)
+    per_page = request.form.get('per_page', 25, type=int)
+
+    notifications = (
+        Notification.query
+        .filter(Notification.user_id == current_user.user_id, Notification.status != "deleted")
+        .order_by(Notification.date.desc())
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+
+    data = {
+        'notifications': [
+            {
+                'id': notif.id,
+                'type': notif.type,
+                'json_data': notif.json_data,
+                'date': notif.date,
+                'seen': notif.seen
+            }
+            for notif in notifications.items
+        ],
+        'total': notifications.total,
+        'pages': notifications.pages,
+        'current_page': notifications.page
+    }
+
+    return jsonify(data)
+
+
+
+
+@api_handles.route('/delete_notification', methods=['POST'])
+@login_required
+def delete_notification():
+    c_id = request.form.get("notif_id")
+    notification = Notification.query.get(c_id)
+
+    if notification is None:
+        return jsonify({'type': 'error', 'message': 'Notification not found.'})
+
+    # Ensure the current user owns this notification
+    if notification.user_id != current_user.user_id:
+        return jsonify({'type': 'error', 'message': 'Unauthorized action.'})
+    
+    notification.status = "deleted"
+    
+    db.session.commit()
+
+    return jsonify({'type': 'success', 'message': 'Notification removed successfully!'})
+
+
+@api_handles.route('/see_notify', methods=['POST'])
+def mark_notification_seen():
+    notif_id = request.form.get('notif_id', type=int)
+
+    if notif_id is None:
+        return jsonify({'type': 'error', 'message': 'Notification ID is required.'}), 400
+
+    # Query for the notification
+    notification = Notification.query.get(notif_id)
+
+    if notification is None:
+        return jsonify({'type': 'error', 'message': 'Notification not found.'})
+
+    notification.seen = 1
+    db.session.commit()
+
+    return jsonify({'type': 'success', 'message': 'Notification marked as seen.'})
+
+
+@api_handles.route('/notification_count', methods=['GET', 'POST'])
+def get_notification_count():
+    if not current_user.is_authenticated:
+        return jsonify({'type': 'error', 'message': 'User not authenticated'})
+
+    total_count = (
+        Notification.query
+        .filter(Notification.user_id == current_user.user_id, Notification.status != "deleted")
+        .count()
+    )
+
+    unseen_count = (
+        Notification.query
+        .filter(
+            Notification.user_id == current_user.user_id,
+            Notification.seen == 0,
+            Notification.status != "deleted"
+        )
+        .count()
+    )
+
+    data = {
+        'type': 'success',
+        'total_notifications': total_count,
+        'unseen_notifications': unseen_count
+    }
+
+    return jsonify(data)
+
+
+
+@api_handles.route('/mark_all_notifications_read', methods=['POST'])
+@login_required
+def mark_all_notifications_read():
+    notifications = Notification.query.filter_by(
+        user_id=current_user.user_id,
+        seen=0
+    ).all()
+
+    for notif in notifications:
+        notif.seen = 1
+
+    db.session.commit()
+
+    return {
+        "type": "success",
+        "message": "All notifications marked as read."
+    }
+
+
+def add_notification(title, details, notif_type='notificaton', user_id=None, extras=""):
+    # Create the json_data as a JSON string
+    json_data = json.dumps({
+        'title': title,
+        'details': details,
+        'extra': extras,
+    })
+
+
+    # Create a new notification instance
+    new_notification = Notification(
+        type=notif_type,
+        json_data=json_data,
+        user_id=user_id,
+    )
+
+
+    # Add to the database
+    db.session.add(new_notification)
+    db.session.commit()
+
+    return new_notification
+
+
+
+# =============================
+# Notifications Section End ===
+# =============================
 
 
 # =============================
