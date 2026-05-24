@@ -91,6 +91,22 @@ let acadStatsForm = {
             "index": 7
         },
         {
+            "type": "number",
+            "value": 1,
+            "label": "Year Level",
+            "fancy": true,
+			"min":1,
+			"max":4,
+            "required": true,
+            "description": "",
+            "group": "g_7742f64a-6f71-4190-abbc-656869584aa7",
+            "row_span": null,
+            "col_span": 1,
+            "span_column": false,
+            "id": "year_level",
+            "index": 8
+        },
+        {
             "type": "select",
             "value": "",
             "label": "Enlisted Instructor",
@@ -99,7 +115,7 @@ let acadStatsForm = {
             "description": "",
             "group": "g_7742f64a-6f71-4190-abbc-656869584aa7",
             "row_span": null,
-            "col_span": 3,
+            "col_span": 2,
             "span_column": false,
             "id": "instructor_id",
             "index": 5

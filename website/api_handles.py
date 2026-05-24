@@ -380,6 +380,7 @@ def save_student():
         subject_type = data.get("subject_type")
         instructor_id = data.get("instructor_id")
         reason = data.get("reason")
+        year_level = data.get("year_level")
         department_id = data.get("department_id")
         if not all([student_name, student_number, subject_id, instructor_id]):
             return {"type": "error", "message": "Incomplete student data"}
@@ -425,7 +426,8 @@ def save_student():
             status=" ",
             department_id=department_id,
             sem_year=sem_year,
-            semester=current_semester
+            semester=current_semester,
+            year_level=year_level
         )
         db.session.add(new_student)
         db.session.commit()
@@ -497,6 +499,7 @@ def get_student_by_id():
             "student_number": student.student_number,
             "progress": student.progress,
             "department_id": student.department_id,
+            "year_level": student.year_level,
             "status": student.status,
             "reason": student.reason,
             "remarks": student.remarks,
@@ -583,6 +586,7 @@ def get_student_info_all():
             "subject_code": subject_code,
             "college_name": college_name,
             "progress": student.progress,
+            "year_level": student.year_level,
             "status": student.status,
             "remarks": student.remarks,
             "reason": student.reason,
@@ -643,6 +647,9 @@ def save_student_update():
 
         if data.get("department_id"):
             student.department_id = data["department_id"]
+            
+        if data.get("year_level"):
+            student.year_level = data["year_level"]
 
         db.session.commit()
 
