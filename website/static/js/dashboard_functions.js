@@ -128,13 +128,17 @@ function closeAllPages(exclude=undefined){
 
 
 
-function hideDashboardContents(hide=false){
+async function hideDashboardContents(hide=false){
 	
 	if(hide){
+		_('dash_contents').classList.add("slideOut");
+		await sleep(200);
+		
 		_('dash_contents').classList.add("hide_main_con");
 		_('dash_title_top').classList.add("hide_from_view");
 		
 	}else{
+		_('dash_contents').classList.remove("slideOut");
 		_('dash_contents').classList.remove("hide_main_con");
 		_('dash_title_top').classList.remove("hide_from_view");
 		

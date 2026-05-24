@@ -37,11 +37,18 @@ function go_back(){
 }
 
 
-function go_to_modal(link){
+function go_to_modal(link,onclose){
 	
-	let page = open_modal(link, 'modal_on_container,page_containment', _('general_container'));
+	let page = open_modal(link, 'modal_on_container,page_containment', _('general_container'), false, onclose);
 	
 }
+
+
+function oncloseProfile(){
+	if(document.getElementsByClassName("modal_iframe_con").length >= 2) return;
+	hideDashboardContents(false);
+}
+
 
 
 function get_started(){
