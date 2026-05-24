@@ -58,6 +58,11 @@ function getSemServerData(){
 	qBuilder.filters["year_range"] = year_range;
 	qBuilder.filters["semester"] = _("probation_filter_semester").value || "all";
 	
+	if(!_("stat_grid").checkVisibility()){// when stats grid is hidden, don't call on server
+		return;
+	}
+	
+	
 	let querys = qBuilder.sendQuery(renderToGraph,"getsems_progdata",[],undefined);
 
 	
