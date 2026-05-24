@@ -78,6 +78,18 @@
 					<option class="primary_color" value="failed" > Failed </option>
 				</select>
 			</div>
+						
+			
+			 <div class="input_class_rounded primary_color_invert">
+				<label class="small" for="status_filter"> Program: </label>
+				<select class="small primary_color_invert" oninput="delayedQuerry()" id="department">
+					<option value="" disabled selected>Filter by</option>
+					<option value="" >All</option>
+				{% for subj in get_programs() %}
+					<option class="primary_background primary_color" value="{{ subj.id }}">{{ subj.name }}</option>
+				{% endfor %}
+				</select>
+			</div>
 			
 			
 			 

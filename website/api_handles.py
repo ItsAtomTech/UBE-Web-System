@@ -712,13 +712,16 @@ def list_students():
         StudentTable,
         SubjectCode.subject_name,
         Users.username.label("instructor_name"),
-        Department.name.label("department_name")
+        Department.name.label("department_name"),
+        College.name.label("college_name")
     ).join(
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
     ).outerjoin(
     Department, StudentTable.department_id == Department.id
+    ).outerjoin(
+    College, Department.college_id == College.id
     )
     
     
@@ -736,6 +739,12 @@ def list_students():
                 
             if 'progress' in filters and filters['progress']:
                 query = query.filter(StudentTable.progress == filters['progress'])
+                
+            if 'department' in filters and filters['department']:
+                query = query.filter(StudentTable.department_id == filters['department'])  
+
+            if 'college' in filters and filters['college']:
+                query = query.filter(College.id == filters['college'])
             
 
 
@@ -766,6 +775,8 @@ def list_students():
         "subject_name": SubjectCode.subject_name,
         "instructor_name": Users.username,
         "status": StudentTable.status,
+        "college": College.name,
+        "department": Department.name,
         "date": StudentTable.date
     }
 
@@ -787,7 +798,7 @@ def list_students():
 
     student_list = []
 
-    for student, subject_name, instructor_name, department_name in results:
+    for student, subject_name, instructor_name, department_name, college_name in results:
         student_list.append({
             "student_id": student.student_id,
             "student_name": student.student_name,
@@ -801,6 +812,7 @@ def list_students():
             "reason": student.reason,
             "date": student.date.isoformat() if student.date else None,"department_id": student.department_id,
             "department": department_name,
+            "college_name": college_name,
         })
 
     return {
