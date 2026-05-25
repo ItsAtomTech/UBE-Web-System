@@ -84,6 +84,34 @@
     51%, 100% { opacity: 0; }
 }
 
+
+@-webkit-keyframes slideOut {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-40px);
+    transform: translateY(-40px);
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-40px);
+    transform: translateY(-40px);
+  }
+}
+
+
 body{
     /* background:rgba(30,30,30,1); */
     margin:0;
@@ -240,7 +268,10 @@ select > option{
 	
 }
 
-
+.slideOut {
+  -webkit-animation: slideOut 0.4s ease forwards;
+  animation: slideOut 0.4s ease forwards;
+}
 
 .close_modal_rev{
 	position:fixed;

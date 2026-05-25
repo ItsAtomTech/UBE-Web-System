@@ -91,7 +91,11 @@
   // ========================================
   let fetchDashboardStats = async function () {
     try {
-
+		
+		if(!_("stat_grid").checkVisibility()){
+			return;
+		}
+		
         
        const params = new URLSearchParams({
         filters: typeof(qBuilder) != 'undefined' ? JSON.stringify(qBuilder.filters) : undefined,

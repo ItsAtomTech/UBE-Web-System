@@ -1,4 +1,4 @@
-// Modalizer JS by Atomtech v1.2.2
+// Modalizer JS by Atomtech v1.2.3
 
 // left: 37, up: 38, right: 39, down: 40,
 // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
@@ -53,7 +53,7 @@ function enableScroll(elm) {
 var opened_modals = [];
 
 
-function open_modal(link, custom_class=undefined, targetElm=undefined, dialog=false){
+function open_modal(link, custom_class=undefined, targetElm=undefined, dialog=false,onclose=undefined){
 	if (window.self !== window.top) {
 		return console.warn("Modalizer not allowed inside iframe window");
 	}
@@ -74,8 +74,6 @@ function open_modal(link, custom_class=undefined, targetElm=undefined, dialog=fa
 		modal_iframe_con = document.createElement("div");
 	}
 	
-		
-	
 	
 		modal_iframe_con.classList.add("modal_iframe_con");
 	let modal_load = document.createElement("div");
@@ -93,11 +91,14 @@ function open_modal(link, custom_class=undefined, targetElm=undefined, dialog=fa
 		
 		
 	}	
-		
+	
+	let extra = "";
+	
+	
 	let close_button = document.createElement("div");
 		close_button.classList.add("close_modal_rev");
 		close_button.innerHTML = "<span class='fa fa-times normal primary_color_invert'></span>";
-		close_button.setAttribute("onclick","close_modalizer(this)");
+		close_button.setAttribute("onclick","close_modalizer(this)"+extra);
 	
 	//setup modal variables
 	let modalID = document.getElementById("md_"+removeSpecialChars(link));
@@ -141,7 +142,19 @@ function open_modal(link, custom_class=undefined, targetElm=undefined, dialog=fa
 	opened_modal.push(pdata);
 
 	
+	
+	//adds onremove Trigger if a function is passed
+	
+	if(typeof(onclose) == "function"){
+			modal_iframe_con.addEventListener("beforeRemove", () => {
+				//console.log("On remove trigger!");
+				onclose();
+		});
+	}
+	
 	return modal_iframe_con;
+	
+	
 	
 	function removeSpecialChars(str) {
     // Use a regular expression to match any non-alphanumeric character
@@ -153,9 +166,9 @@ function open_modal(link, custom_class=undefined, targetElm=undefined, dialog=fa
 
 function close_modalizer(elm){
 	let parent = elm.parentNode;
-	
 	parent.classList.add("fade_out_circle");
-	
+	parent.dispatchEvent(new CustomEvent("beforeRemove", { bubbles: true }));
+		
     setTimeout(function() {
 		
 		try{
@@ -163,6 +176,7 @@ function close_modalizer(elm){
 		}catch(e){
 			// console.log(e);
 		}
+		
 		
         parent.remove();
     }, 500); // 0.5 second delay
