@@ -1808,6 +1808,170 @@ def remove_subject():
 
 
 
+# ================================
+# Records and List Section
+# ================================
+
+
+@api_handles.route('/get_students_deadline', methods=['POST','GET'])
+@login_required
+def get_students_deadline():
+    try:
+        deadline_sems = int(request.form.get("deadline_sems", 2))
+
+        filters_raw = request.form.get("filters")
+        filters = json.loads(filters_raw) if filters_raw else {}
+        department_filter = filters.get("department_filter", "all")
+        year_range = filters.get("year_range", None)
+        semester_filter = filters.get("semester", "all")
+        search = filters.get("search", "").strip()
+
+        now = manila_time()
+        
+        current_month = now.month
+        current_year = now.year
+        
+        month_1st = int(CONFIG_DATA['month_1st_sem'])
+        month_2nd = int(CONFIG_DATA['month_2nd_sem'])
+        month_summer = int(CONFIG_DATA['month_summer'])
+        duration = int(CONFIG_DATA['months'])
+        summer_count = int(CONFIG_DATA['summer_count'])
+        month_1st_end = month_1st + duration - 1
+        month_2nd_end = month_2nd + duration - 1
+        month_summer_end = month_summer + summer_count - 1
+
+        def get_current_sem(month, year):
+            if month_1st <= month <= month_1st_end:
+                return (year, 1)
+            elif month_2nd <= month <= month_2nd_end:
+                return (year, 2)
+            elif month_summer <= month <= month_summer_end:
+                return (year, 3)
+            else:
+                return None
+
+        def count_sems_between(from_year, from_sem, to_year, to_sem):
+            sems = []
+            for y in range(from_year, to_year + 1):
+                for s in [1, 2, 3]:  # include summer
+                    sems.append((y, s))
+            try:
+                start_idx = sems.index((from_year, from_sem))
+                end_idx = sems.index((to_year, to_sem))
+                return max(end_idx - start_idx, 0)
+            except ValueError:
+                return 0
+
+        def get_deadline_sem(from_year, from_sem, deadline_sems):
+            sems = []
+            for y in range(from_year, from_year + 10):
+                for s in [1, 2, 3]:  # include summer
+                    sems.append((y, s))
+            try:
+                start_idx = sems.index((from_year, from_sem))
+                deadline_idx = start_idx + deadline_sems
+                return sems[deadline_idx] if deadline_idx < len(sems) else None
+            except ValueError:
+                return None
+
+        def get_months_remaining(deadline_sem_tuple, current_sem):
+            if not deadline_sem_tuple or not current_sem:
+                return None
+            d_year, d_sem = deadline_sem_tuple
+            sem_start_map = {1: month_1st, 2: month_2nd, 3: month_summer}
+            deadline_month = sem_start_map.get(d_sem, month_1st)
+            current_start_month = sem_start_map.get(current_sem[1], month_1st)
+            months_remaining = (d_year - current_sem[0]) * 12 + (deadline_month - current_start_month)
+            return max(months_remaining, 0)
+
+        current_sem = get_current_sem(current_month, current_year)
+
+        query = db.session.query(
+            StudentTable,
+            SubjectCode.subject_name,
+            SubjectCode.subject_code,
+            Users.username.label("instructor_name"),
+            Department.name.label("department_name")
+        ).join(
+            SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
+        ).join(
+            Users, StudentTable.instructor_id == Users.user_id
+        ).outerjoin(
+            Department, StudentTable.department_id == Department.id
+        ).filter(
+            StudentTable.sem_year.isnot(None),
+            StudentTable.semester.isnot(None)
+        )
+
+        if department_filter != "all":
+            dept_list = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
+            if dept_list:
+                query = query.filter(StudentTable.department_id.in_(dept_list))
+
+        if year_range:
+            years = [y.strip() for y in year_range.split(",")]
+            if len(years) == 2 and years[0].isdigit() and years[1].isdigit():
+                year_from, year_to = int(years[0]), int(years[1])
+                query = query.filter(
+                    StudentTable.sem_year >= year_from,
+                    StudentTable.sem_year <= year_to
+                )
+
+        if semester_filter != "all":
+            sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
+            if sem_list:
+                query = query.filter(StudentTable.semester.in_(sem_list))
+
+        if search:
+            query = query.filter(
+                db.or_(
+                    StudentTable.student_name.ilike(f"%{search}%"),
+                    db.cast(StudentTable.student_number, db.String).ilike(f"%{search}%")
+                )
+            )
+
+        results = query.all()
+
+        student_list = []
+        for student, subject_name, subject_code, instructor_name, department_name in results:
+            entry_sem = (int(student.sem_year), int(student.semester))
+            sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if current_sem else 0
+            sems_remaining = max(deadline_sems - sems_passed, 0)
+            deadline_sem = get_deadline_sem(entry_sem[0], entry_sem[1], deadline_sems)
+            months_remaining = get_months_remaining(deadline_sem, current_sem)
+            is_overdue = sems_passed >= deadline_sems
+
+            student_list.append({
+                "student_id": student.student_id,
+                "student_name": student.student_name,
+                "student_number": student.student_number,
+                "subject_name": subject_name,
+                "subject_code": subject_code,
+                "instructor_name": instructor_name,
+                "department_name": department_name,
+                
+                "entry_sem": f"{entry_sem[0]} - {sem_label(entry_sem[1])} Sem",
+                "deadline_sem": f"{deadline_sem[0]} - {sem_label(deadline_sem[1])} Sem" if deadline_sem else None,
+                
+                "sems_passed": sems_passed,
+                "sems_remaining": sems_remaining,
+                "months_remaining": months_remaining,
+                "is_overdue": is_overdue
+            })
+
+        student_list.sort(key=lambda x: (not x["is_overdue"], x["sems_remaining"]))
+
+        return {"type": "success", "data": student_list}
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+    
+
+# ================================
+# Records and List Section End
+# ================================
+
+
+
 # =============================
 # Notifications Section Start ===
 # =============================
