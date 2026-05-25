@@ -17,6 +17,8 @@ class Users(db.Model, UserMixin):
     avatar = db.Column(db.String(50))
     type = db.Column(db.Integer, db.ForeignKey('user_type.type_id'))   
     misc = db.Column(db.String(1024))
+    department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
+    college_id = db.Column(db.Integer, db.ForeignKey('college.id'))
     date = db.Column(db.DateTime(timezone=True), default=manila_time)
     
     def get_id(self):
@@ -57,6 +59,20 @@ class SubjectCode(db.Model):
     units = db.Column(db.Integer)
 
 
+
+
+# =========================
+# Notifications
+# =========================
+    
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    json_data = db.Column(db.String(10000))
+    status = db.Column(db.String(50), default="normal")
+    date = db.Column(db.DateTime(timezone=True), default=manila_time)
+    seen = db.Column(db.Integer(), default=0)
 
 
 # =========================

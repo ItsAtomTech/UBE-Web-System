@@ -186,7 +186,7 @@
   
   // Other interactive functions:
   
-function setupLongPress(element, duration = 1000) {
+function setupLongPress(element, duration = 400) {
     let pressTimer = null;
 
     element.addEventListener("mousedown", () => {

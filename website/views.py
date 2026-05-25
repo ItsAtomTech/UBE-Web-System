@@ -186,6 +186,16 @@ def assess_student_table():
 
 
 
+# =======================
+# Notifications Section
+# =======================
+@views.route('/notifications', methods=['GET', 'POST'])
+@login_required
+def notifications_page():
+    page = 'edit'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+    return render_template("notifications.html", user=current_user, page=page)
 
 
 # =======================
