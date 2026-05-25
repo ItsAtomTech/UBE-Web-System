@@ -207,13 +207,18 @@ def print_receipt():
     page = 'receipt'
     return render_template("print_receipt.html", user=current_user, page=page)
 
-
+@views.route('/print_probation_list', methods=['GET', 'POST'])
+@login_required
+def print_probation_list():
+    page = 'probation_list'
+    return render_template("print_probation_list.html", user=current_user, page=page)
 
 @views.route('/print_report', methods=['GET', 'POST'])
 @login_required
 def print_report():
     page = 'report'
     return render_template("print_report.html", user=current_user, page=page)
+
 
 
 
