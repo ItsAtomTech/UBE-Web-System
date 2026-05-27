@@ -70,6 +70,13 @@ let page = 1;
 let userList;
 
 
+if(current_user_role == "3"){
+	//user is Department Chair, defaults to assigned department
+	if(_("department")){
+		_("department").value = current_user_department;
+	}
+}
+
 
 function tableLoader(data){
 	let resData = (JSON.parse(data.responseText));

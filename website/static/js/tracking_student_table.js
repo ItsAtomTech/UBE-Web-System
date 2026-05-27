@@ -30,6 +30,13 @@ let tableFormat = [
 		sort: true,
 		// parser:parseBranch,
 		
+	},	
+	{	
+		label: "College",
+		data_path: "college_name",
+		sort: true,
+		// parser:parseBranch,
+		
 	},
 	{	
 		label: "Progress",
@@ -61,6 +68,16 @@ let hiddenColumns = [];
 let page = 1;
 
 let userList;
+
+
+if(current_user_role == "3"){
+	//user is Department Chair, defaults to assigned department
+	if(_("department")){
+		_("department").value = current_user_department;
+	}
+}
+
+
 
 function tableLoader(data){
 	let resData = (JSON.parse(data.responseText));
@@ -266,6 +283,8 @@ function loadAllItems(dataOnly=false){
 	qBuilder.filters.progress = _("progress_filter").value;
 	qBuilder.filters.subject_id = _("subject_input").value;
 	qBuilder.search = _("search_input").value;
+	
+	qBuilder.filters.college = current_user_college; //will only return the results based on current College of the user 
 	
 
 	qBuilder.sendQuery(process);

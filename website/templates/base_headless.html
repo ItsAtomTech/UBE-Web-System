@@ -40,6 +40,7 @@
 		
 		{%if current_user.is_authenticated %}
 		const current_user_id = {{ current_user.user_id }};
+		const current_user_role = {{ current_user.type }};
 		const current_user_college = {{ current_user.college_id }};
 		const current_user_department = {{ current_user.department_id }};
 		

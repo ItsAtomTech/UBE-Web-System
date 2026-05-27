@@ -841,11 +841,17 @@ def final_assessment_list():
     query = db.session.query(
         StudentTable,
         SubjectCode.subject_name,
-        Users.username.label("instructor_name")
+        Users.username.label("instructor_name"),
+        Department.name.label("department_name"),
+        College.name.label("college_name")
     ).join(
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
+    ).outerjoin(
+    Department, StudentTable.department_id == Department.id
+    ).outerjoin(
+    College, Department.college_id == College.id
     )
     
 
@@ -870,6 +876,9 @@ def final_assessment_list():
                 
             if 'progress' in filters and filters['progress']:
                 query = query.filter(StudentTable.progress == filters['progress'])
+                
+            if 'college' in filters and filters['college']:
+                query = query.filter(College.id == filters['college'])
 
 
         except json.JSONDecodeError:
@@ -899,9 +908,12 @@ def final_assessment_list():
         "subject_name": SubjectCode.subject_name,
         "instructor_name": Users.username,
         "status": StudentTable.status,
+        "college": College.name,
+        "department": Department.name,
         "date": StudentTable.date
     }
-
+    
+    
     if sortby in sortable_columns:
         sort_column = sortable_columns[sortby]
         if order == "desc":
@@ -920,7 +932,7 @@ def final_assessment_list():
 
     student_list = []
 
-    for student, subject_name, instructor_name in results:
+    for student, subject_name, instructor_name, department_name, college_name in results:
         student_list.append({
             "student_id": student.student_id,
             "student_name": student.student_name,
@@ -929,6 +941,8 @@ def final_assessment_list():
             "subject_name": subject_name,
             "instructor_id": student.instructor_id,
             "instructor_name": instructor_name,
+            "college_name": college_name,
+            "department_name": department_name,
             "progress": student.progress,
             "status": student.status,
             "reason": student.reason,
