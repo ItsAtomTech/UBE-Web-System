@@ -878,7 +878,9 @@ def final_assessment_list():
                 query = query.filter(StudentTable.progress == filters['progress'])
                 
             if 'college' in filters and filters['college']:
-                query = query.filter(College.id == filters['college'])
+                query = query.filter(College.id == filters['college'])                
+            if 'department' in filters and filters['department']:
+                query = query.filter(StudentTable.department_id == filters['department'])
 
 
         except json.JSONDecodeError:
@@ -975,11 +977,17 @@ def tracking_list():
     query = db.session.query(
         StudentTable,
         SubjectCode.subject_name,
-        Users.username.label("instructor_name")
+        Users.username.label("instructor_name"),
+        Department.name.label("department_name"),
+        College.name.label("college_name")
     ).join(
         SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
     ).join(
         Users, StudentTable.instructor_id == Users.user_id
+    ).outerjoin(
+    Department, StudentTable.department_id == Department.id
+    ).outerjoin(
+    College, Department.college_id == College.id
     )
 
     if current_user.type != 3:
@@ -1000,6 +1008,11 @@ def tracking_list():
                 
             if 'progress' in filters and filters['progress']:
                 query = query.filter(StudentTable.progress == filters['progress'])
+                
+            if 'college' in filters and filters['college']:
+                query = query.filter(College.id == filters['college'])                
+            if 'department' in filters and filters['department']:
+                query = query.filter(StudentTable.department_id == filters['department'])
 
         except json.JSONDecodeError:
             pass
@@ -1028,7 +1041,10 @@ def tracking_list():
         "subject_name": SubjectCode.subject_name,
         "instructor_name": Users.username,
         "status": StudentTable.status,
-        "date": StudentTable.date
+        "date": StudentTable.date,
+        "college_name": College.name,
+        "department": Department.name,
+
     }
 
     if sortby in sortable_columns:
@@ -1049,7 +1065,7 @@ def tracking_list():
 
     student_list = []
 
-    for student, subject_name, instructor_name in results:
+    for student, subject_name, instructor_name, department_name, college_name in results:
         student_list.append({
             "student_id": student.student_id,
             "student_name": student.student_name,
@@ -1061,6 +1077,8 @@ def tracking_list():
             "progress": student.progress,
             "status": student.status,
             "reason": student.reason,
+            "college_name":college_name,
+            "department_name":department_name,
             "date": student.date.isoformat() if student.date else None
         })
 

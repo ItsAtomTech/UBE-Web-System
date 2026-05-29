@@ -32,6 +32,20 @@ let tableFormat = [
 		sort: true,
 		// parser:parseBranch,
 		
+	},	
+	{	
+		label: "College",
+		data_path: "college_name",
+		sort: true,
+		// parser:parseBranch,
+		
+	},	
+	{	
+		label: "Program",
+		data_path: "department",
+		sort: true,
+		// parser:parseBranch,
+		
 	},
 	
 	{	
@@ -276,6 +290,9 @@ function loadAllItems(dataOnly=false){
 	qBuilder.filters.status = _("status_filter").value;
 	qBuilder.filters.progress = _("progress_filter").value;
 	qBuilder.filters.subject_id = _("subject_input").value;
+	
+	qBuilder.filters.department = _("department").value;
+	qBuilder.filters.college = current_user_college; //will only return the results based on current College of the user 
 	qBuilder.search = _("search_input").value;
 	
 
