@@ -109,7 +109,7 @@
 		
 		
 		<!-- For Dean side bar -->
-		{% elif current_user.type == 2 %}
+		{% elif current_user.type == 2 or current_user.type == 5 %}
 		
 		
 
@@ -118,6 +118,12 @@
 		<div class="sidebar_box_con" >
 			<div class="sidebar_button df_button primary_color" onclick="showAssessmentTable(this);" tooltip="Go to Assessment Page"> <span class="fa fa-users"> </span> <span class="normal nav_text"> Assessment </span> </div>
 		</div>
+		
+		
+		<div class="sidebar_box_con" >
+			<div class="sidebar_button df_button primary_color" onclick="showDeadlinesTable(this);"> <span class="fa fa-hourglass-end"> </span> <span class="normal nav_text"> Deadlines </span> </div>
+		</div>		
+		
 		
 		
 		<div class="sidebar_box_con" >

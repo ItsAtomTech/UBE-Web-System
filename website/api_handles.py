@@ -912,7 +912,8 @@ def final_assessment_list():
         "status": StudentTable.status,
         "college": College.name,
         "department": Department.name,
-        "date": StudentTable.date
+        "date": StudentTable.date,
+        "year_level": StudentTable.year_level
     }
     
     
@@ -948,6 +949,7 @@ def final_assessment_list():
             "progress": student.progress,
             "status": student.status,
             "reason": student.reason,
+            "year_level": student.year_level,
             "date": student.date.isoformat() if student.date else None
         })
 
@@ -1844,11 +1846,17 @@ def remove_subject():
 # Records and List Section
 # ================================
 
-
 @api_handles.route('/get_students_deadline', methods=['POST','GET'])
 @login_required
 def get_students_deadline():
     try:
+        try:
+            current_page = int(request.form.get("page") or 1)
+        except ValueError:
+            current_page = 1
+
+        per_page = 40
+
         deadline_sems = int(CONFIG_DATA['number_of_years']) or 1
 
         filters_raw = request.form.get("filters")
@@ -1859,10 +1867,9 @@ def get_students_deadline():
         search = filters.get("search", "").strip()
 
         now = manila_time()
-        
         current_month = now.month
         current_year = now.year
-        
+
         month_1st = int(CONFIG_DATA['month_1st_sem'])
         month_2nd = int(CONFIG_DATA['month_2nd_sem'])
         month_summer = int(CONFIG_DATA['month_summer'])
@@ -1885,7 +1892,7 @@ def get_students_deadline():
         def count_sems_between(from_year, from_sem, to_year, to_sem):
             sems = []
             for y in range(from_year, to_year + 1):
-                for s in [1, 2, 3]:  # include summer
+                for s in [1, 2, 3]:
                     sems.append((y, s))
             try:
                 start_idx = sems.index((from_year, from_sem))
@@ -1897,7 +1904,7 @@ def get_students_deadline():
         def get_deadline_sem(from_year, from_sem, deadline_sems):
             sems = []
             for y in range(from_year, from_year + 10):
-                for s in [1, 2, 3]:  # include summer
+                for s in [1, 2, 3]:
                     sems.append((y, s))
             try:
                 start_idx = sems.index((from_year, from_sem))
@@ -1915,6 +1922,9 @@ def get_students_deadline():
             current_start_month = sem_start_map.get(current_sem[1], month_1st)
             months_remaining = (d_year - current_sem[0]) * 12 + (deadline_month - current_start_month)
             return max(months_remaining, 0)
+
+        def sem_label(sem):
+            return {1: '1st', 2: '2nd', 3: 'Summer'}.get(sem, str(sem))
 
         current_sem = get_current_sem(current_month, current_year)
 
@@ -1962,7 +1972,11 @@ def get_students_deadline():
                 )
             )
 
-        results = query.all()
+        # Pagination
+        pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
+        results = pagination.items
+        total_pages = pagination.pages
+        total_results = pagination.total
 
         student_list = []
         for student, subject_name, subject_code, instructor_name, department_name in results:
@@ -1981,10 +1995,8 @@ def get_students_deadline():
                 "subject_code": subject_code,
                 "instructor_name": instructor_name,
                 "department_name": department_name,
-                
                 "entry_sem": f"{entry_sem[0]} - {sem_label(entry_sem[1])} Sem",
                 "deadline_sem": f"{deadline_sem[0]} - {sem_label(deadline_sem[1])} Sem" if deadline_sem else None,
-                
                 "sems_passed": sems_passed,
                 "sems_remaining": sems_remaining,
                 "months_remaining": months_remaining,
@@ -1993,13 +2005,18 @@ def get_students_deadline():
 
         student_list.sort(key=lambda x: (not x["is_overdue"], x["sems_remaining"]))
 
-        return {"type": "success", 
-        "data": student_list,
-        "year_threshold":  deadline_sems,
+        return {
+            "type": "success",
+            "data": student_list,
+            "year_threshold": deadline_sems,
+            "pagination_data": {
+                "current_page": current_page,
+                "total_pages": total_pages,
+                "total_results": total_results
+            }
         }
     except Exception as e:
         return {"type": "error", "message": str(e)}
-    
 
 # ================================
 # Records and List Section End

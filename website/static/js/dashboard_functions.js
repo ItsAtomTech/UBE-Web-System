@@ -88,7 +88,7 @@ function showReviewTable(elm){
 
 
 // ==========================
-// Teacher Functions Etc.
+// Deans Functions Etc.
 // ==========================
 
 
@@ -100,6 +100,20 @@ function showAssessmentTable(elm){
 	closeAllPages(page);
 	hideDashboardContents(true);
 }
+
+
+function showDeadlinesTable(elm){
+	activate(elm);
+
+	let page = open_modal("deadlines_student_table", 'modal_on_container,no_close_button,page_containment', _('general_container'));
+	closeAllPages(page);
+	hideDashboardContents(true);
+}
+
+
+
+
+
 
 
 function closeAllPages(exclude=undefined){

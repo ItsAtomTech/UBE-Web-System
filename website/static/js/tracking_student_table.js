@@ -30,6 +30,19 @@ let tableFormat = [
 		sort: true,
 		// parser:parseBranch,
 		
+	},		
+	{	
+		label: "Year Level",
+		data_path: "year_level",
+		sort: true,
+		// parser:parseBranch,
+		
+	},		{	
+		label: "Subject",
+		data_path: "subject_name",
+		sort: true,
+		// parser:parseBranch,
+		
 	},	
 	{	
 		label: "College",
