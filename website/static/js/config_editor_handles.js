@@ -8,6 +8,7 @@ function saveChangesToConfig(){
 		"month_2nd_sem": _("month_second").value,
 		"summer_count": _("summer_count").value,
 		"month_summer": _("month_summer").value,
+		"number_of_years": _("number_of_years").value,
 		
 	}
 	let params = [
@@ -70,6 +71,7 @@ function loadIntoForms(){
 	_("month_second").value = datajs['month_2nd_sem'];
 	_("month_summer").value = datajs['month_summer'];
 	_("summer_count").value = datajs['summer_count'];
+	_("number_of_years").value = datajs['number_of_years'];
 	
 	
 	addFancyPlaceholder();

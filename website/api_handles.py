@@ -1849,7 +1849,7 @@ def remove_subject():
 @login_required
 def get_students_deadline():
     try:
-        deadline_sems = int(request.form.get("deadline_sems", 2))
+        deadline_sems = int(CONFIG_DATA['number_of_years']) or 1
 
         filters_raw = request.form.get("filters")
         filters = json.loads(filters_raw) if filters_raw else {}
@@ -1993,7 +1993,10 @@ def get_students_deadline():
 
         student_list.sort(key=lambda x: (not x["is_overdue"], x["sems_remaining"]))
 
-        return {"type": "success", "data": student_list}
+        return {"type": "success", 
+        "data": student_list,
+        "year_threshold":  deadline_sems,
+        }
     except Exception as e:
         return {"type": "error", "message": str(e)}
     
