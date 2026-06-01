@@ -2017,9 +2017,11 @@ def get_students_deadline():
             "date": StudentTable.date,
             "college_name": College.name,
             "department": Department.name,
-            "year_level": StudentTable.year_level
+            "year_level": StudentTable.year_level,
+            "months_remaining": StudentTable.date
 
         }
+
 
         if sortby in sortable_columns:
             sort_column = sortable_columns[sortby]
@@ -2027,7 +2029,9 @@ def get_students_deadline():
                 query = query.order_by(desc(sort_column))
             else:
                 query = query.order_by(asc(sort_column))
-            
+        else:
+            query = query.order_by(StudentTable.date.asc())
+
             
         # Pagination
         pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
@@ -2041,6 +2045,7 @@ def get_students_deadline():
             sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if current_sem else 0
             sems_remaining = max(deadline_sems - sems_passed, 0)
             deadline_sem = get_deadline_sem(entry_sem[0], entry_sem[1], deadline_sems)
+            
             months_remaining = get_months_remaining(deadline_sem, current_sem)
             is_overdue = sems_passed >= deadline_sems
 
@@ -2064,8 +2069,17 @@ def get_students_deadline():
                 "months_remaining": months_remaining,
                 "is_overdue": is_overdue
             })
+        
+        
+        
+        if sortby == "months_remaining":            
+            if order == "desc":
+                student_list.sort(key=lambda x: (not x["is_overdue"], x["months_remaining"]), reverse=True)
+            else:
+                student_list.sort(key=lambda x: (not x["is_overdue"], x["months_remaining"]))
 
-        student_list.sort(key=lambda x: (not x["is_overdue"], x["sems_remaining"]))
+            
+
 
         return {
             "type": "success",

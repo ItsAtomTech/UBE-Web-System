@@ -61,7 +61,7 @@ let tableFormat = [
 	{	
 		label: "Months Remaining",
 		data_path: "months_remaining",
-		sort: false,
+		sort: true,
 		// parser:formatString,
 		
 	},	
