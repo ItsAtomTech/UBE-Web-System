@@ -1855,17 +1855,21 @@ def get_students_deadline():
         except ValueError:
             current_page = 1
 
-        per_page = 40
+        per_page = 50
 
         deadline_sems = int(CONFIG_DATA['number_of_years']) or 1
 
         filters_raw = request.form.get("filters")
         filters = json.loads(filters_raw) if filters_raw else {}
-        department_filter = filters.get("department_filter", "all")
+        department_filter = filters.get("department", "all")
         year_range = filters.get("year_range", None)
         semester_filter = filters.get("semester", "all")
-        search = filters.get("search", "").strip()
-
+        search = request.form.get("search", "").strip()
+        
+        
+        print(filters,department_filter)
+        
+        
         now = manila_time()
         current_month = now.month
         current_year = now.year
@@ -1933,11 +1937,14 @@ def get_students_deadline():
             SubjectCode.subject_name,
             SubjectCode.subject_code,
             Users.username.label("instructor_name"),
-            Department.name.label("department_name")
+            Department.name.label("department_name"),
+            College.name.label("college")
         ).join(
             SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
         ).join(
             Users, StudentTable.instructor_id == Users.user_id
+        ).join(
+            College, Department.college_id == College.id
         ).outerjoin(
             Department, StudentTable.department_id == Department.id
         ).filter(
@@ -1945,10 +1952,33 @@ def get_students_deadline():
             StudentTable.semester.isnot(None)
         )
 
+
         if department_filter != "all":
             dept_list = [int(d.strip()) for d in department_filter.split(",") if d.strip().isdigit()]
             if dept_list:
                 query = query.filter(StudentTable.department_id.in_(dept_list))
+                
+
+        if filters_raw:
+            try:
+                filters = json.loads(filters_raw)
+
+                if 'subject_id' in filters and filters['subject_id']:
+                    query = query.filter(StudentTable.subject_id == filters['subject_id'])
+                    
+                if 'status' in filters and filters['status']:
+                    query = query.filter(StudentTable.status == filters['status'])
+                    
+                if 'progress' in filters and filters['progress']:
+                    query = query.filter(StudentTable.progress == filters['progress'])
+                    
+                if 'college' in filters and filters['college']:
+                    query = query.filter(College.id == filters['college'])                
+
+
+            except json.JSONDecodeError:
+                pass
+
 
         if year_range:
             years = [y.strip() for y in year_range.split(",")]
@@ -1963,7 +1993,8 @@ def get_students_deadline():
             sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
             if sem_list:
                 query = query.filter(StudentTable.semester.in_(sem_list))
-
+        
+        
         if search:
             query = query.filter(
                 db.or_(
@@ -1971,7 +2002,33 @@ def get_students_deadline():
                     db.cast(StudentTable.student_number, db.String).ilike(f"%{search}%")
                 )
             )
+            
+            
+        # Sorting
+        sortby = request.form.get("sort")
+        order = request.form.get("order_by", "asc").lower()
 
+        sortable_columns = {
+            "student_name": StudentTable.student_name,
+            "student_number": StudentTable.student_number,
+            "subject_name": SubjectCode.subject_name,
+            "instructor_name": Users.username,
+            "status": StudentTable.status,
+            "date": StudentTable.date,
+            "college_name": College.name,
+            "department": Department.name,
+            "year_level": StudentTable.year_level
+
+        }
+
+        if sortby in sortable_columns:
+            sort_column = sortable_columns[sortby]
+            if order == "desc":
+                query = query.order_by(desc(sort_column))
+            else:
+                query = query.order_by(asc(sort_column))
+            
+            
         # Pagination
         pagination = query.paginate(page=current_page, per_page=per_page, error_out=False)
         results = pagination.items
@@ -1979,7 +2036,7 @@ def get_students_deadline():
         total_results = pagination.total
 
         student_list = []
-        for student, subject_name, subject_code, instructor_name, department_name in results:
+        for student, subject_name, subject_code, instructor_name, department_name, college in results:
             entry_sem = (int(student.sem_year), int(student.semester))
             sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if current_sem else 0
             sems_remaining = max(deadline_sems - sems_passed, 0)
@@ -1990,15 +2047,20 @@ def get_students_deadline():
             student_list.append({
                 "student_id": student.student_id,
                 "student_name": student.student_name,
+                "date": student.date,
                 "student_number": student.student_number,
                 "subject_name": subject_name,
                 "subject_code": subject_code,
                 "instructor_name": instructor_name,
                 "department_name": department_name,
+                "year_level": student.year_level,
                 "entry_sem": f"{entry_sem[0]} - {sem_label(entry_sem[1])} Sem",
                 "deadline_sem": f"{deadline_sem[0]} - {sem_label(deadline_sem[1])} Sem" if deadline_sem else None,
                 "sems_passed": sems_passed,
                 "sems_remaining": sems_remaining,
+                "progress": student.progress,
+                "status": student.status,
+                "college_name": college,
                 "months_remaining": months_remaining,
                 "is_overdue": is_overdue
             })

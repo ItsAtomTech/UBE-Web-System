@@ -276,12 +276,7 @@ function applyFilterRange(){
 	}catch(e){
 		//
 	}
-	
-	
-	
 }
 
-
-
 getSemServerData();
-window.setInterval(getSemServerData, 2000);
+window.setInterval(getSemServerData, 4000);

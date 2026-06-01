@@ -179,6 +179,17 @@ def assess_student_table():
 
 
 
+@views.route('/deadlines_student_table', methods=['GET', 'POST'])
+@login_required
+def deadlines_table():
+    page = 'deadlines'
+    if current_user.status != 'confirmed':
+        return redirect(url_for('user_control.show_profile'))
+
+    return render_template("deadlines_table.html", user=current_user, page=page)
+
+
+
 
 # =======================
 # Student Listing Section End
