@@ -37,20 +37,14 @@ let tableFormat = [
 		sort: true,
 		// parser:parseBranch,
 		
-	},		{	
-		label: "Subject",
-		data_path: "subject_name",
-		sort: true,
-		// parser:parseBranch,
-		
 	},	
-	{	
-		label: "College",
-		data_path: "college_name",
-		sort: true,
-		// parser:parseBranch,
+	// {	
+		// label: "College",
+		// data_path: "college_name",
+		// sort: true,
+		//parser:parseBranch,
 		
-	},	
+	// },	
 	{	
 		label: "Program",
 		data_path: "department_name",
@@ -58,13 +52,7 @@ let tableFormat = [
 		// parser:parseBranch,
 		
 	},
-	{	
-		label: "Months Remaining",
-		data_path: "months_remaining",
-		sort: true,
-		// parser:formatString,
-		
-	},	
+
 	{	
 		label: "Progress",
 		data_path: "progress",
@@ -79,6 +67,13 @@ let tableFormat = [
 		parser:parseStatus,
 		
 	},
+	{	
+		label: "Months Remaining",
+		data_path: "months_remaining",
+		sort: true,
+		parser:remainingMonthsParser,
+		
+	},	
 	{	
 		label: "Date",
 		data_path: "date",
@@ -167,10 +162,14 @@ function tableLoader(data){
 					
 				}
 				
-				
+				if(each.data_path == "months_remaining"){
+					tabTh.classList.add("sticky_column_right","secondary_background")
+				}
 				if(each.type == "id"){
 					tabTh.className = "";
 				}
+				
+			
 		}
 		
 		
@@ -178,7 +177,7 @@ function tableLoader(data){
 		let tabAc = make("th");
 			tabAc.classList.add("sticky_column_right","action_cols","secondary_background");
 			tabAc.innerHTML = "Actions";
-			headTr.appendChild(tabAc);	
+			//headTr.appendChild(tabAc);	
 		
 		_("header_generative").innerHTML = "";
 		_("header_generative").appendChild(headTr);
@@ -232,6 +231,11 @@ function tableLoader(data){
 					if(each.type == "id"){
 						tabTh.className = "tiny auto_width_col";
 					}
+					
+				if(each.data_path == "months_remaining"){
+					tabTh.classList.add("sticky_column_right","primary_color","primary_background_darker")
+				}
+					
 					//Do Something with each of the data 
 					headTr.appendChild(tabTh);
 				
@@ -281,7 +285,7 @@ function tableLoader(data){
 					
 				
 			tabAc.appendChild(action_div);
-			headTr.appendChild(tabAc);	
+			//headTr.appendChild(tabAc);	
 		return headTr;
 	}
 	
@@ -654,6 +658,26 @@ function parseStatus(data){
 	};
 	
 	return parseStatusText(data);
+}
+
+
+function remainingMonthsParser(data){
+	
+	
+	let elm = make("span");
+	elm.innerText = data;
+	
+	data = parseInt(data);
+	
+	if(data <= 1){
+		elm.classList.add("remaining_red");
+	}else if(data <= 3){
+		elm.classList.add("remaining_orange");
+	}
+	
+	return elm.outerHTML;
+	
+	
 }
 
 

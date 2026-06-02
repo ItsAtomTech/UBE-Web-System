@@ -497,6 +497,28 @@ th.sortable::after {
 }
 
 
+/* Remaining Months */
+
+.remaining_red{
+	padding:4px;
+	background:var(--failed_color_faded);
+	min-width:100px;
+	color:var(--primary_color_invert);
+	border-radius:7px;
+	display:block;
+	
+}
+
+.remaining_orange{
+	padding:4px;
+	background:#ff980096;
+	min-width:100px;
+	color:var(--primary_color_invert);
+	border-radius:7px;
+	display:block;
+	
+}
+
 
 /* Add a Fancy On Focus Style on the form and other styles */
 
