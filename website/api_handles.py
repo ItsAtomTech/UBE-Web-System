@@ -1867,9 +1867,6 @@ def get_students_deadline():
         search = request.form.get("search", "").strip()
         
         
-        print(filters,department_filter)
-        
-        
         now = manila_time()
         current_month = now.month
         current_year = now.year
@@ -1974,7 +1971,11 @@ def get_students_deadline():
                     
                 if 'college' in filters and filters['college']:
                     query = query.filter(College.id == filters['college'])                
-
+                skip_statuses = filters.get("skip_statuses", "")
+                if skip_statuses:
+                    skip_list = [s.strip() for s in skip_statuses.split(",") if s.strip()]
+                    if skip_list:
+                        query = query.filter(StudentTable.status.notin_(skip_list))
 
             except json.JSONDecodeError:
                 pass
@@ -2093,6 +2094,72 @@ def get_students_deadline():
         }
     except Exception as e:
         return {"type": "error", "message": str(e)}
+
+
+
+@api_handles.route('/notify_cron_service_2', methods=['POST', 'GET'])
+@login_required
+def notify_cron_service_2():
+    try:
+        # Build payload for forwarding
+        payload = {
+            "page": request.form.get("page", 1),
+            "sort": request.form.get("sort", ""),
+            "order_by": request.form.get("order_by", "asc"),
+            "search": request.form.get("search", ""),
+            "filters": request.form.get("filters", "")
+        }
+
+
+        base_url = request.host_url.rstrip("/")
+        target_url = f"{base_url}/get_students_deadline"
+
+        cookies = request.cookies
+        response = requests.post(
+            target_url,
+            data=payload,
+            cookies=cookies,
+            verify=False
+        )
+
+        if response.status_code != 200:
+            return {"type": "error", "message": f"Request failed with status {response.status_code}"}
+
+        data = response.json()
+
+        return {"type": "success", "fetched_data": data}
+
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+
+
+@api_handles.route('/notify_cron_service', methods=['POST', 'GET'])
+@login_required
+def notify_cron_service():
+    try:
+        #Calling the function directly
+        
+        filter_payload = {
+            "skip_statuses":"failed,passed",
+        }
+        
+        
+        with current_app.test_request_context(
+            '/get_students_deadline',
+            method='POST',
+            data={
+                "page": request.form.get("page", 1),
+                "sort": request.form.get("sort", "months_remaining"),
+                "order_by": request.form.get("order_by", "asc"),
+                "search": request.form.get("search", ""),
+                "filters": request.form.get("filters", json.dumps(filter_payload))
+            }
+        ):
+            data = get_students_deadline()
+        return {"type": "success", "fetched_data": data}
+    except Exception as e:
+        return {"type": "error", "message": str(e)}
+        
 
 # ================================
 # Records and List Section End
