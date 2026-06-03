@@ -427,3 +427,72 @@ function changeLayout(){
 
 
 
+//Notification Observer Service
+let failedFetch = 0;
+function monitorNotifCounts(){
+    failedFetch = errorRate;
+    qBuilder.sendQuery(observeNewNotification,"notification_count",undefined,getError);
+}
+
+
+let errorRate = 0;
+function getError(data){
+    if(errorRate >= 10){
+        return;
+    }
+    errorRate++;
+}
+
+
+
+let prevNotifications = undefined;
+function observeNewNotification(data){
+    let res = JSON.parse(data.responseText);
+    if(errorRate){
+        failedFetch--;
+    }
+    if(failedFetch >= 1){
+        return;
+    }
+
+    if(!res){
+        return;
+    }
+    
+    
+
+    
+    if(res.unseen_notifications >= 1){
+        _("notification_button").classList.add("new_notification"); 
+        _("notification_button").setAttribute("count",Math.min(res.unseen_notifications, 99));
+        _("notification_button").setAttribute("title","Unseen: "+res.unseen_notifications);
+    }
+    
+    
+    if(prevNotifications != undefined && prevNotifications < res.total_notifications){
+
+        console.log("A Notification detected");
+        showToast("You have a new Notification!");
+         prevNotifications = res.total_notifications;
+    }else{
+       prevNotifications = res.total_notifications;
+       if(res.unseen_notifications >= 1){
+        return;
+       }
+        _("notification_button").classList.remove("new_notification");
+       return;
+    }
+    
+
+    
+    
+    _("notification_button").classList.add("new_notification");
+    localStorage.setItem("shouldReloadNotification", "true");
+    errorRate = 0;
+}
+
+
+window.setInterval(monitorNotifCounts, 3000);
+
+
+

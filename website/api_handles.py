@@ -431,6 +431,18 @@ def save_student():
         )
         db.session.add(new_student)
         db.session.commit()
+        
+        
+        
+        notf_title = "Assigned with On probation"
+        details = f"User '{current_user.username}' has assigned a student to you with ID number: '{student_number}' ."
+        extra_data = f"student_id:{student_number}"
+
+
+        add_notification(notf_title, details, "assigned", instructor_id, extras=extra_data)
+        
+        
+        
         return {"type": "success", "message": "Student saved successfully"}
     except Exception as e:
         db.session.rollback()

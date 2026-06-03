@@ -33,8 +33,8 @@ async function getPrintableData(){
 	
 	await sleep(200);
 	_("wrapper_doc").classList.remove("blur_docs");
-	await sleep(500);
-	// print();
+	await sleep(800);
+	print();
 }
 
 
