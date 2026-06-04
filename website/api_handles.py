@@ -1859,9 +1859,15 @@ def remove_subject():
 # ================================
 
 @api_handles.route('/get_students_deadline', methods=['POST','GET'])
-@login_required
 def get_students_deadline():
     try:
+        
+        env_token = os.getenv("CRON_TOKEN")
+        token_recv = request.form.get("token", "")
+        
+        if (env_token != token_recv) and not current_user.is_authenticated:
+            return {"type": "error", "message": "Access Denied"}, 403
+
         try:
             current_page = int(request.form.get("page") or 1)
         except ValueError:
@@ -1947,7 +1953,8 @@ def get_students_deadline():
             SubjectCode.subject_code,
             Users.username.label("instructor_name"),
             Department.name.label("department_name"),
-            College.name.label("college")
+            College.name.label("college"),
+            College.id.label("college_id")
         ).join(
             SubjectCode, StudentTable.subject_id == SubjectCode.subject_id
         ).join(
@@ -1988,7 +1995,22 @@ def get_students_deadline():
                     skip_list = [s.strip() for s in skip_statuses.split(",") if s.strip()]
                     if skip_list:
                         query = query.filter(StudentTable.status.notin_(skip_list))
-
+                
+                        
+                last_notified_hours = filters.get("last_notified", None)
+                if last_notified_hours:
+                    try:
+                        hours = int(last_notified_hours)
+                        threshold_time = now - timedelta(hours=hours)
+                        query = query.filter(
+                            db.or_(
+                                StudentTable.last_notified.is_(None),
+                                StudentTable.last_notified <= threshold_time
+                            )
+                        )
+                    except ValueError:
+                        pass
+                
             except json.JSONDecodeError:
                 pass
 
@@ -2006,6 +2028,9 @@ def get_students_deadline():
             sem_list = [int(s.strip()) for s in semester_filter.split(",") if s.strip().isdigit()]
             if sem_list:
                 query = query.filter(StudentTable.semester.in_(sem_list))
+        
+
+                
         
         
         if search:
@@ -2053,7 +2078,7 @@ def get_students_deadline():
         total_results = pagination.total
 
         student_list = []
-        for student, subject_name, subject_code, instructor_name, department_name, college in results:
+        for student, subject_name, subject_code, instructor_name, department_name, college, college_id in results:
             entry_sem = (int(student.sem_year), int(student.semester))
             sems_passed = count_sems_between(entry_sem[0], entry_sem[1], current_sem[0], current_sem[1]) if current_sem else 0
             sems_remaining = max(deadline_sems - sems_passed, 0)
@@ -2068,6 +2093,7 @@ def get_students_deadline():
                 "date": student.date,
                 "student_number": student.student_number,
                 "subject_name": subject_name,
+                "college_id": college_id,
                 "subject_code": subject_code,
                 "instructor_name": instructor_name,
                 "department_name": department_name,
@@ -2078,6 +2104,7 @@ def get_students_deadline():
                 "sems_remaining": sems_remaining,
                 "progress": student.progress,
                 "status": student.status,
+                "last_notified": student.last_notified,
                 "college_name": college,
                 "months_remaining": months_remaining,
                 "is_overdue": is_overdue
@@ -2110,16 +2137,22 @@ def get_students_deadline():
 
 
 @api_handles.route('/notify_cron_service_2', methods=['POST', 'GET'])
-@login_required
 def notify_cron_service_2():
     try:
+        
+        filter_payload = {
+            "skip_statuses":"failed,passed",
+            "last_notified":24,
+        }
+        
+        
         # Build payload for forwarding
         payload = {
             "page": request.form.get("page", 1),
             "sort": request.form.get("sort", ""),
             "order_by": request.form.get("order_by", "asc"),
             "search": request.form.get("search", ""),
-            "filters": request.form.get("filters", "")
+            "filters": request.form.get("filters", json.dumps(filter_payload))
         }
 
 
@@ -2146,13 +2179,19 @@ def notify_cron_service_2():
 
 
 @api_handles.route('/notify_cron_service', methods=['POST', 'GET'])
-@login_required
 def notify_cron_service():
     try:
         #Calling the function directly
         
+        env_token = os.getenv("CRON_TOKEN")
+        token_recv = request.args.get("token", "")
+        
+        if (env_token != token_recv) and not current_user.is_authenticated:
+            return {"type": "error", "message": "Access Denied"}, 403
+        
         filter_payload = {
-            "skip_statuses":"failed,passed",
+            "skip_statuses":"passed,failed",
+            "last_notified":576, #1 week
         }
         
         
@@ -2164,14 +2203,87 @@ def notify_cron_service():
                 "sort": request.form.get("sort", "months_remaining"),
                 "order_by": request.form.get("order_by", "asc"),
                 "search": request.form.get("search", ""),
+                "token": token_recv,
                 "filters": request.form.get("filters", json.dumps(filter_payload))
             }
         ):
             data = get_students_deadline()
-        return {"type": "success", "fetched_data": data}
+
+        result = generateNotifications(data)
+        return {"type": "success", "fetched_data": data, "notification_result": result}
+        
     except Exception as e:
         return {"type": "error", "message": str(e)}
         
+
+
+
+
+
+def generateNotifications(fetched_data):
+    try:
+        students = fetched_data.get("data", [])
+        notified_count = 0
+
+        # Get all users with type 2 or 5
+        notify_users = Users.query.filter(Users.type.in_([2, 5])).all()
+
+        for student in students:
+            months_remaining = student.get("months_remaining", None)
+            last_notified = student.get("last_notified", None)
+            student_id = student.get("student_id")
+            student_number = student.get("student_number")
+            student_name = student.get("student_name")
+            college_name = student.get("college_name")
+            college_id = student.get("college_id")
+            deadline_sem = student.get("deadline_sem")
+
+            # Skip if months_remaining is None
+            if months_remaining is None:
+                continue
+
+            # Skip if months is 0 and already notified
+            if months_remaining == 0 and last_notified is not None:
+                continue
+
+            # Only notify if 3 months or less remaining
+            if months_remaining > 3:
+                continue
+
+            # Filter notify_users by college_id
+            target_users = [u for u in notify_users if u.college_id == college_id]
+
+            for user in target_users:
+                if months_remaining == 0:
+                    notf_title = "Student Probation Deadline Reached"
+                    details = (
+                        f"Student '{student_name}' (ID: {student_number}) has reached their probation deadline. "
+                        f"Deadline was: {deadline_sem}."
+                    )
+                else:
+                    notf_title = "Student Probation Deadline Approaching"
+                    details = (
+                        f"Student '{student_name}' (ID: {student_number}) has {months_remaining} month(s) remaining "
+                        f"before their probation deadline. Deadline: {deadline_sem}."
+                    )
+
+                extra_data = f"student_id:{student_id}"
+                add_notification(notf_title, details, "probation_deadline", user.user_id, extras=extra_data)
+
+            # Update last_notified on the student record
+            student_record = StudentTable.query.get(student_id)
+            if student_record:
+                student_record.last_notified = manila_time()
+            
+            notified_count += 1
+
+        db.session.commit()
+        return {"type": "success", "notified_count": notified_count}
+
+    except Exception as e:
+        db.session.rollback()
+        return {"type": "error", "message": str(e)}
+
 
 # ================================
 # Records and List Section End

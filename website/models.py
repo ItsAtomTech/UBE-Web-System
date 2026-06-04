@@ -46,6 +46,7 @@ class StudentTable(db.Model):
     year_level = db.Column(db.Integer) # Current Year Leavel of Student upon recording.
     sem_year = db.Column(db.Integer) # Current Year, like 2026 etc.
     semester = db.Column(db.Integer) # Semester like 1, 2 etc.
+    last_notified = db.Column(db.DateTime(timezone=True), default=manila_time)
     date = db.Column(db.DateTime(timezone=True), default=manila_time)
 
 class InstructorTable(db.Model):
