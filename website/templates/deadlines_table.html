@@ -103,7 +103,6 @@
 			</div>
 			
 			
-			
 			 
 			</div>
 		
@@ -126,7 +125,7 @@
 </div>
 
 
-<div class="multi_select_option" id="selection_options">
+<div class="multi_select_option less_padding" id="selection_options">
 
 		
 	{% if page == 'trash' %}
@@ -135,9 +134,11 @@
 		<span onclick="moveToTrashMulti()" class="df_button_flat primary_background_darker hidden_op" tag="trash"><span class="fa fa-trash medium primary_color"> </span></span>
 	{% endif %}
 
-
 	
-	<span onclick="restoreItemMulti()" class="df_button_flat primary_background_darker hidden_op" tag="restore"><span class="fa fa-refresh medium primary_color"> </span></span>
+	
+	<span onclick="restoreItemMulti()" class="df_button_flat primary_background_darker hidden_op" tag="restore"><span class="fa fa-refresh medium primary_color"> </span></span>	
+	
+	<span onclick="printTable()" class="df_button_flat primary_background_darker" tag="print"><span class="fa fa-print medium primary_color"> </span></span>
 </div>
 
 <!-- Table Element -->

@@ -338,6 +338,12 @@ tr:hover > .action_cols_td > div > div.three_dot_conseal {
 }
 
 
+.less_padding{
+	padding-left:10px !important;
+}
+
+
+
 table > tr{
 	padding:5px;
 }

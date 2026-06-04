@@ -619,6 +619,27 @@ function silentlyRestoreItem(ids){
 
 
 
+//Printing Logics
+
+async function printTable(){
+
+	//To-Do: Extract the Filters to pass onto the overall printing
+	
+	console.log(qBuilder.filters);
+	console.log(qBuilder.search);
+	console.log(qBuilder.order_by);
+	console.log(qBuilder.sort);
+	
+	showToast("Preparing Document filters ... ");
+	await sleep(1200);
+	
+	//window.open('/print_probation_list', 'printPro');
+	
+	
+}
+
+
+
 
 
 function moveToTrashMulti(confirmed = undefined){
@@ -723,7 +744,7 @@ function toggleSelectOption(visible=false){
 		if(visible && selectTypes.indexOf(tag) >= 0){
 			each.classList.remove("hidden_op");
 		}else{
-			each.classList.add("hidden_op");
+			//each.classList.add("hidden_op");
 		}
 		
 	}

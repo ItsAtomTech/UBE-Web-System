@@ -2194,7 +2194,6 @@ def notify_cron_service():
             "last_notified":576, #1 week
         }
         
-        
         with current_app.test_request_context(
             '/get_students_deadline',
             method='POST',
