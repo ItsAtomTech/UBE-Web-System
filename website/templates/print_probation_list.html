@@ -70,4 +70,23 @@
   </div>
 </div>
 
+
+<script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
+
+
+{% endblock %}
+
+
+
+
+{% block extra_js %}
+
+
+<script src="{{ url_for('static', filename='js/onprobation_printing.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
+
+
 {% endblock %}

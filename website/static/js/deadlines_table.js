@@ -623,18 +623,23 @@ function silentlyRestoreItem(ids){
 
 async function printTable(){
 
-	//To-Do: Extract the Filters to pass onto the overall printing
+	//Extract the Filters to pass onto the overall printing	
+	let filters_to_pass = {
+		"filters": qBuilder.filters,
+		"search": qBuilder.search,
+		"page": qBuilder.page,
+		"sort": qBuilder.sort,
+		"order_by": qBuilder.order_by,
+		
+	}
 	
-	console.log(qBuilder.filters);
-	console.log(qBuilder.search);
-	console.log(qBuilder.order_by);
-	console.log(qBuilder.sort);
+	
+	localStorage.setItem("onPro", JSON.stringify(filters_to_pass));
 	
 	showToast("Preparing Document filters ... ");
 	await sleep(1200);
 	
-	//window.open('/print_probation_list', 'printPro');
-	
+	window.open('/print_probation_list', 'printPro');
 	
 }
 
