@@ -1,4 +1,4 @@
-{% extends "base_headless.html" %} {% block title%} Student List {% endblock %}
+{% extends "base_headless.html" %} {% block title%} Student List Print {% endblock %}
 {% block extra_css %}
 
 <link
@@ -45,7 +45,7 @@
             <th>Yr &amp; Sem Probation</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="probation_list_body">
           <tr>
             <td>20000000</td>
             <td>Dela Cruz, Juan</td>
@@ -71,6 +71,23 @@
 </div>
 
 
+
+
+
+<template id="table_row_template">
+	      <tr>
+            <td tag="student_number">20000000</td>
+            <td tag="student_name">Dela Cruz, Juan</td>
+            <td tag="year_level" >4th year</td>
+            <td tag="entry_sem">2024-2025 1<sup>st</sup> Sem</td>
+          </tr>
+
+</template>
+
+
+
+
+
 <script src="{{ url_for('static', filename='js/request_builder.js') }}"></script>
 
 
@@ -85,8 +102,6 @@
 <script src="{{ url_for('static', filename='js/onprobation_printing.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/lib/daimofuu_fancylabel.js') }}"></script>
-
-<script src="{{ url_for('static', filename='js/daimofuu_titlebar.js') }}"> </script>
 
 
 {% endblock %}

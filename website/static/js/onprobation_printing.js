@@ -1,0 +1,73 @@
+let filterExtracted = {};
+
+qBuilder.server_address = "get_students_deadline";
+
+
+function loadPayload(){
+		
+	if(localStorage.getItem("onPro")){
+		filterExtracted = JSON.parse(localStorage.getItem("onPro"));
+	}
+	
+	
+}
+
+
+loadPayload();
+
+
+
+
+
+
+async function retriveData(){
+	
+	qBuilder.filters = filterExtracted.filters;
+	qBuilder.page = filterExtracted.page;
+	qBuilder.sort = filterExtracted.sort;
+	qBuilder.order_by = filterExtracted.order_by;
+	qBuilder.search = filterExtracted.search;
+	
+	qBuilder.filters.unique = "student_number";
+	
+	qBuilder.sendQuery(proccess);
+	
+	console.log(qBuilder.filters.unique);
+	
+	
+	function proccess(data){
+		loadToListTable(data.responseText);
+	}
+	
+}
+
+
+
+retriveData();
+
+async function loadToListTable(data){
+	let dataFrom = JSON.parse(data).data;
+	
+	console.log(dataFrom);
+	
+	_("probation_list_body").innerHTML = "";
+	showToast("Preparing Table...");
+	await sleep(1000);
+	
+	
+	for(each of dataFrom){
+		let clone = document.importNode(_("table_row_template").content, true);
+		
+		tag("student_number",clone)[0].innerText = each.student_number;
+		tag("student_name",clone)[0].innerText = each.student_name;
+		tag("year_level",clone)[0].innerText = getOrdinal(each.year_level);
+		tag("entry_sem",clone)[0].innerText = each.entry_sem;
+		
+		
+		_("probation_list_body").appendChild(clone);
+		
+	}
+	
+	console.log(dataFrom);
+	
+}

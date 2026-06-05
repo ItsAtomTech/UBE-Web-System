@@ -1989,7 +1989,30 @@ def get_students_deadline():
                     query = query.filter(StudentTable.progress == filters['progress'])
                     
                 if 'college' in filters and filters['college']:
-                    query = query.filter(College.id == filters['college'])                
+                    query = query.filter(College.id == filters['college'])  
+                
+               
+                
+                if 'unique' in filters and filters['unique']:
+                    unique_col = filters['unique']
+                    unique_col_map = {
+                        "student_number": StudentTable.student_number,
+                        "student_name": StudentTable.student_name,
+                        "student_id": StudentTable.student_id,
+                        "subject_id": StudentTable.subject_id,
+                        "instructor_id": StudentTable.instructor_id,
+                        "department_id": StudentTable.department_id,
+                        "status": StudentTable.status,
+                        "progress": StudentTable.progress,
+                        "semester": StudentTable.semester,
+                        "sem_year": StudentTable.sem_year,
+                        "year_level": StudentTable.year_level,
+                        "date": StudentTable.date,
+                    }
+                    if unique_col in unique_col_map:
+                        query = query.group_by(unique_col_map[unique_col])
+                        
+                    
                 skip_statuses = filters.get("skip_statuses", "")
                 if skip_statuses:
                     skip_list = [s.strip() for s in skip_statuses.split(",") if s.strip()]
