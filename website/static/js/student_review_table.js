@@ -444,6 +444,9 @@ function loadItemToDetails(id){
 			
 			tag('date',_('view_stat_1'))[0].innerText = utility.formatDate(res_data.date);	
 			
+			tag('sem_year',_('view_stat_1'))[0].innerText = res_data.sem_year + " - " + getOrdinal(res_data.semester)+ " sem";
+			
+			
 			tag('sem_lapsed',_('view_stat_1'))[0].innerText = res_data.sems_passed;
 			
 						

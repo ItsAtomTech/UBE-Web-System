@@ -599,6 +599,8 @@ def get_student_info_all():
             "college_name": college_name,
             "progress": student.progress,
             "year_level": student.year_level,
+            "sem_year": student.sem_year,
+            "semester": student.semester,
             "status": student.status,
             "remarks": student.remarks,
             "reason": student.reason,
