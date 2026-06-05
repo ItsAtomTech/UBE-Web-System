@@ -758,6 +758,8 @@ def list_students():
             if 'college' in filters and filters['college']:
                 query = query.filter(College.id == filters['college'])
             
+            if 'year_level' in filters and filters['year_level']:
+                query = query.filter(StudentTable.year_level == filters['year_level'])  
 
 
         except json.JSONDecodeError:
