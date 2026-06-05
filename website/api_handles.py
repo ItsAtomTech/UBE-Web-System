@@ -1989,7 +1989,9 @@ def get_students_deadline():
                     query = query.filter(StudentTable.progress == filters['progress'])
                     
                 if 'college' in filters and filters['college']:
-                    query = query.filter(College.id == filters['college'])  
+                    query = query.filter(College.id == filters['college'])                      
+                if 'year_level' in filters and filters['year_level']:
+                    query = query.filter(StudentTable.year_level == filters['year_level'])  
                 
                
                 

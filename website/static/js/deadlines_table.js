@@ -313,6 +313,9 @@ function loadAllItems(dataOnly=false){
 	qBuilder.filters.status = _("status_filter").value;
 	qBuilder.filters.progress = _("progress_filter").value;
 	qBuilder.filters.subject_id = _("subject_input").value;
+	qBuilder.filters.year_level = _("year_level_filter").value;
+	
+	
 	qBuilder.search = _("search_input").value;
 	
 	
