@@ -622,34 +622,6 @@ function silentlyRestoreItem(ids){
 
 
 
-//Printing Logics
-
-async function printTable(){
-
-	//Extract the Filters to pass onto the overall printing	
-	let filters_to_pass = {
-		"filters": qBuilder.filters,
-		"search": qBuilder.search,
-		"page": qBuilder.page,
-		"sort": qBuilder.sort,
-		"order_by": qBuilder.order_by,
-		
-	}
-	
-	
-	localStorage.setItem("onPro", JSON.stringify(filters_to_pass));
-	
-	showToast("Preparing Document filters ... ");
-	await sleep(1200);
-	
-	window.open('/print_probation_list', 'printPro');
-	
-}
-
-
-
-
-
 function moveToTrashMulti(confirmed = undefined){
 	if(confirmed == undefined){
 		askUser("Are you sure to move selected items to Trash?",moveToTrashMulti,arguments);

@@ -60,7 +60,7 @@ async function loadToListTable(data){
 	
 	_("probation_list_body").innerHTML = "";
 	showToast("Preparing Table...");
-	await sleep(1000);
+	await sleep(400);
 	
 	
 	for(each of dataFrom){

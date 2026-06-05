@@ -2121,6 +2121,7 @@ def get_students_deadline():
                 "student_name": student.student_name,
                 "date": student.date,
                 "student_number": student.student_number,
+                "department_id": student.department_id,
                 "subject_name": subject_name,
                 "college_id": college_id,
                 "subject_code": subject_code,
@@ -2219,7 +2220,7 @@ def notify_cron_service():
             return {"type": "error", "message": "Access Denied"}, 403
         
         filter_payload = {
-            "skip_statuses":"passed,failed",
+            "skip_statuses":"",
             "last_notified":576, #1 week
         }
         
@@ -2253,8 +2254,8 @@ def generateNotifications(fetched_data):
         students = fetched_data.get("data", [])
         notified_count = 0
 
-        # Get all users with type 2 or 5
-        notify_users = Users.query.filter(Users.type.in_([2, 5])).all()
+        # Get all users with type 2 or 5  and 3
+        notify_users = Users.query.filter(Users.type.in_([2, 5, 3])).all()
 
         for student in students:
             months_remaining = student.get("months_remaining", None)
@@ -2265,6 +2266,7 @@ def generateNotifications(fetched_data):
             college_name = student.get("college_name")
             college_id = student.get("college_id")
             deadline_sem = student.get("deadline_sem")
+            department_id = student.get("department_id")
 
             # Skip if months_remaining is None
             if months_remaining is None:
@@ -2294,10 +2296,20 @@ def generateNotifications(fetched_data):
                         f"Student '{student_name}' (ID: {student_number}) has {months_remaining} month(s) remaining "
                         f"before their probation deadline. Deadline: {deadline_sem}."
                     )
+                   
+                
 
-                extra_data = f"student_id:{student_id}"
-                add_notification(notf_title, details, "probation_deadline", user.user_id, extras=extra_data)
-
+                 #only notify Chair User if matching the department ID
+                if user.type == 3 and user.department_id == department_id:
+                    extra_data = f"student_id:{student_id}"
+                    add_notification(notf_title, details, "probation_deadline", user.user_id, extras=extra_data)
+                    
+                #only notify Dean Users    
+                elif user.type == 2 or user.type == 5:
+                    extra_data = f"student_id:{student_id}"
+                    add_notification(notf_title, details, "probation_deadline", user.user_id, extras=extra_data)
+                
+                
             # Update last_notified on the student record
             student_record = StudentTable.query.get(student_id)
             if student_record:
