@@ -35,7 +35,7 @@ let tableFormat = [
 		label: "Year Level",
 		data_path: "year_level",
 		sort: true,
-		// parser:parseBranch,
+		parser:getOrdinal,
 		
 	},	
 	// {	

@@ -791,7 +791,8 @@ def list_students():
         "status": StudentTable.status,
         "college": College.name,
         "department": Department.name,
-        "date": StudentTable.date
+        "date": StudentTable.date,
+        "year_level": StudentTable.year_level
     }
 
     if sortby in sortable_columns:
@@ -826,6 +827,7 @@ def list_students():
             "reason": student.reason,
             "date": student.date.isoformat() if student.date else None,"department_id": student.department_id,
             "department": department_name,
+            "year_level": student.year_level,
             "college_name": college_name,
         })
 
