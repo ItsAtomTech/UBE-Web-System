@@ -10,3 +10,4 @@ python-dotenv
 PyMySQL
 bleach
 tinycss2
+requests
