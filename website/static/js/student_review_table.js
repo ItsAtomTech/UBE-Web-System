@@ -290,6 +290,7 @@ function loadAllItems(dataOnly=false){
 	qBuilder.filters.status = _("status_filter").value;
 	qBuilder.filters.progress = _("progress_filter").value;
 	qBuilder.filters.subject_id = _("subject_input").value;
+	qBuilder.filters.year_level = _("year_level_filter").value;
 	
 	qBuilder.filters.department = _("department").value;
 	qBuilder.filters.college = current_user_college; //will only return the results based on current College of the user 
