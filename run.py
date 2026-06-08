@@ -29,6 +29,8 @@ def launch(script_name, title):
 
     # Use sys.executable so it always finds the correct python
     # cmd /k keeps the window open even if the script crashes
+    
+    
     proc = subprocess.Popen(
         ["cmd", "/k", sys.executable, script_name],
         creationflags=subprocess.CREATE_NEW_CONSOLE,
