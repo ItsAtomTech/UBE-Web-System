@@ -189,16 +189,17 @@ function tableLoader(data){
 	
 		
 	function generateTableDataRows(data, index = undefined){
-		let record_id = (data.user_id);
+		let record_id = (data.student_id);
 			let headTr = make("tr");
 				headTr.classList.add("padded_colms","clickable_row");
 				headTr.setAttribute("onclick","clickedOnRow("+record_id+")");
 				headTr.setAttribute("data_id",record_id);
-				headTr.setAttribute("code_id",data.code);
-				
+				headTr.setAttribute("code_id",data.student_id);
+		
+
 			//check columns
 		let table_check = make("td");
-			table_check.innerHTML = '<input class="check_input" row_selector  type="checkbox" data_id="'+data.user_id+'" form_id="'+data.form_data_form_id+'" onclick="selectHandle(this)" title="Select This Entry"/>';
+			table_check.innerHTML = '<input class="check_input" row_selector  type="checkbox" data_id="'+data.student_id+'" form_id="'+data.student_id+'" onclick="selectHandle(this)" title="Select This Entry"/>';
 			table_check.className = "sticky_column_left primary_background_darker check_cols";
 			headTr.appendChild(table_check);
 		
@@ -735,14 +736,19 @@ function toggleSelectOption(visible=false){
 
 
 // Misc Functions ====
+// Misc Functions ====
 function clickedOnRow(){
 	let ev = event;
 	
 	let parent_attrib = (ev.target.parentNode);
-	
-	if(!parent_attrib.getAttribute('code_id')){
+	let selected_id = parent_attrib.getAttribute('data_id');
+		
+	if(!parent_attrib.getAttribute('data_id')){
 		return;
 	};
+	
+	
+	loadItemToDetails(selected_id);
 }
 
 
@@ -791,3 +797,142 @@ function itemNotifyUpdate(data){
 
 
 
+
+
+// ===================
+// History and View Section Start 
+// ===================
+
+let ALL_INFO;
+let HISTORY_INFO;
+
+function loadItemToDetails(id){
+	let student_id = parseInt(id);	
+	let params = [{"name":"student_id", "value": student_id}];
+
+	qBuilder.sendQuery(openModal,"/get_student_info_all",params);
+
+	function openModal(data){
+		let res_data = (JSON.parse(data.responseText));
+		if(res_data.type == "success"){
+			showModalContent('view_stat_1');
+			
+			res_data = res_data.student;
+			selectedItemId = student_id;
+			ALL_INFO = res_data;
+			
+			
+			tag('student_name',_('view_stat_1'))[0].innerHTML = obfuscateText(res_data.student_name);
+			
+			tag('student_number',_('view_stat_1'))[0].innerText = res_data.student_number;	
+			
+			let subject_obj = findById(subjects, res_data.subject_id);
+			
+			tag('subject',_('view_stat_1'))[0].innerText = subject_obj.subject;
+			
+			
+			tag('instructor_name',_('view_stat_1'))[0].innerText = res_data.instructor_name;
+			
+			tag('date',_('view_stat_1'))[0].innerText = utility.formatDate(res_data.date);	
+			
+			tag('sem_year',_('view_stat_1'))[0].innerText = res_data.sem_year + " - " + getOrdinal(res_data.semester)+ " sem";
+			
+			
+			tag('sem_lapsed',_('view_stat_1'))[0].innerText = res_data.sems_passed;
+			
+						
+			if(res_data.subject_type <= 1 || res_data.subject_type == null){
+				tag('subject_type',_('view_stat_1'))[0].innerText = "";
+			}else{
+									
+				tag('subject_type',_('view_stat_1'))[0].innerText = "(" + parseSubjectType(res_data.subject_type) + ")";
+			}
+			
+			_("progress_option").value = res_data.progress;
+			_("status_input").value = res_data.status;
+			_("reason_input").value = res_data.reason;
+			_("remarks_input").value = res_data.remarks;
+			
+			try{
+				getHistoryOnProbation(res_data);
+			}catch(e){
+				//--
+			}
+			
+			
+			addFancyPlaceholder();
+		}else{
+			createDialogue("error", res_data.message);
+		}
+	}
+}
+
+
+//For gettinge the Data of On-Probation history
+function getHistoryOnProbation(data){
+	let student_number = data.student_number;
+	
+	
+	let params = [{"name":"student_number", "value": student_number}];
+
+	qBuilder.sendQuery(openModal,"/get_student_history",params);
+	
+		
+
+	function openModal(data){
+		let res_data = (JSON.parse(data.responseText));
+		HISTORY_INFO = res_data;
+		if(res_data.type == "success"){
+			
+			tag('probation_count',_('view_stat_1'))[0].innerText = res_data.summary.probation_count;
+			
+			tag('passed_count',_('view_stat_1'))[0].innerText = res_data.summary.passed_count;
+			
+			tag('failed_count',_('view_stat_1'))[0].innerText = res_data.summary.failed_count;
+			
+			
+			populateHistoryTable(res_data);
+			
+			addFancyPlaceholder();
+		}else{
+			createDialogue("error", res_data.message);
+		}
+	}
+	
+		
+	function populateHistoryTable(rdata){
+		let history = rdata.history;
+		
+		_("table_history").innerHTML = "";
+		selectedItemId;
+		for(each of history){
+			
+			if(each.student_id == selectedItemId){
+				continue;
+			}
+			
+			let clone = document.importNode(_("table_columns").content, true);
+			
+			tag('subject', clone)[0].innerText = each.subject_name + 
+			    ((each.subject_type >= 2) ? " (" + parseSubjectType(each.subject_type) + ")" : "") +
+    " (" + each.subject_code + parseSubjectTypeCode(each.subject_type) + ")";
+			
+			tag('assigned Teacher', clone)[0].innerText = each.instructor_name;
+			tag('status', clone)[0].innerHTML = parseStatus(each.status.trim()) || "N/A";
+			tag('reason', clone)[0].innerText = each.reason || "N/A";
+			tag('date', clone)[0].innerText = each.date;
+			
+			_("table_history").appendChild(clone);
+		}
+	}
+		
+	
+	
+}
+
+
+
+
+// ===================
+// History Section End 
+// ===================
