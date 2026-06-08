@@ -545,8 +545,15 @@ function observeNewNotification(data){
     if(prevNotifications != undefined && prevNotifications < res.total_notifications){
 
         console.log("A Notification detected");
+		
+		
         showToast("You have a new Notification!");
-         prevNotifications = res.total_notifications;
+        prevNotifications = res.total_notifications;
+		
+		
+		//Plays the sound bell sound
+ 		playSfx("sound_bell.mp3");		
+		 
     }else{
        prevNotifications = res.total_notifications;
        if(res.unseen_notifications >= 1){

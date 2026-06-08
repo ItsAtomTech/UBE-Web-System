@@ -473,6 +473,10 @@ function observeNewNotification(data){
 
         console.log("A Notification detected");
         showToast("You have a new Notification!");
+		
+		//Plays the sound bell sound
+ 		playSfx("sound_bell.mp3");		
+		 
          prevNotifications = res.total_notifications;
     }else{
        prevNotifications = res.total_notifications;
