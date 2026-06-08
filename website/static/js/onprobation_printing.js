@@ -37,6 +37,7 @@ async function retriveData(){
 	qBuilder.search = filterExtracted.search;
 	
 	qBuilder.filters.unique = "student_number";
+	// qBuilder.filters.skip_statuses = "passed,failed";
 	
 	qBuilder.sendQuery(proccess);
 	
@@ -59,6 +60,7 @@ async function loadToListTable(data){
 	console.log(dataFrom);
 	
 	_("probation_list_body").innerHTML = "";
+	_("wrapper_doc").classList.add("blur_docs");
 	showToast("Preparing Table...");
 	await sleep(400);
 	
@@ -75,7 +77,10 @@ async function loadToListTable(data){
 		_("probation_list_body").appendChild(clone);
 		
 	}
-	
-	console.log(dataFrom);
+	await sleep(1200);
+	_("wrapper_doc").classList.remove("blur_docs");
+	await sleep(1000);
+	window.print();
+	// console.log(dataFrom);
 	
 }
