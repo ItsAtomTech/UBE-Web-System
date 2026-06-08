@@ -32,7 +32,7 @@ def launch(script_name, title):
     proc = subprocess.Popen(
         ["cmd", "/k", sys.executable, script_name],
         creationflags=subprocess.CREATE_NEW_CONSOLE,
-        cwd=os.path.dirname(os.path.abspath(__file__))  # run from the launcher's own folder
+        cwd=os.path.dirname(os.path.abspath(__file__))  
     )
 
     with open(lock, "w") as f:
