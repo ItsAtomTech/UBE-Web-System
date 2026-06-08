@@ -5,7 +5,7 @@ REM   For: On Probation Tracking System
 REM =============================================================
 
 echo.
-echo  Setting up virtual environment for Model Training...
+echo  Setting up virtual environment for Webservice...
 echo.
 
 REM ── Step 1: Check Python ─────────────────────────────────────

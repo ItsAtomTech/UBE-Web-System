@@ -11,3 +11,4 @@ PyMySQL
 bleach
 tinycss2
 requests
+psutil
