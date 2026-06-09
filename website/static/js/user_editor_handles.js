@@ -100,6 +100,8 @@ function loadIntoForms(){
         }
     }
 	addFancyPlaceholder();
+	toggleDepColFields(_("type"));
+	
 }
 
 

@@ -243,6 +243,8 @@ def get_user_by_id():
             "type": user.type,
             "status": user.status,
             "avatar": user.avatar,
+            "department": user.department_id,
+            "college": user.college_id,
             "misc": user.misc,
             "date": user.date.strftime("%Y-%m-%d %H:%M:%S") if user.date else None
         }
@@ -285,6 +287,12 @@ def save_user_update():
 
         if data.get("type"):
             user.type = data["type"]
+            
+        if data.get("department"):
+            user.department_id = data["department"]
+            
+        if data.get("college"):
+            user.college_id = data["college"]
 
         if data.get("email") and data["email"] != user.email:
             # If email changes, also set status to "pending"
