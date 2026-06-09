@@ -122,5 +122,32 @@ function cancelEditor(){
 }
 
 
+// ======================
+//Custom Events goes here
+// ======================
+function toggleDepColFields(elm){
+	let fieldValue = elm.value;
+	let college_elm = _("college").parentNode.parentNode;
+	let department_elm = _("department").parentNode.parentNode;
+	
+	college_elm.style.display = "none";
+
+	if(fieldValue == 2 || fieldValue == 5){
+		college_elm.style.display = "initial";
+		college_elm.classList.remove("disabled");	
+		department_elm.style.display = "none";
+	}else if(fieldValue == 3){
+		college_elm.style.display = "none";
+		department_elm.style.display = "initial";
+		department_elm.classList.remove("disabled");	
+	}else{
+		college_elm.classList.add("disabled");
+		department_elm.classList.add("disabled");
+	}
+	
+	
+}
+
+toggleDepColFields({value: 1});
 
 

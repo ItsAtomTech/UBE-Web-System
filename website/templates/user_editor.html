@@ -49,6 +49,24 @@
 
 
 
+<datalist id="programs">
+<option value=" ">None</option>
+	{% for progs in get_programs() %}
+	<option value="{{ progs.id}}">{{ progs.name }}</option>
+	{% endfor %}
+</datalist>
+
+
+<datalist id="college_list">
+	<option value=" ">None</option>
+	{% for college in get_college() %}
+	<option value="{{ college.id}}">{{ college.name }}</option>
+	{% endfor %}
+</datalist>
+
+
+
+
 <script>
 let hasChanges = false;
 function updatesOn(elm){

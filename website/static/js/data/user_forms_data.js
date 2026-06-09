@@ -12,7 +12,6 @@ let configForm = {
             "row_span": null,
             "col_span": null,
             "span_column": false,
-            
             "id": "_0",
             "index": 0
         },
@@ -26,10 +25,10 @@ let configForm = {
             "description": "",
             "group": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a",
             "row_span": null,
-            "col_span": null,
+            "col_span": 2,
             "span_column": false,
+            "onchange": "updatesOn(this)",
             "id": "username",
-            "onchange":"updatesOn(this)",
             "index": 1
         },
         {
@@ -42,10 +41,10 @@ let configForm = {
             "description": "",
             "group": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a",
             "row_span": null,
-            "col_span": null,
+            "col_span": 2,
             "span_column": false,
+            "onchange": "updatesOn(this)",
             "id": "email",
-            "onchange":"updatesOn(this)",
             "index": 2
         },
         {
@@ -62,8 +61,49 @@ let configForm = {
             "span_column": false,
             "list": "usertype",
             "id": "type",
-            "onchange":"updatesOn(this)",
-            "index": 3
+            "onchange": "updatesOn(this),toggleDepColFields(this)",
+            "index": 3,
+            "eventlist": [
+                null
+            ]
+        },
+        {
+            "type": "select",
+            "events": {},
+            "value": "",
+            "label": "Department",
+            "fancy": true,
+            "required": false,
+            "description": "",
+            "group": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a",
+            "row_span": null,
+            "col_span": null,
+            "span_column": false,
+            "list": "programs",
+            "id": "department",
+            "onchange": "updatesOn(this)",
+            "index": 4
+        },
+        {
+            "type": "select",
+            "events": {
+                "targetIndex": "none",
+                "type": "none",
+                "value": "3",
+                "condition": ""
+            },
+            "value": "",
+            "label": "College",
+            "fancy": true,
+            "required": false,
+            "description": "",
+            "group": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a",
+            "row_span": null,
+            "col_span": null,
+            "span_column": false,
+            "id": "college",
+            "list": "college_list",
+            "index": 5
         },
         {
             "type": "password",
@@ -75,11 +115,11 @@ let configForm = {
             "description": "",
             "group": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a",
             "row_span": null,
-            "col_span": null,
+            "col_span": 2,
             "span_column": false,
-            "onchange":"updatesOn(this)",
+            "onchange": "updatesOn(this)",
             "id": "password",
-            "index": 4
+            "index": 6
         },
         {
             "type": "password",
@@ -91,18 +131,18 @@ let configForm = {
             "description": "",
             "group": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a",
             "row_span": null,
-            "col_span": null,
-            "onchange":"updatesOn(this)",
+            "col_span": 2,
+            "onchange": "updatesOn(this)",
             "span_column": false,
             "id": "repassword",
-            "index": 5
+            "index": 7
         }
     ],
     "groups": [
         {
             "name": "User Detials",
             "type": "default",
-            "column_count": 1,
+            "column_count": "2",
             "row_view": true,
             "id": "g_280bbbd8-6fda-41b7-8377-636eb6328b6a"
         }

@@ -2,3 +2,4 @@ instance/ube_db.db
 venv
 cron_service.py.lock
 main.py.lock
+webiste/__pycache__

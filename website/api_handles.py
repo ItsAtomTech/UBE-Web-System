@@ -151,6 +151,12 @@ def save_user():
 
         if data.get("password") != data.get("repassword"):
             return {"type": "error", "message": "Passwords do not match"}
+            
+        if data.get("department") == " ":
+            data["department"] = None
+            
+        if data.get("college") == " ":
+            data["college"] = None
 
         # Optional: check if email already exists
         existing_user = Users.query.filter_by(email=data.get("email")).first()
@@ -160,6 +166,8 @@ def save_user():
         new_user = Users(
             username=data.get("username"),
             email=data.get("email"),
+            department_id=data.get("department", None),
+            college_id=data.get("college", None),
             type=data.get("type", "1"),
             password=generate_password_hash(data.get("password"), method="pbkdf2:sha256"),
             status="pending",
@@ -199,7 +207,7 @@ def remove_user():
             return {"type": "error", "message": "You cannot remove your own account"}
 
         # --- Prevent deleting admin accounts ---
-        if user.type and user.type.lower() == "admin":
+        if user.type and user.type == 4:
             return {"type": "error", "message": "You cannot delete another admin account"}
 
         db.session.delete(user)
