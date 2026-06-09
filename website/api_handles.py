@@ -162,7 +162,16 @@ def save_user():
         existing_user = Users.query.filter_by(email=data.get("email")).first()
         if existing_user:
             return {"type": "error", "message": "Email already exists"}
+        
+        password = data.get("password")
+        
+        #Password validation: at least 8 chars, must contain both letters and numbers
+        if len(password) < 8:
+            return {"type": "error", "message": "Password must be at least 8 characters long"}
 
+        if not (any(c.isalpha() for c in password) and any(c.isdigit() for c in password)):
+            return {"type": "error", "message": "Password must contain both letters and numbers"}
+        
         new_user = Users(
             username=data.get("username"),
             email=data.get("email"),
@@ -280,6 +289,8 @@ def save_user_update():
 
         if user.user_id == current_user.user_id:
             return {"type": "error", "message": "You cannot modify your own account in here"}
+            
+
 
         # Update fields
         if data.get("username"):

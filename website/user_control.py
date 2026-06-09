@@ -138,6 +138,13 @@ def create_account():
             flash('Email too short!', category="error")
         elif password_c != password:
             flash('Password not match!', category="error")
+            
+        #Password validation: at least 8 chars, must contain both letters and numbers
+        if len(password) < 8:
+            return {"type": "error", "message": "Password must be at least 8 characters long"}
+
+        if not (any(c.isalpha() for c in password) and any(c.isdigit() for c in password)):
+            return {"type": "error", "message": "Password must contain both letters and numbers"}
 
         else:
             add_account = Users(email=email,
@@ -359,6 +366,18 @@ def save_new_pass():
 
     user_id = current_user.user_id
     user_i = Users.query.filter_by(user_id=user_id).first()
+    
+            #Password validation: at least 8 chars, must contain both letters and numbers
+    if len(pass1) < 8:
+        
+        flash("Password needs to be 8 chars long!", category="error")
+        return redirect(url_for('user_control.ch_pass') + '?sent=true')
+
+    if not (any(c.isalpha() for c in pass1) and any(c.isdigit() for c in pass1)):
+        flash("Password must contain both letters and numbers", category="error")
+        return redirect(url_for('user_control.ch_pass') + '?sent=true')
+        
+        
     if user_i.misc == code and len(str(code)) > 2:
         user_i.password = new_pass
         db.session.commit()
@@ -454,7 +473,14 @@ def save_recover_pass():
     else:
         flash("Password seemed not matched!", category="error")
         return redirect(url_for('user_control.recover_page') + '?sent=true')
+    
+            #Password validation: at least 8 chars, must contain both letters and numbers
+    if len(pass1) < 8:
+        return {"type": "error", "message": "Password must be at least 8 characters long"}
 
+    if not (any(c.isalpha() for c in pass1) and any(c.isdigit() for c in pass1)):
+        return {"type": "error", "message": "Password must contain both letters and numbers"}
+    
     user_id = recovery_email_id
 
     if recovery_email_id == "":
