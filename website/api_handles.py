@@ -794,6 +794,20 @@ def list_students():
         except json.JSONDecodeError:
             pass
     
+    year_range = filters.get("year_range", None)
+
+    # Year range filter on sem_year
+    if year_range:
+        try:
+            year_from, year_to = map(int, year_range.split(","))
+            query = query.filter(
+                StudentTable.sem_year >= year_from,
+                StudentTable.sem_year <= year_to
+            )
+        except (ValueError, AttributeError):
+            pass
+    
+    
     # Search
     search = request.form.get("search")
     if search:

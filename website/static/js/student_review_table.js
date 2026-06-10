@@ -94,6 +94,13 @@ let page = 1;
 
 let userList;
 
+
+if(_("year_end")){
+	_("year_end").value = new Date().getFullYear();
+}
+
+
+
 function tableLoader(data){
 	let resData = (JSON.parse(data.responseText));
 	let forms = resData.students;
@@ -302,6 +309,12 @@ function loadAllItems(dataOnly=false){
 	qBuilder.filters.department = _("department").value;
 	qBuilder.filters.college = current_user_college; //will only return the results based on current College of the user 
 	qBuilder.search = _("search_input").value;
+	
+		
+	if(_("year_start") && _("year_end")){
+		let year_filter = [_("year_start").value,_("year_end").value];
+		qBuilder.filters.year_range = year_filter.join(",");
+	}
 	
 
 	qBuilder.sendQuery(process);

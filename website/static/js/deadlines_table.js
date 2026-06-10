@@ -100,6 +100,11 @@ if(current_user_role == "3"){
 }
 
 
+if(_("year_end")){
+	_("year_end").value = new Date().getFullYear();
+}
+
+
 
 function tableLoader(data){
 	let resData = (JSON.parse(data.responseText));
@@ -324,7 +329,15 @@ function loadAllItems(dataOnly=false){
 	qBuilder.filters.department = _("department") ? qBuilder.filters.department = _("department").value : false;
 	qBuilder.filters.college = (current_user_role != 1) ? current_user_college: undefined; //will only return the results based on current College of the user 
 	
-
+	
+	if(_("year_start") && _("year_end")){
+		let year_filter = [_("year_start").value,_("year_end").value];
+		qBuilder.filters.year_range = year_filter.join(",");
+	}
+	
+	
+	
+	
 	qBuilder.sendQuery(process);
 	
 	//createDialogue("wait", "Please wait...");
@@ -794,8 +807,6 @@ function itemNotifyUpdate(data){
 	// closeModalContent("modal_1");
 	
 }
-
-
 
 
 
